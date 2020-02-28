@@ -1,7 +1,16 @@
 import React from "react";
 
-function App() {
-  return <div className='App'>Hello world</div>;
+import AppProvider from "./AppProvider";
+import AppRouter from "./AppRouter";
+
+class App extends React.Component {
+  render() {
+    return (
+      <AppProvider>
+        <AppRouter />
+      </AppProvider>
+    );
+  }
 }
 
 export default App;
