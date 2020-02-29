@@ -58,7 +58,7 @@ class Login extends React.Component {
         >
           {({ handleSubmit, handleChange, values }) => (
             <Form noValidate onSubmit={handleSubmit}>
-              <Form.Group as={Row} controlId='formHorizontalEmail'>
+              <Form.Group as={Row} controlId='email'>
                 <Form.Label column sm={2}>
                   Email
                 </Form.Label>
@@ -72,7 +72,7 @@ class Login extends React.Component {
                 </Col>
               </Form.Group>
 
-              <Form.Group as={Row} controlId='formHorizontalPassword'>
+              <Form.Group as={Row} controlId='password'>
                 <Form.Label column sm={2}>
                   Password
                 </Form.Label>
@@ -88,7 +88,7 @@ class Login extends React.Component {
 
               <Form.Group
                 as={Row}
-                controlId='formButtons'
+                controlId='buttons'
                 style={{ float: "right", alignItems: "center" }}
               >
                 {submitting ? (

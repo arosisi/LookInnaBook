@@ -63,7 +63,7 @@ class Registration extends React.Component {
         >
           {({ handleSubmit, handleChange, values }) => (
             <Form noValidate onSubmit={handleSubmit}>
-              <Form.Group as={Row} controlId='formHorizontalFirstName'>
+              <Form.Group as={Row} controlId='firstName'>
                 <Form.Label column sm={3}>
                   First Name
                 </Form.Label>
@@ -77,7 +77,7 @@ class Registration extends React.Component {
                 </Col>
               </Form.Group>
 
-              <Form.Group as={Row} controlId='formHorizontalLastName'>
+              <Form.Group as={Row} controlId='lastName'>
                 <Form.Label column sm={3}>
                   Last Name
                 </Form.Label>
@@ -91,7 +91,7 @@ class Registration extends React.Component {
                 </Col>
               </Form.Group>
 
-              <Form.Group as={Row} controlId='formHorizontalAddress'>
+              <Form.Group as={Row} controlId='address'>
                 <Form.Label column sm={3}>
                   Address
                 </Form.Label>
@@ -105,7 +105,7 @@ class Registration extends React.Component {
                 </Col>
               </Form.Group>
 
-              <Form.Group as={Row} controlId='formHorizontalEmail'>
+              <Form.Group as={Row} controlId='email'>
                 <Form.Label column sm={3}>
                   Email
                 </Form.Label>
@@ -119,7 +119,7 @@ class Registration extends React.Component {
                 </Col>
               </Form.Group>
 
-              <Form.Group as={Row} controlId='formHorizontalPassword'>
+              <Form.Group as={Row} controlId='password'>
                 <Form.Label column sm={3}>
                   Password
                 </Form.Label>
@@ -133,7 +133,7 @@ class Registration extends React.Component {
                 </Col>
               </Form.Group>
 
-              <Form.Group as={Row} controlId='formHorizontalCreditCard'>
+              <Form.Group as={Row} controlId='creditCard'>
                 <Form.Label column sm={3}>
                   Credit Card
                 </Form.Label>
@@ -159,7 +159,7 @@ class Registration extends React.Component {
                 </Col>
               </Form.Group>
 
-              <Form.Group as={Row} controlId='formHorizontalHolderName'>
+              <Form.Group as={Row} controlId='holderName'>
                 <Form.Label column sm={3}>
                   Holder Name
                 </Form.Label>
@@ -173,7 +173,7 @@ class Registration extends React.Component {
                 </Col>
               </Form.Group>
 
-              <Form.Group as={Row} controlId='formHorizontalBillingAddress'>
+              <Form.Group as={Row} controlId='billingAddress'>
                 <Form.Label column sm={3}>
                   Billing Address
                 </Form.Label>
@@ -189,7 +189,7 @@ class Registration extends React.Component {
 
               <Form.Group
                 as={Row}
-                controlId='formButtons'
+                controlId='buttons'
                 style={{ float: "right", alignItems: "center" }}
               >
                 {submitting ? (

@@ -58,7 +58,7 @@ class ResetPassword extends React.Component {
           >
             {({ handleSubmit, handleChange, values }) => (
               <Form noValidate onSubmit={handleSubmit}>
-                <Form.Group as={Row} controlId='formHorizontalEmail'>
+                <Form.Group as={Row} controlId='email'>
                   <Form.Label column sm={2}>
                     Email
                   </Form.Label>
@@ -74,7 +74,7 @@ class ResetPassword extends React.Component {
 
                 <Form.Group
                   as={Row}
-                  controlId='formButtons'
+                  controlId='buttons'
                   style={{ float: "right", alignItems: "center" }}
                 >
                   {submitting ? (

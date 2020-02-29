@@ -10,7 +10,8 @@
 
 # production
 /build
-*.json
+/src/tables
+/src/collections
 
 # misc
 .DS_Store
