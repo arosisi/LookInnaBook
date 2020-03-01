@@ -1,10 +1,10 @@
-const router = require("express").Router();
+const router = require("express").Router()
 
 module.exports = client => {
     
     //Check whether request contains a valid userId in body
     router.use((req, res) => {
-        const userId = req && req.body && req.body.u_id;
+        const userId = req && req.body && req.body.u_id
         if (!userId) {
             res.send({ success: false, errMessage: "Couldn't find an user id" })
         }
