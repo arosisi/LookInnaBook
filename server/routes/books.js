@@ -1,7 +1,9 @@
 const router = require("express").Router();
 
 module.exports = client => {
-  router.get("/", (req, res) => {
+  router.post("/", (req, res) => {
+    const isbns = req && req.body && req.body.isbns
+    const requestedBooksQuery = Array.isArray(isbns) && isbns.length > 0 ? ` AND book.isbn IN (${isbns})` : ''
     const query = `
         SELECT 
               book-pub.percentage as publisher_percentage,
@@ -22,7 +24,7 @@ module.exports = client => {
         FROM author, book, genre, book-pub
         WHERE author.isbn = book.isbn AND
               book.isbn = genre.isbn AND
-              book-pub.isbn = book.isbn`
+              book-pub.isbn = book.isbn` + requestedBooksQuery
     client.query(query, (err, response) => {
         if (err) {
             response.send({ success: false });

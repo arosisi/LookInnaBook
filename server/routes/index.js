@@ -2,11 +2,11 @@ const router = require("express").Router();
 
 const setupApi = client => {
     const attachDb = api => require(api)(client)
-    
     router.use('/books', attachDb('./books'));
-    /*router.use('/orders', attachDb('./orders'));
     router.use('/inventory', attachDb('./inventory'));
     router.use('/publishers', attachDb('./publishers'));
+    router.use('/orders', attachDb('./orders'));
+    /*
     router.use('/sales-reports', attachDb('./sales-reports'));
     router.use('/registration', attachDb('./registration'));
     router.use('/profile', attachDb('./profile'));
