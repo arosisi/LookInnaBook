@@ -15,7 +15,11 @@ class Catalogue extends React.Component {
 
   componentDidMount() {
     this.setState({ fetching: true }, () => {
-      fetch("http://localhost:9000/books")
+      fetch("http://localhost:9000/books", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ isbns: null })
+      })
         .then(response => response.json())
         .then(response => {
           this.setState({
@@ -57,8 +61,8 @@ class Catalogue extends React.Component {
       >
         {({ handleSubmit, handleChange, values }) => (
           <div style={{ margin: 20 }}>
-            {/* Search bar */}
             <Row style={{ margin: 0 }}>
+              {/* Search bar */}
               <SearchBar
                 handleSubmit={handleSubmit}
                 handleChange={handleChange}

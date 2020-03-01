@@ -25,6 +25,23 @@ class AppProvider extends React.Component {
       } else {
         this.setState({ cart: cart.concat({ book, addedToCart }) });
       }
+    },
+    removeFromCart: book => {
+      const { cart } = this.state;
+      this.setState({
+        cart: cart.filter(item => item.book.isbn !== book.isbn)
+      });
+    },
+    updateCart: (book, addedToCart) => {
+      const { cart } = this.state;
+      this.setState({
+        cart: cart.map(item => {
+          if (item.book.isbn === book.isbn) {
+            return { ...item, addedToCart };
+          }
+          return item;
+        })
+      });
     }
   };
 

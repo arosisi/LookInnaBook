@@ -46,7 +46,7 @@ class ResetPassword extends React.Component {
         </h3>
 
         {success ? (
-          <Alert variant='danger' dismissible onClose={onSuccess}>
+          <Alert variant='success' dismissible onClose={onSuccess}>
             {`A new password has been sent to your email address.`}
           </Alert>
         ) : (
@@ -93,7 +93,7 @@ class ResetPassword extends React.Component {
                     </Col>
                   ) : (
                     <>
-                      <Button variant='primary' onClick={onClose}>
+                      <Button variant='secondary' onClick={onClose}>
                         Cancel
                       </Button>
                       <Col>
