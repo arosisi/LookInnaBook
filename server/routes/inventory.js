@@ -2,7 +2,9 @@ const router = require("express").Router();
 
 module.exports = client => {
   router.get("/", (req, res) => {
-    const query = `
+    const publishers = [];
+    const books = [];
+    const bookQuery = `
         SELECT 
               book-pub.percentage as publisher_percentage,
               author.author,
@@ -23,13 +25,12 @@ module.exports = client => {
         WHERE author.isbn = book.isbn AND
               book.isbn = genre.isbn AND
               book-pub.isbn = book.isbn`
-    client.query(query, (err, response) => {
+    client.query(bookQuery, (err, response) => {
         if (err) {
-            response.send({ success: false });
+            res.send({ success: false });
         } else {
-            const books = [];
             const currentBook = {};
-            res.rows.forEach(row => {
+            response.rows.forEach(row => {
                 if (!currentBook) {
                     const { author, genre, ...other } = row;
                     currentBook = { ...other, authors: [author], genres: [genre] };
@@ -46,9 +47,20 @@ module.exports = client => {
                     }
                 }
             })
-            response.send({ success: true, books });
         }
     });
+    const publisherQuery = `
+        SELECT name
+        FROM publisher`
+    client.query(bookQuery, (err, response) => {
+        if (err) {
+            res.send({ success: false });
+        } else {
+            response.rows.forEach(row => publishers.push(row.name))
+        }
+    })
+    
+    res.send({ success: true, books, publishers });
   });
   return router;
 };
