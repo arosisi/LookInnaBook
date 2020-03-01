@@ -1,13 +1,13 @@
 import React from "react";
 import { BrowserRouter, Redirect, Route, Switch } from "react-router-dom";
 
-import Cart from "./components/Cart";
+import Cart from "./components/cart/Cart";
 import Catalogue from "./components/catalogue/Catalogue";
 import Login from "./components/Login";
 import NavigationBar from "./components/NavigationBar";
 import Orders from "./components/Orders";
-import Profile from "./components/Profile";
-import Registration from "./components/Registration";
+import Profile from "./components/user/Profile";
+import Registration from "./components/user/Registration";
 import withConsumer from "./withConsumer";
 
 class AppRouter extends React.Component {

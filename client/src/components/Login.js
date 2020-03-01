@@ -116,7 +116,7 @@ class Login extends React.Component {
                       Forgot your password?
                     </Button>
                     <Button
-                      variant='primary'
+                      variant='secondary'
                       onClick={() => context.redirect("catalogue")}
                     >
                       Cancel
