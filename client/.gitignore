@@ -10,6 +10,8 @@
 
 # production
 /build
+/src/tables
+/src/collections
 
 # misc
 .DS_Store

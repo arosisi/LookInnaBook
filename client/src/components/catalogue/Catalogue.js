@@ -1,0 +1,103 @@
+import React from "react";
+import Col from "react-bootstrap/Col";
+import Row from "react-bootstrap/Row";
+import Spinner from "react-bootstrap/Spinner";
+import { Formik } from "formik";
+
+import BookList from "./BookList";
+import FilterBox from "./FilterBox";
+import SearchBar from "./SearchBar";
+import { filter } from "../../helpers";
+import { priceChecks, genreChecks, publisherChecks } from "./checks";
+
+class Catalogue extends React.Component {
+  state = { fetching: false, books: [], filtered: [], activePage: 1 };
+
+  componentDidMount() {
+    this.setState({ fetching: true }, () => {
+      fetch("http://localhost:9000/books")
+        .then(response => response.json())
+        .then(response => {
+          this.setState({
+            fetching: false,
+            books: response.books,
+            filtered: response.books
+          });
+        })
+        .catch(error => console.log("Unable to connect to API books.", error));
+    });
+  }
+
+  onSubmit = values => {
+    const { fetching, books } = this.state;
+    if (!fetching) {
+      this.setState({ filtered: filter(books, values), activePage: 1 });
+    }
+  };
+
+  extractVars = checks => {
+    const vars = {};
+    checks.forEach(check => {
+      vars[check.name] = false;
+    });
+    return vars;
+  };
+
+  render() {
+    const { fetching, filtered, activePage } = this.state;
+    return (
+      <Formik
+        onSubmit={this.onSubmit}
+        initialValues={{
+          keyword: "",
+          ...this.extractVars(priceChecks),
+          ...this.extractVars(genreChecks),
+          ...this.extractVars(publisherChecks)
+        }}
+      >
+        {({ handleSubmit, handleChange, values }) => (
+          <div style={{ margin: 20 }}>
+            {/* Search bar */}
+            <Row style={{ margin: 0 }}>
+              <SearchBar
+                handleSubmit={handleSubmit}
+                handleChange={handleChange}
+                values={values}
+              />
+            </Row>
+
+            <Row style={{ marginTop: 20 }}>
+              {/* Filter box */}
+              <Col xs='3'>
+                <FilterBox
+                  handleSubmit={handleSubmit}
+                  handleChange={handleChange}
+                  values={values}
+                />
+              </Col>
+
+              {/* Book div */}
+              <Col xs='9'>
+                {fetching ? (
+                  <Row style={{ justifyContent: "center" }}>
+                    <Spinner animation='border' variant='primary' />
+                  </Row>
+                ) : (
+                  <BookList
+                    books={filtered}
+                    activePage={activePage}
+                    handlePageChange={selected =>
+                      this.setState({ activePage: selected })
+                    }
+                  />
+                )}
+              </Col>
+            </Row>
+          </div>
+        )}
+      </Formik>
+    );
+  }
+}
+
+export default Catalogue;
