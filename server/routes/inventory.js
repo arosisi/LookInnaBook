@@ -52,7 +52,7 @@ module.exports = client => {
     const publisherQuery = `
         SELECT name
         FROM publisher`
-    client.query(bookQuery, (err, response) => {
+    client.query(publisherQuery, (err, response) => {
         if (err) {
             res.send({ success: false });
         } else {
@@ -60,7 +60,7 @@ module.exports = client => {
         }
     })
     
-    res.send({ success: true, books, publishers });
+    res.send({ success: true, books, publisher });
   });
   return router;
 };
