@@ -1,5 +1,13 @@
 import { genres } from "./filters";
 
+export const truncateText = (text, length) => {
+  if (text.length <= length) {
+    return text;
+  }
+  const prevSpaceIndex = text.lastIndexOf(" ", length);
+  return text.slice(0, prevSpaceIndex) + "...";
+};
+
 export const getCurrencyString = amount =>
   amount.toLocaleString("en-CA", {
     style: "currency",
