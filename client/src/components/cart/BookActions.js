@@ -3,7 +3,7 @@ import FormControl from "react-bootstrap/FormControl";
 import InputGroup from "react-bootstrap/InputGroup";
 import { MdDelete } from "react-icons/md";
 
-import Confirmation from "../Confirmation";
+import TwoActionDialog from "../TwoActionDialog";
 
 class BookActions extends React.Component {
   state = { showRemoveConfirmation: false };
@@ -58,12 +58,16 @@ class BookActions extends React.Component {
           </InputGroup.Text>
         </InputGroup.Append>
 
-        <Confirmation
+        <TwoActionDialog
           show={showRemoveConfirmation}
           message='Are you sure you want to remove this item?'
+          secondaryAction='Cancel'
+          primaryAction='Confirm'
           onHide={() => this.setState({ showRemoveConfirmation: false })}
-          onClose={() => this.setState({ showRemoveConfirmation: false })}
-          onConfirm={() => {
+          onSecondaryAction={() =>
+            this.setState({ showRemoveConfirmation: false })
+          }
+          onPrimaryAction={() => {
             this.setState({ showRemoveConfirmation: false });
             context.removeFromCart(book);
           }}

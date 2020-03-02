@@ -16,7 +16,7 @@ import withConsumer from "../withConsumer";
 class Login extends React.Component {
   state = { submitting: false, showAlert: false, showResetPassword: false };
 
-  onSubmit = values => {
+  handleSubmit = values => {
     const { context } = this.props;
     this.setState({ submitting: true }, () =>
       fetch("http://localhost:9000/login", {
@@ -50,7 +50,7 @@ class Login extends React.Component {
         <h1 style={{ margin: 30, textAlign: "center" }}>Login</h1>
 
         <Formik
-          onSubmit={this.onSubmit}
+          onSubmit={this.handleSubmit}
           initialValues={{
             email: "",
             password: ""
@@ -59,10 +59,10 @@ class Login extends React.Component {
           {({ handleSubmit, handleChange, values }) => (
             <Form noValidate onSubmit={handleSubmit}>
               <Form.Group as={Row} controlId='email'>
-                <Form.Label column sm={2}>
+                <Form.Label column xs={2}>
                   Email
                 </Form.Label>
-                <Col sm={10}>
+                <Col xs={10}>
                   <Form.Control
                     type='email'
                     name='email'
@@ -73,10 +73,10 @@ class Login extends React.Component {
               </Form.Group>
 
               <Form.Group as={Row} controlId='password'>
-                <Form.Label column sm={2}>
+                <Form.Label column xs={2}>
                   Password
                 </Form.Label>
-                <Col sm={10}>
+                <Col xs={10}>
                   <Form.Control
                     type='password'
                     name='password'

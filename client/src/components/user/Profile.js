@@ -41,7 +41,7 @@ class Profile extends React.Component {
   render() {
     const { context } = this.props;
     const { submitting, showAlert } = this.state;
-    return context.user ? (
+    return (
       <Container style={{ width: 550 }}>
         <h1 style={{ margin: 30, textAlign: "center" }}>Profile</h1>
         <UserForm
@@ -52,7 +52,7 @@ class Profile extends React.Component {
           showAlert={showAlert}
         />
       </Container>
-    ) : null;
+    );
   }
 }
 

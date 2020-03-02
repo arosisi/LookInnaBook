@@ -60,11 +60,7 @@ class Cart extends React.Component {
         <Row style={{ marginTop: 20 }}>
           {/* Summary box */}
           <Col xs='3'>
-            {/* <SummaryBox
-                  handleSubmit={handleSubmit}
-                  handleChange={handleChange}
-                  values={values}
-                /> */}
+            <SummaryBox context={context} />
           </Col>
 
           {/* Book div */}

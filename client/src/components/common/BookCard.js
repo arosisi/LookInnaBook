@@ -3,6 +3,8 @@ import Card from "react-bootstrap/Card";
 import Col from "react-bootstrap/Col";
 import Row from "react-bootstrap/Row";
 
+import { getCurrencyString } from "../../helpers";
+
 class BookCard extends React.Component {
   getAlreadyAddedCount = book => {
     const { context } = this.props;
@@ -68,10 +70,7 @@ class BookCard extends React.Component {
             <p style={{ marginBottom: 10 }}>{book.description}</p>
 
             <p style={{ margin: 0, fontWeight: 500 }}>
-              {book.price.toLocaleString("en-CA", {
-                style: "currency",
-                currency: "CAD"
-              })}
+              {getCurrencyString(book.price)}
             </p>
           </Col>
         </Row>

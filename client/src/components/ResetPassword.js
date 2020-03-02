@@ -11,7 +11,7 @@ import { Formik } from "formik";
 class ResetPassword extends React.Component {
   state = { submitting: false, success: false, showAlert: false };
 
-  onSubmit = values => {
+  handleSubmit = values => {
     this.setState({ submitting: true }, () =>
       fetch("http://localhost:9000/reset-password", {
         method: "POST",
@@ -51,7 +51,7 @@ class ResetPassword extends React.Component {
           </Alert>
         ) : (
           <Formik
-            onSubmit={this.onSubmit}
+            onSubmit={this.handleSubmit}
             initialValues={{
               email: email
             }}
@@ -59,10 +59,10 @@ class ResetPassword extends React.Component {
             {({ handleSubmit, handleChange, values }) => (
               <Form noValidate onSubmit={handleSubmit}>
                 <Form.Group as={Row} controlId='email'>
-                  <Form.Label column sm={2}>
+                  <Form.Label column xs={2}>
                     Email
                   </Form.Label>
-                  <Col sm={10}>
+                  <Col xs={10}>
                     <Form.Control
                       type='email'
                       name='email'

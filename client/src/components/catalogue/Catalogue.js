@@ -32,7 +32,7 @@ class Catalogue extends React.Component {
     });
   }
 
-  onSubmit = values => {
+  handleSubmit = values => {
     const { fetching, books } = this.state;
     if (!fetching) {
       this.setState({ filtered: filter(books, values), activePage: 1 });
@@ -51,7 +51,7 @@ class Catalogue extends React.Component {
     const { fetching, filtered, activePage } = this.state;
     return (
       <Formik
-        onSubmit={this.onSubmit}
+        onSubmit={this.handleSubmit}
         initialValues={{
           keyword: "",
           ...this.extractVars(priceChecks),

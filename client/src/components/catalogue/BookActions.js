@@ -2,7 +2,11 @@ import React from "react";
 import FormControl from "react-bootstrap/FormControl";
 import InputGroup from "react-bootstrap/InputGroup";
 
+import OneActionDialog from "../OneActionDialog";
+
 class BookActions extends React.Component {
+  state = { showAddToCartError: false };
+
   getAlreadyAddedCount = book => {
     const { context } = this.props;
     let count = 0;
@@ -16,6 +20,7 @@ class BookActions extends React.Component {
 
   render() {
     const { context, book, value, onChange } = this.props;
+    const { showAddToCartError } = this.state;
     const alreadyAddedCount = this.getAlreadyAddedCount(book);
     return (
       <InputGroup size='sm'>
@@ -35,7 +40,7 @@ class BookActions extends React.Component {
                 context.addToCart(book, parseInt(value));
                 this.setState({ [book.isbn]: 0 });
               } else {
-                alert("Cannot add more to cart.");
+                this.setState({ showAddToCartError: true });
               }
             }}
           >
@@ -52,6 +57,14 @@ class BookActions extends React.Component {
               onChange(value);
             }
           }}
+        />
+
+        <OneActionDialog
+          show={showAddToCartError}
+          message='Cannot add more to cart.'
+          action='Close'
+          onHide={() => this.setState({ showAddToCartError: false })}
+          onAction={() => this.setState({ showAddToCartError: false })}
         />
       </InputGroup>
     );

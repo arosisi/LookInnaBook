@@ -43,7 +43,7 @@ class NavigationBar extends React.Component {
             context.redirect("catalogue");
           }}
         >
-          Look Inna Book
+          Look Inna Booke
         </Navbar.Brand>
 
         <Nav className='ml-auto'>

@@ -1,5 +1,11 @@
 import { genres } from "./filters";
 
+export const getCurrencyString = amount =>
+  amount.toLocaleString("en-CA", {
+    style: "currency",
+    currency: "CAD"
+  });
+
 export const transform = user => ({
   id: user.u_id,
   firstName: user.first_name,

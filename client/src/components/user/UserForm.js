@@ -40,10 +40,10 @@ class UserForm extends React.Component {
         {({ handleSubmit, handleChange, values }) => (
           <Form noValidate onSubmit={handleSubmit}>
             <Form.Group as={Row} controlId='firstName'>
-              <Form.Label column sm={3}>
+              <Form.Label column xs={3}>
                 First Name
               </Form.Label>
-              <Col sm={9}>
+              <Col xs={9}>
                 <Form.Control
                   type='text'
                   name='firstName'
@@ -54,10 +54,10 @@ class UserForm extends React.Component {
             </Form.Group>
 
             <Form.Group as={Row} controlId='lastName'>
-              <Form.Label column sm={3}>
+              <Form.Label column xs={3}>
                 Last Name
               </Form.Label>
-              <Col sm={9}>
+              <Col xs={9}>
                 <Form.Control
                   type='text'
                   name='lastName'
@@ -68,10 +68,10 @@ class UserForm extends React.Component {
             </Form.Group>
 
             <Form.Group as={Row} controlId='address'>
-              <Form.Label column sm={3}>
+              <Form.Label column xs={3}>
                 Address
               </Form.Label>
-              <Col sm={9}>
+              <Col xs={9}>
                 <Form.Control
                   type='text'
                   name='address'
@@ -82,10 +82,10 @@ class UserForm extends React.Component {
             </Form.Group>
 
             <Form.Group as={Row} controlId='email'>
-              <Form.Label column sm={3}>
+              <Form.Label column xs={3}>
                 Email
               </Form.Label>
-              <Col sm={9}>
+              <Col xs={9}>
                 <Form.Control
                   type='email'
                   name='email'
@@ -96,10 +96,10 @@ class UserForm extends React.Component {
             </Form.Group>
 
             <Form.Group as={Row} controlId='password'>
-              <Form.Label column sm={3}>
+              <Form.Label column xs={3}>
                 Password
               </Form.Label>
-              <Col sm={9}>
+              <Col xs={9}>
                 <Form.Control
                   type='password'
                   name='password'
@@ -110,10 +110,10 @@ class UserForm extends React.Component {
             </Form.Group>
 
             <Form.Group as={Row} controlId='creditCard'>
-              <Form.Label column sm={3}>
+              <Form.Label column xs={3}>
                 Credit Card
               </Form.Label>
-              <Col sm={9}>
+              <Col xs={9}>
                 <CreditCardInput
                   containerStyle={{ float: "center" }}
                   cardNumberInputProps={{
@@ -136,10 +136,10 @@ class UserForm extends React.Component {
             </Form.Group>
 
             <Form.Group as={Row} controlId='holderName'>
-              <Form.Label column sm={3}>
+              <Form.Label column xs={3}>
                 Holder Name
               </Form.Label>
-              <Col sm={9}>
+              <Col xs={9}>
                 <Form.Control
                   type='text'
                   name='holderName'
@@ -150,10 +150,10 @@ class UserForm extends React.Component {
             </Form.Group>
 
             <Form.Group as={Row} controlId='billingAddress'>
-              <Form.Label column sm={3}>
+              <Form.Label column xs={3}>
                 Billing Address
               </Form.Label>
-              <Col sm={9}>
+              <Col xs={9}>
                 <Form.Control
                   type='text'
                   name='billingAddress'
