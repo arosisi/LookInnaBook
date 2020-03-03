@@ -43,7 +43,7 @@ class NavigationBar extends React.Component {
             context.redirect("catalogue");
           }}
         >
-          Look Inna Booke
+          Look Inna Book
         </Navbar.Brand>
 
         <Nav className='ml-auto'>
@@ -101,11 +101,15 @@ class NavigationBar extends React.Component {
             <Badge
               pill
               variant='info'
-              style={{ height: 20, marginLeft: "-8px" }}
+              style={{ height: 20, margin: "0 10px 0 -8px" }}
             >
               {cartCount}
             </Badge>
           </Row>
+
+          <Button variant='link' onClick={() => context.redirect("catalogue")}>
+            Catalogue
+          </Button>
 
           <Button
             variant='link'

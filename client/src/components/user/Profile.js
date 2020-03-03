@@ -14,7 +14,7 @@ class Profile extends React.Component {
     }
   }
 
-  onSubmit = values => {
+  handleSubmit = values => {
     const { context } = this.props;
     this.setState({ submitting: true }, () =>
       fetch("http://localhost:9000/profile", {
@@ -46,7 +46,7 @@ class Profile extends React.Component {
         <h1 style={{ margin: 30, textAlign: "center" }}>Profile</h1>
         <UserForm
           context={context}
-          onSubmit={this.onSubmit}
+          onSubmit={this.handleSubmit}
           onCloseAlert={() => this.setState({ showAlert: false })}
           submitting={submitting}
           showAlert={showAlert}

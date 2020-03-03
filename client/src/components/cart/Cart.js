@@ -4,11 +4,16 @@ import Row from "react-bootstrap/Row";
 import Spinner from "react-bootstrap/Spinner";
 
 import BookList from "./BookList";
-import SummaryBox from "./SummaryBox";
+import SummaryBox from "../common/SummaryBox";
 import withConsumer from "../../withConsumer";
 
 class Cart extends React.Component {
-  state = { empty: false, fetching: false, books: [] };
+  state = {
+    controller: new AbortController(),
+    empty: false,
+    fetching: false,
+    books: []
+  };
 
   componentDidMount() {
     const { context } = this.props;
@@ -17,8 +22,10 @@ class Cart extends React.Component {
       isbns.push(item.book.isbn);
     });
     if (isbns.length) {
+      const { controller } = this.state;
       this.setState({ fetching: true }, () => {
         fetch("http://localhost:9000/books", {
+          signal: controller.signal,
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ isbns })
@@ -41,6 +48,10 @@ class Cart extends React.Component {
     }
   }
 
+  componentWillUnmount() {
+    this.state.controller.abort();
+  }
+
   getBooksAfterRemove = () => {
     const { context } = this.props;
     const { books } = this.state;
@@ -57,28 +68,32 @@ class Cart extends React.Component {
     const booksAfterRemove = this.getBooksAfterRemove();
     return (
       <div style={{ margin: 20 }}>
-        <Row style={{ marginTop: 20 }}>
-          {/* Summary box */}
-          <Col xs='3'>
-            <SummaryBox context={context} />
-          </Col>
+        <Row style={{ marginTop: 20, justifyContent: "center" }}>
+          {empty ? (
+            <p style={{ marginTop: 10 }}>
+              You have not placed any items in cart.
+            </p>
+          ) : !fetching && !booksAfterRemove.length ? (
+            <p style={{ marginTop: 10 }}>Your cart is now empty.</p>
+          ) : (
+            <>
+              {/* Summary box */}
+              <Col xs='3'>
+                <SummaryBox context={context} />
+              </Col>
 
-          {/* Book div */}
-          <Col xs='9'>
-            {empty ? (
-              <p style={{ textAlign: "center" }}>
-                You have not placed any items in cart.
-              </p>
-            ) : fetching ? (
-              <Row style={{ justifyContent: "center" }}>
-                <Spinner animation='border' variant='primary' />
-              </Row>
-            ) : booksAfterRemove.length ? (
-              <BookList context={context} books={booksAfterRemove} />
-            ) : (
-              <p style={{ textAlign: "center" }}>Your cart is now empty.</p>
-            )}
-          </Col>
+              {/* Book div */}
+              <Col xs='9'>
+                {fetching ? (
+                  <Row style={{ justifyContent: "center" }}>
+                    <Spinner animation='border' variant='primary' />
+                  </Row>
+                ) : (
+                  <BookList context={context} books={booksAfterRemove} />
+                )}
+              </Col>
+            </>
+          )}
         </Row>
       </div>
     );

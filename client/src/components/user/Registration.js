@@ -7,7 +7,7 @@ import withConsumer from "../../withConsumer";
 class Registration extends React.Component {
   state = { submitting: false, showAlert: false };
 
-  onSubmit = values => {
+  handleSubmit = values => {
     const { context } = this.props;
     this.setState({ submitting: true }, () =>
       fetch("http://localhost:9000/registration", {
@@ -41,7 +41,7 @@ class Registration extends React.Component {
         <h1 style={{ margin: 30, textAlign: "center" }}>Registration</h1>
         <UserForm
           context={context}
-          onSubmit={this.onSubmit}
+          onSubmit={this.handleSubmit}
           onCloseAlert={() => this.setState({ showAlert: false })}
           submitting={submitting}
           showAlert={showAlert}

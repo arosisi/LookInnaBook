@@ -3,7 +3,7 @@ import { BrowserRouter, Redirect, Route, Switch } from "react-router-dom";
 
 import Cart from "./components/cart/Cart";
 import Catalogue from "./components/catalogue/Catalogue";
-import Checkout from "./components/Checkout";
+import Checkout from "./components/checkout/Checkout";
 import Login from "./components/Login";
 import NavigationBar from "./components/NavigationBar";
 import Orders from "./components/Orders";

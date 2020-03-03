@@ -11,11 +11,19 @@ import { filter } from "../../helpers";
 import { priceChecks, genreChecks, publisherChecks } from "./checks";
 
 class Catalogue extends React.Component {
-  state = { fetching: false, books: [], filtered: [], activePage: 1 };
+  state = {
+    controller: new AbortController(),
+    fetching: false,
+    books: [],
+    filtered: [],
+    activePage: 1
+  };
 
   componentDidMount() {
+    const { controller } = this.state;
     this.setState({ fetching: true }, () => {
       fetch("http://localhost:9000/books", {
+        signal: controller.signal,
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ isbns: null })
@@ -30,6 +38,10 @@ class Catalogue extends React.Component {
         })
         .catch(error => console.log("Unable to connect to API books.", error));
     });
+  }
+
+  componentWillUnmount() {
+    this.state.controller.abort();
   }
 
   handleSubmit = values => {

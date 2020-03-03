@@ -42,7 +42,8 @@ class AppProvider extends React.Component {
           return item;
         })
       });
-    }
+    },
+    clearCart: () => this.setState({ cart: [] })
   };
 
   render() {

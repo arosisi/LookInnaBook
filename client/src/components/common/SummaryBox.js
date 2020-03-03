@@ -1,11 +1,11 @@
 import React from "react";
 import Button from "react-bootstrap/Button";
 import Col from "react-bootstrap/Col";
-import Row from "react-bootstrap/Row";
 import Jumbotron from "react-bootstrap/Jumbotron";
+import Row from "react-bootstrap/Row";
 
 import TwoActionDialog from "../TwoActionDialog";
-import { getCurrencyString } from "../../helpers";
+import { getAmountsToPay, getCurrencyString } from "../../helpers";
 
 class SummaryBox extends React.Component {
   state = { showRequireLogin: false };
@@ -20,16 +20,10 @@ class SummaryBox extends React.Component {
   };
 
   render() {
-    const { context } = this.props;
+    const { context, checkingOut } = this.props;
     const { showRequireLogin } = this.state;
     const { cart } = context;
-    const subTotal = cart.reduce(
-      (sum, item) => sum + item.addedToCart * item.book.price,
-      0
-    );
-    const tax = subTotal * 0.08;
-    const shipping = 10;
-    const total = subTotal + tax + shipping;
+    const { subTotal, tax, shipping, total } = getAmountsToPay(cart);
     return cart.length === 0 ? null : (
       <Jumbotron style={{ padding: "1.5rem" }}>
         {cart.map(item => (
@@ -68,15 +62,17 @@ class SummaryBox extends React.Component {
           <Col xs={5}>{getCurrencyString(total)}</Col>
         </Row>
 
-        <Row style={{ justifyContent: "center" }}>
-          <Button
-            variant='outline-info'
-            style={{ marginTop: 30 }}
-            onClick={this.handleCheckOut}
-          >
-            Check Out
-          </Button>
-        </Row>
+        {!checkingOut && (
+          <Row style={{ justifyContent: "center" }}>
+            <Button
+              variant='outline-info'
+              style={{ marginTop: 30 }}
+              onClick={this.handleCheckOut}
+            >
+              Check Out
+            </Button>
+          </Row>
+        )}
 
         <TwoActionDialog
           show={showRequireLogin}

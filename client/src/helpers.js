@@ -1,5 +1,16 @@
 import { genres } from "./filters";
 
+export const getAmountsToPay = cart => {
+  const subTotal = cart.reduce(
+    (sum, item) => sum + item.addedToCart * item.book.price,
+    0
+  );
+  const tax = subTotal * 0.08;
+  const shipping = 10;
+  const total = subTotal + tax + shipping;
+  return { subTotal, tax, shipping, total };
+};
+
 export const truncateText = (text, length) => {
   if (text.length <= length) {
     return text;
