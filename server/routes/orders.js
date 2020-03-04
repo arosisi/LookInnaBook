@@ -8,18 +8,18 @@ module.exports = client => {
         if (!userId) {
             res.send({ success: false, errMessage: "Couldn't find an user id" })
         }
-        client.query(`SELECT u_id FROM user WHERE u_id = ${userId}`, (err, response) => {
+        client.query(`SELECT u_id FROM user WHERE u_id = ${userId}`, err => {
             if (err) {
-                response.send({ success: false, errMessage: "Couldn't find user with given ID" })
+                res.send({ success: false, errMessage: "Couldn't find user with given ID" })
             } else if (res.rows.length < 1) {
-                response.send({ success: false, errMessage: "Couldn't find user with given ID" })
+                res.send({ success: false, errMessage: "Couldn't find user with given ID" })
             } else {
                 next()
             }
         })
     })
   
-    router.post("/", (req, res) => {
+    router.post("/", (req, payload) => {
         const userId = req.body.u_id
         const query = `
         SELECT 
@@ -39,9 +39,9 @@ module.exports = client => {
               order-user.order_id = order.order_id AND
               order.order_id = book-order.order_id AND
               book-order.isbn = book.isbn`
-        client.query(query, (err, response) => {
+        client.query(query, (err, res) => {
             if (err) {
-                response.send({ success: false, errMessage: "Failed to fetch from database" })
+                payload.send({ success: false, errMessage: "Failed to fetch from database" })
             } else {
                 const orders = []
                 const currentOrder = {}
@@ -68,7 +68,7 @@ module.exports = client => {
                         }
                     }
                 })
-                response.send({ success: true, books })
+                payload.send({ success: true, books })
             }
         })
     })

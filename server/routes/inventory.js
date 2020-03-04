@@ -1,7 +1,7 @@
 const router = require("express").Router()
 
 module.exports = client => {
-    router.get("/", (req, res) => {
+    router.get("/", (req, payload) => {
         const publishers = []
         const books = []
         const bookQuery = `
@@ -25,12 +25,12 @@ module.exports = client => {
         WHERE author.isbn = book.isbn AND
               book.isbn = genre.isbn AND
               book-pub.isbn = book.isbn`
-        client.query(bookQuery, (err, response) => {
+        client.query(bookQuery, (err, res) => {
             if (err) {
-                res.send({ success: false, errMessage: "Failed to fetch from database"  })
+                payload.send({ success: false, errMessage: "Failed to fetch from database"  })
             } else {
                 const currentBook = {}
-                response.rows.forEach(row => {
+                res.rows.forEach(row => {
                     if (!currentBook) {
                         const { author, genre, ...other } = row
                         currentBook = { ...other, authors: [author], genres: [genre] }
@@ -52,15 +52,15 @@ module.exports = client => {
         const publisherQuery = `
         SELECT name
         FROM publisher`
-        client.query(publisherQuery, (err, response) => {
+        client.query(publisherQuery, (err, res) => {
             if (err) {
-                res.send({ success: false })
+                payload.send({ success: false })
             } else {
-                response.rows.forEach(row => publishers.push(row.name))
+                res.rows.forEach(row => publishers.push(row.name))
             }
         })
         
-        res.send({ success: true, books, publisher })
+        payload.send({ success: true, books, publisher })
     })
     return router
 }

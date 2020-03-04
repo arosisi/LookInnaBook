@@ -7,18 +7,18 @@ module.exports = client => {
         if (!userId) {
             res.send({ success: false, errMessage: "Couldn't find an user id" })
         }
-        client.query(`SELECT u_id FROM user WHERE u_id = ${userId}`, (err, response) => {
+        client.query(`SELECT u_id FROM user WHERE u_id = ${userId}`, err => {
             if (err) {
-                response.send({ success: false, errMessage: "Couldn't find user with given ID" })
+                res.send({ success: false, errMessage: "Couldn't find user with given ID" })
             } else if (res.rows.length < 1) {
-                response.send({ success: false, errMessage: "Couldn't find user with given ID" })
+                res.send({ success: false, errMessage: "Couldn't find user with given ID" })
             } else {
                 next()
             }
         })
     })
     
-    router.post("/", (req, res) => {
+    router.post("/", (req, payload) => {
         const { 
             u_id, 
             firstName, 
@@ -52,10 +52,10 @@ module.exports = client => {
         const creditCardUpdate = `
         UPDATE credit_card
         SET
-            card_number = ${creditCard}
-            cvv = ${cvv}
-            billing_address = ${billingAddress}
-            holder_name = ${holderName}
+            card_number = ${creditCard},
+            cvv = ${cvv},
+            billing_address = ${billingAddress},
+            holder_name = ${holderName},
             expiry_date = ${expiryDate}
         WHERE u_id = ${u_id}`
         
@@ -66,29 +66,29 @@ module.exports = client => {
         //Update user profile info
         client.query(userUpdate, (err, res) => {
             if (err) {
-                res.send({ success: false, errMessage: "Failed to update user database"  })
+                payload.send({ success: false, errMessage: "Failed to update user database"  })
             } else {
                 //If updated successfully, query for user's credit card
                 client.query(creditCardQuery, error => {
                     if (error) {
-                        res.send({ success: false, errMessage: "Failed to update user database"  })
+                        payload.send({ success: false, errMessage: "Failed to update user database"  })
                     } else {
                         //If found card, then update card
                         if (response.rows.length > 0) {
                             client.query(creditCardUpdate, e => {
                                 if (e) {
-                                    res.send({ success: false, errMessage: "Failed to update user database"  })
+                                    payload.send({ success: false, errMessage: "Failed to update user database"  })
                                 } else {
-                                    res.send({ success: true })
+                                    payload.send({ success: true })
                                 }
                             }
                         } else {
                             //else insert new card into db
                             client.query(creditCardUpdate, e => {
                                 if (e) {
-                                    res.send({ success: false, errMessage: "Failed to update user database"  })
+                                    payload.send({ success: false, errMessage: "Failed to update user database"  })
                                 } else {
-                                    res.send({ success: true })
+                                    payload.send({ success: true })
                                 }
                             }
                         }

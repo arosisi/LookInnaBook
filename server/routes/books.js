@@ -1,7 +1,7 @@
 const router = require("express").Router()
 
 module.exports = client => {
-    router.post("/", (req, res) => {
+    router.post("/", (req, payload) => {
         const isbns = req && req.body && req.body.isbns
         const requestedBooksQuery = Array.isArray(isbns) && isbns.length > 0 ? ` AND book.isbn IN (${isbns})` : ''
         const query = `
@@ -25,9 +25,9 @@ module.exports = client => {
         WHERE author.isbn = book.isbn AND
               book.isbn = genre.isbn AND
               book-pub.isbn = book.isbn` + requestedBooksQuery
-        client.query(query, (err, response) => {
+        client.query(query, (err, res) => {
             if (err) {
-                response.send({ success: false, errMessage: "Failed to fetch from database" })
+                payload.send({ success: false, errMessage: "Failed to fetch from database" })
             } else {
                 const books = []
                 const currentBook = {}
@@ -48,7 +48,7 @@ module.exports = client => {
                         }
                     }
                 })
-                response.send({ success: true, books })
+                payload.send({ success: true, books })
             }
         })
     })

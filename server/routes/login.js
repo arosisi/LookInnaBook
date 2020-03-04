@@ -12,7 +12,7 @@ module.exports = client => {
             WHERE email = ${email} AND 
                   password = ${password} 
             LIMIT 1`,
-            (err, res) => {
+            err => {
                 if (err) {
                     res.send({ success: false, errMessage: "Failed to fetch from database" })
                 } else if (res.rows.length < 1) {
@@ -24,7 +24,7 @@ module.exports = client => {
         )
     })
         
-    router.post("/", (req, res) => {
+    router.post("/", (req, payload) => {
         const { email, password } = req.body
         const userQuery = 
         `SELECT 
@@ -46,11 +46,11 @@ module.exports = client => {
               email = ${email} AND 
               password = ${password} 
         LIMIT 1`
-        client.query(userQuery, (err, response) => {
+        client.query(userQuery, (err, res) => {
             if (err) {
-                res.send({ success: false, errMessage: "Failed to fetch from database" });
+                payload.send({ success: false, errMessage: "Failed to fetch from database" });
             } else {
-                res.send({ success: true, user: res.rows[0]
+                payload.send({ success: true, user: res.rows[0]
             }
         })
     })

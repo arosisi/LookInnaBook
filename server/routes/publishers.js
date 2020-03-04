@@ -1,7 +1,7 @@
 const router = require("express").Router()
 
 module.exports = client => {
-    router.get("/", (req, res) => {
+    router.get("/", (req, payload) => {
         const query = `
         SELECT 
               publisher.available,
@@ -12,9 +12,9 @@ module.exports = client => {
               publisher.name
         FROM publisher, pub_phone_number
         WHERE publisher.name = pub_phone_number.name`
-        client.query(query, (err, response) => {
+        client.query(query, (err, res) => {
             if (err) {
-                response.send({ success: false, errMessage: "Failed to fetch from database"  })
+                payload.send({ success: false, errMessage: "Failed to fetch from database"  })
             } else {
                 const publishers = []
                 const currentPub = {}
@@ -32,7 +32,7 @@ module.exports = client => {
                         }
                     }
                 })
-                response.send({ success: true, publishers })
+                payload.send({ success: true, publishers })
             }
         })
     })
