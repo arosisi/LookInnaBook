@@ -41,7 +41,8 @@ module.exports = client => {
             credit_card.holder_name,
             credit_card.billing_address
         FROM user, credit_card 
-        WHERE user.u_id = credit_card.u_id
+        WHERE user.u_id = credit_card.u_id AND
+              user.card_number = credit_card.card_number AND
               email = ${email} AND 
               password = ${password} 
         LIMIT 1`
