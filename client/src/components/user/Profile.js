@@ -7,13 +7,6 @@ import withConsumer from "../../withConsumer";
 class Profile extends React.Component {
   state = { submitting: false, showAlert: false };
 
-  componentDidMount() {
-    const { context } = this.props;
-    if (!context.user) {
-      context.redirect("catalogue");
-    }
-  }
-
   handleSubmit = values => {
     const { context } = this.props;
     this.setState({ submitting: true }, () =>

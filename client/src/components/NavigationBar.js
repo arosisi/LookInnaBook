@@ -10,6 +10,7 @@ import withConsumer from "../withConsumer";
 
 import inventory from "../collections/inventory"; // eslint-disable-line
 import books from "../collections/books"; // eslint-disable-line
+import book from "../tables/book"; // eslint-disable-line
 import book_pub from "../tables/book_pub"; // eslint-disable-line
 import genre from "../tables/genre"; // eslint-disable-line
 import filters from "../filters"; // eslint-disable-line
@@ -19,13 +20,6 @@ import publishers from "../collections/publishers"; // eslint-disable-line
 import pub_phone_number from "../tables/pub_phone_number"; // eslint-disable-line
 
 class NavigationBar extends React.Component {
-  changeData = () => {
-    const cleaned = publisher.map(pub => {
-      return { available: true, ...pub };
-    });
-    console.log(JSON.stringify(cleaned));
-  };
-
   getCartCount = () => {
     const { context } = this.props;
     return context.cart.reduce((count, item) => count + item.addedToCart, 0);

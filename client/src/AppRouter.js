@@ -6,7 +6,7 @@ import Catalogue from "./components/catalogue/Catalogue";
 import Checkout from "./components/checkout/Checkout";
 import Login from "./components/Login";
 import NavigationBar from "./components/NavigationBar";
-import Orders from "./components/Orders";
+import Orders from "./components/orders/Orders";
 import Profile from "./components/user/Profile";
 import Registration from "./components/user/Registration";
 import withConsumer from "./withConsumer";
