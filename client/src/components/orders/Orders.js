@@ -2,9 +2,11 @@ import React from "react";
 import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
 import Spinner from "react-bootstrap/Spinner";
+import * as moment from "moment";
 
 import OrderCard from "./OrderCard";
 import withConsumer from "../../withConsumer";
+import { db_time_format } from "../../constants";
 
 class Orders extends React.Component {
   state = {
@@ -43,8 +45,14 @@ class Orders extends React.Component {
   }
 
   render() {
-    const { context } = this.props;
     const { fetching, orders } = this.state;
+    const now = moment();
+    const currentOrders = orders.filter(order =>
+      moment(order.received_time, db_time_format).isAfter(now)
+    );
+    const pastOrders = orders.filter(order =>
+      moment(order.received_time, db_time_format).isSameOrBefore(now)
+    );
     return (
       <Container style={{ marginTop: 20 }}>
         {fetching ? (
@@ -52,7 +60,27 @@ class Orders extends React.Component {
             <Spinner animation='border' variant='primary' />
           </Row>
         ) : (
-          orders.map(order => <OrderCard key={order.order_id} order={order} />)
+          <div>
+            <h3 style={{ marginBottom: 15 }}>Current Order(s)</h3>
+            {currentOrders.length ? (
+              currentOrders.map(order => (
+                <OrderCard key={order.order_id} order={order} now={now} />
+              ))
+            ) : (
+              <p>You do not have any current orders.</p>
+            )}
+
+            <br />
+
+            <h3 style={{ marginBottom: 15 }}>Past Order(s)</h3>
+            {pastOrders.length ? (
+              pastOrders.map(order => (
+                <OrderCard key={order.order_id} order={order} now={now} />
+              ))
+            ) : (
+              <p>You do not have any past orders.</p>
+            )}
+          </div>
         )}
       </Container>
     );
