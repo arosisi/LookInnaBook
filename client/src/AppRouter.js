@@ -4,11 +4,13 @@ import { BrowserRouter, Redirect, Route, Switch } from "react-router-dom";
 import Cart from "./components/cart/Cart";
 import Catalogue from "./components/catalogue/Catalogue";
 import Checkout from "./components/checkout/Checkout";
+import Inventory from "./components/inventory/Inventory";
 import Login from "./components/Login";
 import NavigationBar from "./components/NavigationBar";
 import Orders from "./components/orders/Orders";
 import Profile from "./components/user/Profile";
 import Registration from "./components/user/Registration";
+import SalesReports from "./components/reports/SalesReports";
 import withConsumer from "./withConsumer";
 
 class AppRouter extends React.Component {
@@ -22,9 +24,11 @@ class AppRouter extends React.Component {
           <Route path='/cart' component={Cart} />
           <Route path='/catalogue' component={Catalogue} />
           <Route path='/checkout' component={Checkout} />
+          <Route path='/inventory' component={Inventory} />
           <Route path='/login' component={Login} />
-          <Route path='/registration' component={Registration} />
           <Route path='/profile' component={Profile} />
+          <Route path='/registration' component={Registration} />
+          <Route path='/sales-reports' component={SalesReports} />
           <Route path='/orders' component={Orders} />
         </Switch>
       </BrowserRouter>

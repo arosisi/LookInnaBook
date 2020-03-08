@@ -8,6 +8,7 @@ class AppProvider extends React.Component {
     user: null,
     cart: [],
     redirect: page => this.setState({ page }),
+    isOwner: () => this.state.user.role === "owner",
     logIn: user => this.setState({ page: "catalogue", user }),
     logOut: () => this.setState({ page: "catalogue", user: null }),
     addToCart: (book, addedToCart) => {

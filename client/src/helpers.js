@@ -11,6 +11,13 @@ export const getAmountsToPay = cart => {
   return { subTotal, tax, shipping, total };
 };
 
+export const truncateLink = (link, length) => {
+  if (link.length <= length) {
+    return link;
+  }
+  return link.slice(0, length) + "...";
+};
+
 export const truncateText = (text, length) => {
   if (text.length <= length) {
     return text;
@@ -27,6 +34,7 @@ export const getCurrencyString = amount =>
 
 export const transform = user => ({
   id: user.u_id,
+  role: user.role,
   firstName: user.first_name,
   lastName: user.last_name,
   address: user.address,
