@@ -31,6 +31,11 @@ module.exports = client => {
         
         if (action === 'remove') {
             query = `UPDATE publisher SET available = false WHERE name = ${name}`
+            client.query(query, (err, res) => {
+                if (err) {
+                    payload.send({ success: false, errMessage: "Failed to update publisher info" })
+                }
+            })
         } else if (action === 'add' ) {
             query = {
                 text: 
@@ -49,23 +54,31 @@ module.exports = client => {
                     true
                 ]
             }
+            client.query(query, (err, res) => {
+                if (err) {
+                    payload.send({ success: false, errMessage: "Failed to update publisher info" })
+                }
+            })
         } else {
-            query = query.concat(
-                'UPDATE credit_card SET ',
-                newName ? `name = ${newName},` : '',
-                email ? `email = ${email},` : '',
-                bankAccount ? `bank_account = ${bankAccount},` : '',
-                address ? `address = ${address}` : '',
-                ` WHERE name = ${name}`
-            )
-            
-        }
-        
-        client.query(query, (err, res) => {
-            if (err) {
-                payload.send({ success: false, errMessage: "Failed to update publisher info" })
+            const attributeUpdate = ''.concat(
+                    newName ? `name = ${newName},` : '',
+                    email ? `email = ${email},` : '',
+                    bankAccount ? `bank_account = ${bankAccount},` : '',
+                    address ? `address = ${address}` : ''
+                )
+            if (attributeUpdate) {
+                query = query.concat(
+                    'UPDATE credit_card SET ',
+                    attributeUpdate,
+                    ` WHERE name = ${name}`
+                )
+                client.query(query, (err, res) => {
+                    if (err) {
+                        payload.send({ success: false, errMessage: "Failed to update publisher info" })
+                    }
+                })
             }
-        })
+        }
         if (action === "add" && numbers) {
             client.query(
                 {
