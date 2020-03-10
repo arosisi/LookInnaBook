@@ -6,7 +6,6 @@ const setupApi = client => {
     router.use('/inventory', attachDb('./inventory'));
     router.use('/publishers', attachDb('./publishers'));
     router.use('/orders', attachDb('./orders'));
-    /*
     router.use('/sales-reports', attachDb('./sales-reports'));
     router.use('/registration', attachDb('./registration'));
     router.use('/profile', attachDb('./profile'));
@@ -14,7 +13,7 @@ const setupApi = client => {
     router.use('/reset-password', attachDb('./reset-password'));
     router.use('/payment', attachDb('./payment'));
     router.use('/modify-inventory', attachDb('./modify-inventory'));
-    router.use('/modify-publisher', attachDb('./modify-publisher'));*/
+    router.use('/modify-publisher', attachDb('./modify-publisher'));
     
     return router;
 }
