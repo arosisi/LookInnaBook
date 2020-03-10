@@ -64,12 +64,12 @@ module.exports = client => {
                     newName ? `name = ${newName},` : '',
                     email ? `email = ${email},` : '',
                     bankAccount ? `bank_account = ${bankAccount},` : '',
-                    address ? `address = ${address}` : ''
+                    address ? `address = ${address},` : ''
                 )
             if (attributeUpdate) {
                 query = query.concat(
                     'UPDATE credit_card SET ',
-                    attributeUpdate,
+                    attributeUpdate.slice(0, -1),
                     ` WHERE name = ${name}`
                 )
                 client.query(query, (err, res) => {
