@@ -7,7 +7,7 @@ module.exports = client => {
         if (!userId) {
             res.send({ success: false, errMessage: "Couldn't find an user id" })
         }
-        client.query(`SELECT u_id FROM user WHERE u_id = ${userId}`, err => {
+        client.query(`SELECT u_id FROM profile WHERE u_id = ${userId}`, err => {
             if (err) {
                 res.send({ success: false, errMessage: "Couldn't find user with given ID" })
             } else if (res.rows.length < 1) {
@@ -34,7 +34,7 @@ module.exports = client => {
         } = req.body
         
         const userUpdate = `
-        UPDATE user
+        UPDATE profile
         SET
             firstName = ${firstName}
             lastName = ${lastName}
@@ -45,9 +45,9 @@ module.exports = client => {
         
         const creditCardQuery = `
         SELECT *
-        FROM credit_card, user
+        FROM credit_card, profile
         WHERE credit_card.u_id = ${u_id} AND
-              user.card_number = credit_card.card_number`
+              profile.card_number = credit_card.card_number`
         
         const creditCardUpdate = `
         UPDATE credit_card

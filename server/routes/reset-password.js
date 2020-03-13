@@ -19,7 +19,7 @@ module.exports = client => {
         
         const query = `
         SELECT password
-        FROM user
+        FROM profile
         WHERE email = ${email}`
         
         client.query(query, (err, res) => {

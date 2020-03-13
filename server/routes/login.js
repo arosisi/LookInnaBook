@@ -8,7 +8,7 @@ module.exports = client => {
          }
          client.query(
             `SELECT u_id 
-            FROM user 
+            FROM profile 
             WHERE email = ${email} AND 
                   password = ${password} 
             LIMIT 1`,
@@ -28,21 +28,21 @@ module.exports = client => {
         const { email, password } = req.body
         const userQuery = 
         `SELECT 
-            user.u_id,
-            user.role,
-            user.first_name,
-            user.last_name,
-            user.address,
-            user.email,
-            user.password,
+            profile.u_id,
+            profile.role,
+            profile.first_name,
+            profile.last_name,
+            profile.address,
+            profile.email,
+            profile.password,
             credit_card.card_number,
             credit_card.expiry_date,
             credit_card.cvv,
             credit_card.holder_name,
             credit_card.billing_address
-        FROM user, credit_card 
-        WHERE user.u_id = credit_card.u_id AND
-              user.card_number = credit_card.card_number AND
+        FROM profile, credit_card 
+        WHERE profile.u_id = credit_card.u_id AND
+              profile.card_number = credit_card.card_number AND
               email = ${email} AND 
               password = ${password} 
         LIMIT 1`

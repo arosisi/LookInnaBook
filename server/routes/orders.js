@@ -8,7 +8,7 @@ module.exports = client => {
         if (!userId) {
             res.send({ success: false, errMessage: "Couldn't find an user id" })
         }
-        client.query(`SELECT u_id FROM user WHERE u_id = ${userId}`, err => {
+        client.query(`SELECT u_id FROM profile WHERE u_id = ${userId}`, err => {
             if (err) {
                 res.send({ success: false, errMessage: "Couldn't find user with given ID" })
             } else if (res.rows.length < 1) {
@@ -23,22 +23,22 @@ module.exports = client => {
         const userId = req.body.u_id
         const query = `
         SELECT 
-              order.order_id,
-              order.date,
-              book-order.isbn,
-              book-order.quantity
+              cart.order_id,
+              cart.date,
+              cart_book.isbn,
+              cart_book.quantity
               book.title,
               book.price,
-              order.tax,
-              order.shipping_cost,
-              order.confirmed_time,
-              order.shipped_time,
-              order.received_time
-        FROM order-user, order, book-order, order
-        WHERE order-user.u_id = ${userId} AND
-              order-user.order_id = order.order_id AND
-              order.order_id = book-order.order_id AND
-              book-order.isbn = book.isbn`
+              cart.tax,
+              cart.shipping_cost,
+              cart.confirmed_time,
+              cart.shipped_time,
+              cart.received_time
+        FROM cart_profile, cart, cart_book, book
+        WHERE cart_profile.u_id = ${userId} AND
+              cart_profile.order_id = cart.order_id AND
+              cart_profile_id = cart_book.order_id AND
+              cart_book.isbn = book.isbn`
         client.query(query, (err, res) => {
             if (err) {
                 payload.send({ success: false, errMessage: "Failed to fetch from database" })

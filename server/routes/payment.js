@@ -42,7 +42,7 @@ module.exports = client => {
         
         const query = {
             text: 
-                'INSERT INTO order(
+                'INSERT INTO cart(
                     date, 
                     tax, 
                     subtotal, 
@@ -71,7 +71,7 @@ module.exports = client => {
                 payload.send({ success: false, errMessage: "Failed to process payment" })
             } else {
                 const { order_id } = res.rows[0]
-                let orderItemsQuery = 'INSERT INTO book-order(isbn, order_id, quantity) VALUES '
+                let orderItemsQuery = 'INSERT INTO cart_book(isbn, order_id, quantity) VALUES '
                 for (const book of books) {
                     orderItemsQuery += `(${book.isbn}, ${order_id}, ${book.quantity}),`
                 }

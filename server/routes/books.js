@@ -6,10 +6,10 @@ module.exports = client => {
         const requestedBooksQuery = Array.isArray(isbns) && isbns.length > 0 ? ` AND book.isbn IN (${isbns})` : ''
         const query = `
         SELECT 
-              book-pub.percentage as publisher_percentage,
+              book_pub.percentage as publisher_percentage,
               author.author,
               genre.genre,
-              book-pub.pub_name as publisher,
+              book_pub.pub_name as publisher,
               book.cover_url,
               book.available,
               book.cost,
@@ -21,10 +21,10 @@ module.exports = client => {
               book.year,
               book.page_count,
               book.description
-        FROM author, book, genre, book-pub
+        FROM author, book, genre, book_pub
         WHERE author.isbn = book.isbn AND
               book.isbn = genre.isbn AND
-              book-pub.isbn = book.isbn` + requestedBooksQuery
+              book_pub.isbn = book.isbn` + requestedBooksQuery
         client.query(query, (err, res) => {
             if (err) {
                 payload.send({ success: false, errMessage: "Failed to fetch from database" })

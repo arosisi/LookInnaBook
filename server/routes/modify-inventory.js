@@ -153,7 +153,7 @@ module.exports = client => {
             client.query(
                 {
                     text: 
-                        'INSERT INTO book-pub(
+                        'INSERT INTO book_pub(
                             isbn,
                             percentage,
                             pub_name
@@ -177,7 +177,7 @@ module.exports = client => {
                 )
             client.query(
                 query.concat(
-                    'UPDATE book-pub SET ',
+                    'UPDATE book_pub SET ',
                     attributeUpdate.slice(0, -1),
                     ` WHERE isbn = ${isbn}`
                 ),
