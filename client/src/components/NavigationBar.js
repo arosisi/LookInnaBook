@@ -20,6 +20,19 @@ import publishers from "../collections/publishers"; // eslint-disable-line
 import pub_phone_number from "../tables/pub_phone_number"; // eslint-disable-line
 
 class NavigationBar extends React.Component {
+  injectEscape = string => string.replace(/'/g, "\\'");
+
+  test = () => {
+    let dml = "";
+    genre.forEach(item => {
+      dml += "insert into genre values (";
+      dml += `'${item.isbn}', `;
+      dml += `E'${this.injectEscape(item.genre)}'`;
+      dml += ");\n";
+    });
+    console.log(dml);
+  };
+
   getCartCount = () => {
     const { context } = this.props;
     return context.cart.reduce((count, item) => count + item.addedToCart, 0);
@@ -129,7 +142,8 @@ class NavigationBar extends React.Component {
 
           <Button
             variant='link'
-            onClick={() => console.log(JSON.stringify(context.cart))}
+            // onClick={() => console.log(JSON.stringify(context.cart))}
+            onClick={() => this.test()}
           >
             Test
           </Button>

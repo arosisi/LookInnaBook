@@ -1,9 +1,9 @@
 import React from "react";
 import Table from "react-bootstrap/Table";
 import Toast from "react-bootstrap/Toast";
-import { FiMoreVertical } from "react-icons/fi";
 
 import AppToolTip from "../../AppToolTip";
+import InventoryActions from "./InventoryActions";
 import { truncateLink, truncateText, getCurrencyString } from "../../helpers";
 
 class InventoryTable extends React.Component {
@@ -14,13 +14,7 @@ class InventoryTable extends React.Component {
     const { showToast } = this.state;
     return (
       <div>
-        <Table
-          bordered
-          hover
-          responsive
-          striped
-          style={{ position: "relative" }}
-        >
+        <Table bordered hover responsive striped>
           <thead>
             <tr>
               <th></th>
@@ -44,7 +38,7 @@ class InventoryTable extends React.Component {
             {inventory.map(item => (
               <tr key={item.isbn}>
                 <td>
-                  <FiMoreVertical style={{ marginTop: "-4px" }} />
+                  <InventoryActions item={item} />
                 </td>
                 <td>{item.isbn}</td>
                 <td>
