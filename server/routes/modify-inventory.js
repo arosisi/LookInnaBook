@@ -58,8 +58,10 @@ module.exports = client => {
                         price, 
                         quantity, 
                         threshold,
+                        pub_name,
+                        percentage,
                         available
-                    ) VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, true)',
+                    ) VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, true)',
                 values: [
                     isbn, 
                     title, 
@@ -70,7 +72,9 @@ module.exports = client => {
                     cost, 
                     price, 
                     quantity, 
-                    threshold
+                    threshold,
+                    publisher,
+                    percentage
                 ]
             }
             client.query(query, (err, res) => {
@@ -88,7 +92,11 @@ module.exports = client => {
                     cost ? `cost = ${cost},` : '', 
                     price ? `price = ${price},` : '', 
                     quantity ? `quantity = ${quantity},` : '', 
-                    threshold ? `threshold = ${threshold},` : ''
+                    threshold ? `threshold = ${threshold},` : '',
+                    quantity ? `quantity = ${quantity},` : '', 
+                    threshold ? `threshold = ${threshold},` : '',
+                    publisher ? `pub_name = ${publisher},` : '', 
+                    percentage ? `percentage = ${percentage},` : ''
                 )
             if (attributeUpdate) {
                 query = query.concat(
@@ -148,46 +156,6 @@ module.exports = client => {
             })
         }
         
-        //Update the book's publisher
-        if (action === "add") {
-            client.query(
-                {
-                    text: 
-                        'INSERT INTO book_pub(
-                            isbn,
-                            percentage,
-                            pub_name
-                        ) VALUES($1, $2, $3)',
-                    values: [
-                        isbn,
-                        percentage,
-                        publisher
-                    ]
-                }
-                , err => {
-                    if (err) {
-                        payload.send({ success: false, errMessage: "Failed to update book info" })
-                    }
-                }
-            )
-        } else if (action === "edit") {
-            const attributeUpdate = ''.concat(
-                    publisher ? `pub_name = ${publisher},` : '',
-                    percentage ? `percentage = ${percentage},` : ''
-                )
-            client.query(
-                query.concat(
-                    'UPDATE book_pub SET ',
-                    attributeUpdate.slice(0, -1),
-                    ` WHERE isbn = ${isbn}`
-                ),
-                err => {
-                    if (err) {
-                        payload.send({ success: false, errMessage: "Failed to update publisher info" })
-                    }
-                }
-            )
-        }
         payload.send({ success: true })
     })
     return router

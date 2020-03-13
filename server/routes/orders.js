@@ -34,10 +34,9 @@ module.exports = client => {
               cart.confirmed_time,
               cart.shipped_time,
               cart.received_time
-        FROM cart_profile, cart, cart_book, book
-        WHERE cart_profile.u_id = ${userId} AND
-              cart_profile.order_id = cart.order_id AND
-              cart_profile_id = cart_book.order_id AND
+        FROM cart, cart_book, book
+        WHERE cart.u_id = ${userId} AND
+              cart.order_id = cart_book.order_id AND
               cart_book.isbn = book.isbn`
         client.query(query, (err, res) => {
             if (err) {

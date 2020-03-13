@@ -6,10 +6,10 @@ module.exports = client => {
         const books = []
         const bookQuery = `
         SELECT 
-              book_pub.percentage as publisher_percentage,
+              book.percentage as publisher_percentage,
               author.author,
               genre.genre,
-              book_pub.pub_name as publisher,
+              book.pub_name as publisher,
               book.cover_url,
               book.available,
               book.cost,
@@ -21,10 +21,9 @@ module.exports = client => {
               book.year,
               book.page_count,
               book.description
-        FROM author, book, genre, book_pub
+        FROM author, book, genre
         WHERE author.isbn = book.isbn AND
-              book.isbn = genre.isbn AND
-              book_pub.isbn = book.isbn`
+              book.isbn = genre.isbn`
         client.query(bookQuery, (err, res) => {
             if (err) {
                 payload.send({ success: false, errMessage: "Failed to fetch from database"  })
@@ -60,7 +59,7 @@ module.exports = client => {
             }
         })
         
-        payload.send({ success: true, books, publisher })
+        payload.send({ success: true, books, publishers })
     })
     return router
 }

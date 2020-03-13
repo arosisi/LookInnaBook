@@ -11,7 +11,6 @@ import withConsumer from "../withConsumer";
 import inventory from "../collections/inventory"; // eslint-disable-line
 import books from "../collections/books"; // eslint-disable-line
 import book from "../tables/book"; // eslint-disable-line
-import book_pub from "../tables/book_pub"; // eslint-disable-line
 import genre from "../tables/genre"; // eslint-disable-line
 import filters from "../filters"; // eslint-disable-line
 import author from "../tables/author"; // eslint-disable-line
@@ -23,14 +22,9 @@ class NavigationBar extends React.Component {
   injectEscape = string => string.replace(/'/g, "\\'");
 
   test = () => {
-    let dml = "";
-    genre.forEach(item => {
-      dml += "insert into genre values (";
-      dml += `'${item.isbn}', `;
-      dml += `E'${this.injectEscape(item.genre)}'`;
-      dml += ");\n";
-    });
-    console.log(dml);
+    let data = [];
+
+    console.log(JSON.stringify(data));
   };
 
   getCartCount = () => {
