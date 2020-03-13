@@ -12,6 +12,7 @@ create table profile
 
 create table cart
 	(order_id		    serial,
+	 u_id				int,
      date               varchar(50),
      tax                numeric(8,2),
      subtotal           numeric(8,2),
@@ -21,9 +22,19 @@ create table cart
      shipping_cost      numeric(8,2),
      shipping_address   varchar(255),
      recipient          varchar(100),
-	 primary key (order_id)
+	 primary key (order_id),
+	 foreign key (u_id) references profile
 	);    
     
+create table publisher
+	(name		    varchar(50),
+	 email          varchar(50),
+     bank_account   varchar(30),
+     address        varchar(255),
+     available      boolean,
+	 primary key (name)
+	);  
+
 create table book
 	(isbn		    varchar(13),
      title          varchar(100),
@@ -36,18 +47,12 @@ create table book
      price          numeric(8,2),
      cover_url      varchar(100),
      available      boolean,
-	 primary key (isbn)
+	 pub_name		varchar(50),
+	 percentage     numeric(3,2),
+	 primary key (isbn),
+	 foreign key (pub_name) references publisher (name)
 	);    
 
-create table publisher
-	(name		    varchar(50),
-	 email          varchar(50),
-     bank_account   varchar(30),
-     address        varchar(255),
-     available      boolean,
-	 primary key (name)
-	);      
-    
 create table pub_phone_number
 	(name		    varchar(50), 
 	 number		    varchar(20),
@@ -60,15 +65,7 @@ create table author
 	 author         varchar(100),
 	 primary key (isbn, author),
 	 foreign key (isbn) references book
-	);
-
-create table cart_profile
-	(u_id		    int,
-	 order_id       int,
-	 primary key (order_id),
-	 foreign key (u_id) references profile,
-     foreign key (order_id) references cart
-	);    
+	);  
     
 create table cart_book
 	(isbn		    varchar(13),
@@ -77,16 +74,7 @@ create table cart_book
 	 primary key (isbn, order_id),
 	 foreign key (isbn) references book,
      foreign key (order_id) references cart
-	);        
-
-create table book_pub
-	(isbn		    varchar(13),
-	 percentage     numeric(3,2),
-     pub_name       varchar(50),
-	 primary key (isbn),
-	 foreign key (isbn) references book,
-	 foreign key (pub_name) references publisher (name)
-	);    
+	);          
     
 create table genre
 	(isbn		    varchar(13),
