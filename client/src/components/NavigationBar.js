@@ -8,24 +8,23 @@ import Row from "react-bootstrap/Row";
 
 import withConsumer from "../withConsumer";
 
-import inventory from "../collections/inventory"; // eslint-disable-line
-import books from "../collections/books"; // eslint-disable-line
-import book from "../tables/book"; // eslint-disable-line
-import genre from "../tables/genre"; // eslint-disable-line
+// import books from "../collections/books";
+// import inventory from "../collections/inventory";
+// import publishers from "../collections/publishers";
+// import author from "../tables/author";
+// import book from "../tables/book";
+// import genre from "../tables/genre";
+// import pub_phone_number from "../tables/pub_phone_number";
+// import publisher from "../tables/publisher";
 import filters from "../filters"; // eslint-disable-line
-import author from "../tables/author"; // eslint-disable-line
-import publisher from "../tables/publisher"; // eslint-disable-line
-import publishers from "../collections/publishers"; // eslint-disable-line
-import pub_phone_number from "../tables/pub_phone_number"; // eslint-disable-line
 
 class NavigationBar extends React.Component {
-  injectEscape = string => string.replace(/'/g, "\\'");
+  // injectEscape = string => string.replace(/'/g, "\\'");
 
-  test = () => {
-    let data = [];
-
-    console.log(JSON.stringify(data));
-  };
+  // test = () => {
+  //   let data = [];
+  //   console.log(JSON.stringify(data));
+  // };
 
   getCartCount = () => {
     const { context } = this.props;
@@ -136,8 +135,8 @@ class NavigationBar extends React.Component {
 
           <Button
             variant='link'
-            // onClick={() => console.log(JSON.stringify(context.cart))}
-            onClick={() => this.test()}
+            onClick={() => console.log(JSON.stringify(context.cart))}
+            // onClick={() => this.test()}
           >
             Test
           </Button>
