@@ -1,12 +1,13 @@
-delete from profile;
-delete from cart;
-delete from publisher;
-delete from book;
-delete from pub_phone_number;
-delete from author;
+delete from credit_card;
+delete from credit_card_info;
 delete from cart_book;
 delete from genre;
-delete from credit_card;
+delete from author;
+delete from pub_phone_number;
+delete from cart;
+delete from profile;
+delete from book;
+delete from publisher;
 
 insert into publisher values ('Oxford University Press', 'oxford_university_press@mail.com', '00257 596 0991622', '2251 Bridgeport Rd, Port Perry, ON L9L 1K2', true);
 insert into publisher values ('Shueisha', 'shueisha@mail.com', '00202 899 0842493', '3633 Haaglund Rd, Okanagan Falls, BC V0H 1R0', true);

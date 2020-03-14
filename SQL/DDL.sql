@@ -81,15 +81,21 @@ create table genre
 	 genre          varchar(50),
 	 primary key (isbn, genre),
      foreign key (isbn) references book
-	);     
-    
-create table credit_card
-	(u_id               int,
-     card_number        numeric(16,0),
+	);    
+
+create table credit_card_info
+	(card_number        numeric(16,0),
      expiry_date        varchar(20),
      cvv                numeric(3,0),
      billing_address    varchar(255),
      holder_name        varchar(100),
+	 primary key (card_number)
+	);   
+    
+create table credit_card
+	(u_id               int,
+     card_number        numeric(16,0),
 	 primary key (u_id, card_number),
-     foreign key (u_id) references profile
-	);      
+     foreign key (u_id) references profile,
+	 foreign key (card_number) references credit_card_info
+	);          
