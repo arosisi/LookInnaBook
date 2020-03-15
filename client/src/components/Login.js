@@ -14,7 +14,12 @@ import { transform } from "../helpers";
 import withConsumer from "../withConsumer";
 
 class Login extends React.Component {
-  state = { submitting: false, showAlert: false, showResetPassword: false };
+  state = {
+    showEmailError: false,
+    submitting: false,
+    showAlert: false,
+    showResetPassword: false
+  };
 
   handleSubmit = values => {
     const { context } = this.props;
@@ -44,13 +49,26 @@ class Login extends React.Component {
 
   render() {
     const { context } = this.props;
-    const { submitting, showAlert, showResetPassword } = this.state;
+    const {
+      showEmailError,
+      submitting,
+      showAlert,
+      showResetPassword
+    } = this.state;
     return (
       <Container style={{ width: 500 }}>
         <h1 style={{ margin: 30, textAlign: "center" }}>Login</h1>
 
         <Formik
-          onSubmit={this.handleSubmit}
+          onSubmit={values => {
+            if (
+              /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/.test(values.email)
+            ) {
+              this.handleSubmit(values);
+            } else {
+              this.setState({ showEmailError: true });
+            }
+          }}
           initialValues={{
             email: "",
             password: ""
@@ -66,9 +84,24 @@ class Login extends React.Component {
                   <Form.Control
                     type='email'
                     name='email'
+                    isInvalid={showEmailError}
                     value={values.email}
-                    onChange={handleChange}
+                    onChange={event => {
+                      this.setState({ showEmailError: false });
+                      handleChange(event);
+                    }}
                   />
+                  {showEmailError && (
+                    <p
+                      style={{
+                        margin: "0 0 0 0.75rem",
+                        fontSize: "0.8rem",
+                        color: "#dc3545"
+                      }}
+                    >
+                      Invalid email format.
+                    </p>
+                  )}
                 </Col>
               </Form.Group>
 

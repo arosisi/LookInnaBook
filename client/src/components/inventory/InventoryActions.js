@@ -2,14 +2,15 @@ import React from "react";
 import Dropdown from "react-bootstrap/Dropdown";
 import { FiMoreVertical } from "react-icons/fi";
 
+import InventoryForm from "./InventoryForm";
 import TwoActionDialog from "../TwoActionDialog";
 
 class InventoryActions extends React.Component {
-  state = { showDeleteConfirmation: false };
+  state = { showEditForm: false, showDeleteConfirmation: false };
 
   render() {
-    const { item } = this.props;
-    const { showDeleteConfirmation } = this.state;
+    const { item, publishers, onRemove, onEdit } = this.props;
+    const { showEditForm, showDeleteConfirmation } = this.state;
 
     const MoreIcon = React.forwardRef(({ children, onClick }, ref) => (
       <button
@@ -29,7 +30,9 @@ class InventoryActions extends React.Component {
         <Dropdown drop='right'>
           <Dropdown.Toggle as={MoreIcon} />
           <Dropdown.Menu>
-            <Dropdown.Item onClick={() => console.log("Hello")}>
+            <Dropdown.Item
+              onClick={() => this.setState({ showEditForm: true })}
+            >
               Edit
             </Dropdown.Item>
             <Dropdown.Item
@@ -40,6 +43,14 @@ class InventoryActions extends React.Component {
           </Dropdown.Menu>
         </Dropdown>
 
+        <InventoryForm
+          show={showEditForm}
+          item={item}
+          publishers={publishers}
+          onSubmit={onEdit}
+          onCancel={() => this.setState({ showEditForm: false })}
+        />
+
         <TwoActionDialog
           show={showDeleteConfirmation}
           message='Are you sure you want to delete this item?'
@@ -49,10 +60,11 @@ class InventoryActions extends React.Component {
           onSecondaryAction={() =>
             this.setState({ showDeleteConfirmation: false })
           }
-          onPrimaryAction={() => {
-            this.setState({ showDeleteConfirmation: false });
-            // TODO
-          }}
+          onPrimaryAction={() =>
+            this.setState({ showDeleteConfirmation: false }, () =>
+              onRemove(item.isbn)
+            )
+          }
         />
       </div>
     );
