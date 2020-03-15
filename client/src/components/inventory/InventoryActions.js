@@ -47,7 +47,9 @@ class InventoryActions extends React.Component {
           show={showEditForm}
           item={item}
           publishers={publishers}
-          onSubmit={onEdit}
+          onSubmit={values => {
+            this.setState({ showEditForm: false }, () => onEdit(values));
+          }}
           onCancel={() => this.setState({ showEditForm: false })}
         />
 

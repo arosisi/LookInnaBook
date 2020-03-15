@@ -13,43 +13,49 @@ import { getCurrencyString } from "../../helpers";
 class InventoryForm extends React.Component {
   state = { showIsbnError: false, showYearError: false };
 
-  getInitialValues = item => {
-    const {
-      isbn,
-      cover_url,
-      title,
-      authors,
-      description,
-      genres,
-      year,
-      page_count,
-      cost,
-      price,
-      publisher,
-      publisher_percentage,
-      quantity,
-      threshold
-    } = item;
-    return {
-      isbn,
-      cover_url,
-      title,
-      authors: authors.join(" | "),
-      description,
-      genres: genres.join(" | "),
-      year,
-      page_count,
-      cost: getCurrencyString(cost).substring(1),
-      price: getCurrencyString(price).substring(1),
-      publisher,
-      publisher_percentage: Math.ceil(publisher_percentage * 100),
-      quantity,
-      threshold
-    };
-  };
+  getInitialValues = item => ({
+    isbn: item.isbn,
+    coverUrl: item.coverUrl,
+    title: item.title,
+    authors: item.authors.join(" | "),
+    description: item.description,
+    genres: item.genres.join(" | "),
+    year: item.year,
+    pageCount: item.pageCount,
+    cost: getCurrencyString(item.cost).substring(1),
+    price: getCurrencyString(item.price).substring(1),
+    publisher: item.publisher,
+    publisherPercentage: Math.ceil(item.publisherPercentage * 100),
+    quantity: item.quantity,
+    threshold: item.threshold
+  });
+
+  tranform = values => ({
+    isbn: values.isbn,
+    coverUrl: values.coverUrl,
+    title: values.title,
+    authors: values.authors.split("|").map(author => author.trim()),
+    description: values.description,
+    genres: values.genres.split("|").map(genre => genre.trim()),
+    year: values.year,
+    pageCount: values.pageCount,
+    cost: parseFloat(values.cost),
+    price: parseFloat(values.price),
+    publisher: values.publisher,
+    publisherPercentage: values.publisherPercentage / 100,
+    quantity: values.quantity,
+    threshold: values.threshold
+  });
 
   render() {
-    const { show, item, publishers, onSubmit, onCancel } = this.props;
+    const {
+      show,
+      allowIsbnEdit,
+      item,
+      publishers,
+      onSubmit,
+      onCancel
+    } = this.props;
     const { showIsbnError, showYearError } = this.state;
     return (
       <Modal show={show} size='lg' onHide={() => {}}>
@@ -67,7 +73,7 @@ class InventoryForm extends React.Component {
                   this.setState({ showYearError: true });
                 }
                 if (!hasError) {
-                  onSubmit(values);
+                  onSubmit(this.tranform(values));
                 }
               }}
               initialValues={
@@ -75,17 +81,17 @@ class InventoryForm extends React.Component {
                   ? this.getInitialValues(item)
                   : {
                       isbn: "",
-                      cover_url: "",
+                      coverUrl: "",
                       title: "",
                       authors: "",
                       description: "",
                       genres: "",
                       year: "",
-                      page_count: "",
+                      pageCount: "",
                       cost: "",
                       price: "",
                       publisher: "",
-                      publisher_percentage: "",
+                      publisherPercentage: "",
                       quantity: "",
                       threshold: ""
                     }
@@ -105,6 +111,7 @@ class InventoryForm extends React.Component {
                       <Form.Control
                         type='text'
                         name='isbn'
+                        disabled={!allowIsbnEdit}
                         isInvalid={showIsbnError}
                         value={values.isbn}
                         onChange={event => {
@@ -131,15 +138,15 @@ class InventoryForm extends React.Component {
                     </Col>
                   </Form.Group>
 
-                  <Form.Group as={Row} controlId='cover_url'>
+                  <Form.Group as={Row} controlId='coverUrl'>
                     <Form.Label column xs={3}>
                       Cover URL
                     </Form.Label>
                     <Col xs={9}>
                       <Form.Control
                         type='text'
-                        name='cover_url'
-                        value={values.cover_url}
+                        name='coverUrl'
+                        value={values.coverUrl}
                         onChange={handleChange}
                       />
                     </Col>
@@ -246,15 +253,15 @@ class InventoryForm extends React.Component {
                     </Col>
                   </Form.Group>
 
-                  <Form.Group as={Row} controlId='page_count'>
+                  <Form.Group as={Row} controlId='pageCount'>
                     <Form.Label column xs={3}>
                       Page Count
                     </Form.Label>
                     <Col xs={9}>
                       <Form.Control
                         type='number'
-                        name='page_count'
-                        value={values.page_count}
+                        name='pageCount'
+                        value={values.pageCount}
                         onChange={event => {
                           if (event.target.value > 0) {
                             handleChange(event);
@@ -320,7 +327,7 @@ class InventoryForm extends React.Component {
                     </Col>
                   </Form.Group>
 
-                  <Form.Group as={Row} controlId='publisher_percentage'>
+                  <Form.Group as={Row} controlId='publisherPercentage'>
                     <Form.Label column xs={3}>
                       Publisher Percentage
                     </Form.Label>
@@ -328,8 +335,8 @@ class InventoryForm extends React.Component {
                       <InputGroup>
                         <Form.Control
                           type='number'
-                          name='publisher_percentage'
-                          value={values.publisher_percentage}
+                          name='publisherPercentage'
+                          value={values.publisherPercentage}
                           onChange={event => {
                             if (
                               event.target.value > 0 &&
@@ -406,17 +413,17 @@ class InventoryForm extends React.Component {
                           type='submit'
                           disabled={
                             !values.isbn ||
-                            !values.cover_url ||
+                            !values.coverUrl ||
                             !values.title ||
                             !values.authors ||
                             !values.description ||
                             !values.genres ||
                             !values.year ||
-                            !values.page_count ||
+                            !values.pageCount ||
                             !values.cost ||
                             !values.price ||
                             !values.publisher ||
-                            !values.publisher_percentage ||
+                            !values.publisherPercentage ||
                             !values.quantity ||
                             !values.threshold
                           }

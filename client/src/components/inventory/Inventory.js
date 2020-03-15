@@ -26,7 +26,7 @@ class Inventory extends React.Component {
           .then(response => {
             this.setState({
               fetching: false,
-              inventory: response.inventory,
+              inventory: this.transform(response.inventory),
               publishers: response.publishers
             });
           })
@@ -69,35 +69,54 @@ class Inventory extends React.Component {
         );
     });
 
-  handleEdit = values => console.log(values);
-  // this.setState({ processing: true }, () => {
-  //   fetch("http://localhost:9000/modify-inventory", {
-  //     method: "POST",
-  //     headers: { "Content-Type": "application/json" },
-  //     body: JSON.stringify({ action: "edit", ...values })
-  //   })
-  //     .then(response => response.json())
-  //     .then(response => {
-  //       if (response.success) {
-  //         this.setState({
-  //           processing: false,
-  //           success: true,
-  //           inventory: this.state.inventory.map(item =>
-  //             item.isbn === values.isbn ? values : item
-  //           )
-  //         });
-  //       } else {
-  //         this.setState({
-  //           processing: false,
-  //           showAlert: true
-  //         });
-  //         console.log(response.message);
-  //       }
-  //     })
-  //     .catch(error =>
-  //       console.log("Unable to connect to API modify-inventory.", error)
-  //     );
-  // });
+  handleEdit = values => {
+    this.setState({ processing: true }, () => {
+      fetch("http://localhost:9000/modify-inventory", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ action: "edit", ...values })
+      })
+        .then(response => response.json())
+        .then(response => {
+          if (response.success) {
+            this.setState({
+              processing: false,
+              success: true,
+              inventory: this.state.inventory.map(item =>
+                item.isbn === values.isbn ? values : item
+              )
+            });
+          } else {
+            this.setState({
+              processing: false,
+              showAlert: true
+            });
+            console.log(response.message);
+          }
+        })
+        .catch(error =>
+          console.log("Unable to connect to API modify-inventory.", error)
+        );
+    });
+  };
+
+  transform = inventory =>
+    inventory.map(item => ({
+      isbn: item.isbn,
+      coverUrl: item.cover_url,
+      title: item.title,
+      authors: item.authors,
+      description: item.description,
+      genres: item.genres,
+      year: item.year,
+      pageCount: item.page_count,
+      cost: item.cost,
+      price: item.price,
+      publisher: item.publisher,
+      publisherPercentage: item.publisher_percentage,
+      quantity: item.quantity,
+      threshold: item.threshold
+    }));
 
   render() {
     const {

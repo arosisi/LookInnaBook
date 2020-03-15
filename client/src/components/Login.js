@@ -10,7 +10,6 @@ import Spinner from "react-bootstrap/Spinner";
 import { Formik } from "formik";
 
 import ResetPassword from "./ResetPassword";
-import { transform } from "../helpers";
 import withConsumer from "../withConsumer";
 
 class Login extends React.Component {
@@ -33,7 +32,7 @@ class Login extends React.Component {
         .then(response => {
           if (response.success) {
             this.setState({ submitting: false }, () =>
-              context.logIn(transform(response.user))
+              context.logIn(this.transform(response.user))
             );
           } else {
             this.setState({
@@ -46,6 +45,21 @@ class Login extends React.Component {
         .catch(error => console.log("Unable to connect to API login.", error))
     );
   };
+
+  transform = user => ({
+    id: user.u_id,
+    role: user.role,
+    firstName: user.first_name,
+    lastName: user.last_name,
+    address: user.address,
+    email: user.email,
+    password: user.password,
+    creditCard: user.card_number,
+    expiryDate: user.expiry_date,
+    cvv: user.cvv,
+    holderName: user.holder_name,
+    billingAddress: user.billing_address
+  });
 
   render() {
     const { context } = this.props;

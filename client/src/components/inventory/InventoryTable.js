@@ -94,15 +94,15 @@ class InventoryTable extends React.Component {
                 </td>
                 <td>{item.isbn}</td>
                 <td>
-                  <AppToolTip placement='auto' text={item.cover_url}>
+                  <AppToolTip placement='auto' text={item.coverUrl}>
                     <p
                       style={{ cursor: "copy" }}
                       onClick={() => {
-                        navigator.clipboard.writeText(item.cover_url);
+                        navigator.clipboard.writeText(item.coverUrl);
                         this.setState({ showCopyToast: true });
                       }}
                     >
-                      {truncateLink(item.cover_url, 20)}
+                      {truncateLink(item.coverUrl, 20)}
                     </p>
                   </AppToolTip>
                 </td>
@@ -127,11 +127,11 @@ class InventoryTable extends React.Component {
                 </td>
                 <td>{item.genres.join(", ")}</td>
                 <td>{item.year}</td>
-                <td>{item.page_count}</td>
+                <td>{item.pageCount}</td>
                 <td>{getCurrencyString(item.cost)}</td>
                 <td>{getCurrencyString(item.price)}</td>
                 <td>{item.publisher}</td>
-                <td>{`${Math.ceil(item.publisher_percentage * 100)}%`}</td>
+                <td>{`${Math.ceil(item.publisherPercentage * 100)}%`}</td>
                 <td>{item.quantity}</td>
                 <td>{item.threshold}</td>
               </tr>
