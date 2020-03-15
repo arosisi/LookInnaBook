@@ -90,7 +90,7 @@ class InventoryForm extends React.Component {
                       pageCount: "",
                       cost: "",
                       price: "",
-                      publisher: "",
+                      publisher: publishers[0],
                       publisherPercentage: "",
                       quantity: "",
                       threshold: ""

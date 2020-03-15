@@ -3,12 +3,14 @@ import Button from "react-bootstrap/Button";
 import Row from "react-bootstrap/Row";
 import Spinner from "react-bootstrap/Spinner";
 
+import InventoryForm from "./InventoryForm";
 import InventoryTable from "./InventoryTable";
 
 class Inventory extends React.Component {
   state = {
     controller: new AbortController(),
     fetching: false,
+    showAddForm: false,
     processing: false,
     success: false,
     showAlert: false,
@@ -40,6 +42,35 @@ class Inventory extends React.Component {
   componentWillUnmount() {
     this.state.controller.abort();
   }
+
+  handleAdd = values => {
+    this.setState({ processing: true }, () => {
+      fetch("http://localhost:9000/modify-inventory", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ action: "add", ...values })
+      })
+        .then(response => response.json())
+        .then(response => {
+          if (response.success) {
+            this.setState({
+              processing: false,
+              success: true,
+              inventory: [values, ...this.state.inventory]
+            });
+          } else {
+            this.setState({
+              processing: false,
+              showAlert: true
+            });
+            console.log(response.message);
+          }
+        })
+        .catch(error =>
+          console.log("Unable to connect to API modify-inventory.", error)
+        );
+    });
+  };
 
   handleRemove = isbn =>
     this.setState({ processing: true }, () => {
@@ -121,6 +152,7 @@ class Inventory extends React.Component {
   render() {
     const {
       fetching,
+      showAddForm,
       processing,
       success,
       showAlert,
@@ -139,8 +171,11 @@ class Inventory extends React.Component {
             justifyContent: "flex-end"
           }}
         >
-          <Button>Add Item</Button>
+          <Button onClick={() => this.setState({ showAddForm: true })}>
+            Add Item
+          </Button>
         </Row>
+
         {inventory.length ? (
           <InventoryTable
             processing={processing}
@@ -158,6 +193,16 @@ class Inventory extends React.Component {
             You do not have any items in your inventory.
           </p>
         )}
+
+        <InventoryForm
+          show={showAddForm}
+          allowIsbnEdit={true}
+          publishers={publishers}
+          onSubmit={values => {
+            this.setState({ showAddForm: false }, () => this.handleAdd(values));
+          }}
+          onCancel={() => this.setState({ showAddForm: false })}
+        />
       </div>
     );
   }
