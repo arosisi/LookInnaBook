@@ -4,20 +4,24 @@ import Tab from "react-bootstrap/Tab";
 import Tabs from "react-bootstrap/Tabs";
 
 import Inventory from "./Inventory";
-import PublisherTable from "./PublisherTable";
-import withConsumer from "../../withConsumer";
+import Publishers from "./Publishers";
 
 class Main extends React.Component {
+  state = { tab: "inventory" };
+
   render() {
-    const { context } = this.props;
+    const { tab } = this.state;
     return (
       <Container fluid style={{ marginTop: 20 }}>
-        <Tabs defaultActiveKey='inventory' style={{ marginBottom: 15 }}>
+        <Tabs
+          style={{ marginBottom: 15 }}
+          onSelect={key => this.setState({ tab: key })}
+        >
           <Tab eventKey='inventory' title='Inventory'>
-            <Inventory context={context} />
+            {tab === "inventory" && <Inventory />}
           </Tab>
           <Tab eventKey='publishers' title='Publishers'>
-            <PublisherTable />
+            {tab === "publishers" && <Publishers />}
           </Tab>
         </Tabs>
       </Container>
@@ -25,4 +29,4 @@ class Main extends React.Component {
   }
 }
 
-export default withConsumer(Main);
+export default Main;

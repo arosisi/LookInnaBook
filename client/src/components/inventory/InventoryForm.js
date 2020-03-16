@@ -63,16 +63,20 @@ class InventoryForm extends React.Component {
           <Container>
             <Formik
               onSubmit={values => {
-                let hasError = false;
+                let hasIsbnError = false;
+                let hasYearError = false;
                 if (values.isbn.length !== 13) {
-                  hasError = true;
-                  this.setState({ showIsbnError: true });
+                  hasIsbnError = true;
                 }
                 if (values.year < 1000) {
-                  hasError = true;
-                  this.setState({ showYearError: true });
+                  hasYearError = true;
                 }
-                if (!hasError) {
+                if (hasIsbnError || hasYearError) {
+                  this.setState({
+                    showIsbnError: hasIsbnError,
+                    showYearError: hasYearError
+                  });
+                } else {
                   onSubmit(this.tranform(values));
                 }
               }}
@@ -116,8 +120,9 @@ class InventoryForm extends React.Component {
                         value={values.isbn}
                         onChange={event => {
                           if (
-                            /^\d+$/.test(event.target.value) &&
-                            event.target.value.length <= 13
+                            (/^\d+$/.test(event.target.value) &&
+                              event.target.value.length <= 13) ||
+                            !event.target.value
                           ) {
                             this.setState({ showIsbnError: false });
                             handleChange(event);
@@ -231,8 +236,9 @@ class InventoryForm extends React.Component {
                         value={values.year}
                         onChange={event => {
                           if (
-                            event.target.value > 0 &&
-                            event.target.value < 10000
+                            (event.target.value > 0 &&
+                              event.target.value < 10000) ||
+                            !event.target.value
                           ) {
                             this.setState({ showYearError: false });
                             handleChange(event);
@@ -263,7 +269,7 @@ class InventoryForm extends React.Component {
                         name='pageCount'
                         value={values.pageCount}
                         onChange={event => {
-                          if (event.target.value > 0) {
+                          if (event.target.value > 0 || !event.target.value) {
                             handleChange(event);
                           }
                         }}
@@ -339,8 +345,9 @@ class InventoryForm extends React.Component {
                           value={values.publisherPercentage}
                           onChange={event => {
                             if (
-                              event.target.value > 0 &&
-                              event.target.value <= 100
+                              (event.target.value > 0 &&
+                                event.target.value <= 100) ||
+                              !event.target.value
                             ) {
                               handleChange(event);
                             }
@@ -368,7 +375,7 @@ class InventoryForm extends React.Component {
                         name='quantity'
                         value={values.quantity}
                         onChange={event => {
-                          if (event.target.value > 0) {
+                          if (event.target.value > 0 || !event.target.value) {
                             handleChange(event);
                           }
                         }}
@@ -386,7 +393,7 @@ class InventoryForm extends React.Component {
                         name='threshold'
                         value={values.threshold}
                         onChange={event => {
-                          if (event.target.value > 0) {
+                          if (event.target.value > 0 || !event.target.value) {
                             handleChange(event);
                           }
                         }}
