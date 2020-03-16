@@ -1,4 +1,5 @@
 import React from "react";
+import Alert from "react-bootstrap/Alert";
 import Table from "react-bootstrap/Table";
 import Toast from "react-bootstrap/Toast";
 
@@ -7,11 +8,55 @@ import InventoryActions from "./InventoryActions";
 import { truncateLink, truncateText, getCurrencyString } from "../../helpers";
 
 class InventoryTable extends React.Component {
-  state = { showToast: false };
+  state = {
+    showCopyToast: false
+  };
+
+  renderToast = (show, onClose, message) => (
+    <div style={{ position: "fixed", bottom: 10, left: 10 }}>
+      <Toast
+        style={{
+          color: "#155724",
+          background: "#d4edda",
+          borderColor: "#c3e6cb"
+        }}
+        show={show}
+        delay={3000}
+        animation
+        autohide
+        onClose={onClose}
+      >
+        <Toast.Body>{message}</Toast.Body>
+      </Toast>
+    </div>
+  );
+
+  renderAlert = (show, onClose, message) => (
+    <div style={{ position: "fixed", bottom: 10, left: 10 }}>
+      <Alert
+        show={show}
+        variant='danger'
+        style={{ marginBottom: 0 }}
+        dismissible
+        onClose={onClose}
+      >
+        {message}
+      </Alert>
+    </div>
+  );
 
   render() {
-    const { inventory } = this.props;
-    const { showToast } = this.state;
+    const {
+      success,
+      showAlert,
+      inventory,
+      publishers,
+      onRemove,
+      onEdit,
+      onCloseSuccessToast,
+      onCloseAlert
+    } = this.props;
+    const { showCopyToast } = this.state;
     return (
       <div>
         <Table bordered hover responsive striped>
@@ -38,19 +83,24 @@ class InventoryTable extends React.Component {
             {inventory.map(item => (
               <tr key={item.isbn}>
                 <td>
-                  <InventoryActions item={item} />
+                  <InventoryActions
+                    item={item}
+                    publishers={publishers}
+                    onRemove={onRemove}
+                    onEdit={onEdit}
+                  />
                 </td>
                 <td>{item.isbn}</td>
                 <td>
-                  <AppToolTip placement='auto' text={item.cover_url}>
+                  <AppToolTip placement='auto' text={item.coverUrl}>
                     <p
                       style={{ cursor: "copy" }}
                       onClick={() => {
-                        navigator.clipboard.writeText(item.cover_url);
-                        this.setState({ showToast: true });
+                        navigator.clipboard.writeText(item.coverUrl);
+                        this.setState({ showCopyToast: true });
                       }}
                     >
-                      {truncateLink(item.cover_url, 20)}
+                      {truncateLink(item.coverUrl, 20)}
                     </p>
                   </AppToolTip>
                 </td>
@@ -66,7 +116,7 @@ class InventoryTable extends React.Component {
                       style={{ cursor: "copy" }}
                       onClick={() => {
                         navigator.clipboard.writeText(item.description);
-                        this.setState({ showToast: true });
+                        this.setState({ showCopyToast: true });
                       }}
                     >
                       {truncateText(item.description, 50)}
@@ -75,11 +125,11 @@ class InventoryTable extends React.Component {
                 </td>
                 <td>{item.genres.join(", ")}</td>
                 <td>{item.year}</td>
-                <td>{item.page_count}</td>
+                <td>{item.pageCount}</td>
                 <td>{getCurrencyString(item.cost)}</td>
                 <td>{getCurrencyString(item.price)}</td>
                 <td>{item.publisher}</td>
-                <td>{`${Math.ceil(item.publisher_percentage * 100)}%`}</td>
+                <td>{`${Math.ceil(item.publisherPercentage * 100)}%`}</td>
                 <td>{item.quantity}</td>
                 <td>{item.threshold}</td>
               </tr>
@@ -87,22 +137,23 @@ class InventoryTable extends React.Component {
           </tbody>
         </Table>
 
-        <div style={{ position: "fixed", bottom: 10, left: 10 }}>
-          <Toast
-            style={{
-              color: "#155724",
-              background: "#d4edda",
-              borderColor: "#c3e6cb"
-            }}
-            show={showToast}
-            delay={3000}
-            animation
-            autohide
-            onClose={() => this.setState({ showToast: false })}
-          >
-            <Toast.Body>Copied to clipboard!</Toast.Body>
-          </Toast>
-        </div>
+        {this.renderToast(
+          showCopyToast,
+          () => this.setState({ showCopyToast: false }),
+          "Copied to clipboard!"
+        )}
+
+        {this.renderToast(
+          success,
+          onCloseSuccessToast,
+          "Successfully updated inventory!"
+        )}
+
+        {this.renderAlert(
+          showAlert,
+          onCloseAlert,
+          "Unable to update inventory."
+        )}
       </div>
     );
   }

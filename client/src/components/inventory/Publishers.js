@@ -4,10 +4,10 @@ import Modal from "react-bootstrap/Modal";
 import Row from "react-bootstrap/Row";
 import Spinner from "react-bootstrap/Spinner";
 
-import InventoryForm from "./InventoryForm";
-import InventoryTable from "./InventoryTable";
+import PublisherForm from "./PublisherForm";
+import PublisherTable from "./PublisherTable";
 
-class Inventory extends React.Component {
+class Publishers extends React.Component {
   state = {
     controller: new AbortController(),
     fetching: false,
@@ -15,26 +15,24 @@ class Inventory extends React.Component {
     processing: false,
     success: false,
     showAlert: false,
-    inventory: [],
     publishers: []
   };
 
   componentDidMount() {
     const { controller } = this.state;
     this.setState({ fetching: true }, () => {
-      fetch("http://localhost:9000/inventory", { signal: controller.signal })
+      fetch("http://localhost:9000/publishers", { signal: controller.signal })
         .then(response => response.json())
         .then(response => {
           this.setState({
             fetching: false,
-            inventory: this.transform(
-              response.inventory.filter(item => item.available)
-            ),
-            publishers: response.publishers
+            publishers: this.transform(
+              response.publishers.filter(publisher => publisher.available)
+            )
           });
         })
         .catch(error =>
-          console.log("Unable to connect to API inventory.", error)
+          console.log("Unable to connect to API publishers.", error)
         );
     });
   }
@@ -45,7 +43,7 @@ class Inventory extends React.Component {
 
   handleAdd = values => {
     this.setState({ processing: true }, () => {
-      fetch("http://localhost:9000/modify-inventory", {
+      fetch("http://localhost:9000/modify-publisher", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ action: "add", ...values })
@@ -56,7 +54,7 @@ class Inventory extends React.Component {
             this.setState({
               processing: false,
               success: true,
-              inventory: [values, ...this.state.inventory]
+              publishers: [values, ...this.state.publishers]
             });
           } else {
             this.setState({
@@ -67,17 +65,17 @@ class Inventory extends React.Component {
           }
         })
         .catch(error =>
-          console.log("Unable to connect to API modify-inventory.", error)
+          console.log("Unable to connect to API modify-publisher.", error)
         );
     });
   };
 
-  handleRemove = isbn =>
+  handleRemove = name =>
     this.setState({ processing: true }, () => {
-      fetch("http://localhost:9000/modify-inventory", {
+      fetch("http://localhost:9000/modify-publisher", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ action: "remove", isbn })
+        body: JSON.stringify({ action: "remove", name })
       })
         .then(response => response.json())
         .then(response => {
@@ -85,36 +83,8 @@ class Inventory extends React.Component {
             this.setState({
               processing: false,
               success: true,
-              inventory: this.state.inventory.filter(item => item.isbn !== isbn)
-            });
-          } else {
-            this.setState({
-              processing: false,
-              showAlert: true
-            });
-            console.log(response.message);
-          }
-        })
-        .catch(error =>
-          console.log("Unable to connect to API modify-inventory.", error)
-        );
-    });
-
-  handleEdit = values => {
-    this.setState({ processing: true }, () => {
-      fetch("http://localhost:9000/modify-inventory", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ action: "edit", ...values })
-      })
-        .then(response => response.json())
-        .then(response => {
-          if (response.success) {
-            this.setState({
-              processing: false,
-              success: true,
-              inventory: this.state.inventory.map(item =>
-                item.isbn === values.isbn ? values : item
+              publishers: this.state.publishers.filter(
+                publisher => publisher.name !== name
               )
             });
           } else {
@@ -126,27 +96,55 @@ class Inventory extends React.Component {
           }
         })
         .catch(error =>
-          console.log("Unable to connect to API modify-inventory.", error)
+          console.log("Unable to connect to API modify-publisher.", error)
+        );
+    });
+
+  handleEdit = values => {
+    this.setState({ processing: true }, () => {
+      fetch("http://localhost:9000/modify-publisher", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ action: "edit", ...values })
+      })
+        .then(response => response.json())
+        .then(response => {
+          if (response.success) {
+            this.setState({
+              processing: false,
+              success: true,
+              publishers: this.state.publishers.map(publisher => {
+                if (publisher.name === values.name) {
+                  if (values.newName) {
+                    const { name, newName, ...other } = values;
+                    return { name: newName, ...other };
+                  }
+                  return values;
+                }
+                return publisher;
+              })
+            });
+          } else {
+            this.setState({
+              processing: false,
+              showAlert: true
+            });
+            console.log(response.message);
+          }
+        })
+        .catch(error =>
+          console.log("Unable to connect to API modify-publisher.", error)
         );
     });
   };
 
-  transform = inventory =>
-    inventory.map(item => ({
-      isbn: item.isbn,
-      coverUrl: item.cover_url,
-      title: item.title,
-      authors: item.authors,
-      description: item.description,
-      genres: item.genres,
-      year: item.year,
-      pageCount: item.page_count,
-      cost: item.cost,
-      price: item.price,
-      publisher: item.publisher,
-      publisherPercentage: item.publisher_percentage,
-      quantity: item.quantity,
-      threshold: item.threshold
+  transform = publishers =>
+    publishers.map(publisher => ({
+      name: publisher.name,
+      address: publisher.address,
+      numbers: publisher.numbers,
+      email: publisher.email,
+      bankAccount: publisher.bank_account
     }));
 
   render() {
@@ -156,7 +154,6 @@ class Inventory extends React.Component {
       processing,
       success,
       showAlert,
-      inventory,
       publishers
     } = this.state;
     return fetching ? (
@@ -172,30 +169,28 @@ class Inventory extends React.Component {
           }}
         >
           <Button onClick={() => this.setState({ showAddForm: true })}>
-            Add Item
+            Add Publisher
           </Button>
         </Row>
 
-        {inventory.length ? (
-          <InventoryTable
+        {publishers.length ? (
+          <PublisherTable
             success={success}
             showAlert={showAlert}
             onRemove={this.handleRemove}
             onEdit={this.handleEdit}
-            inventory={inventory}
             publishers={publishers}
             onCloseSuccessToast={() => this.setState({ success: false })}
             onCloseAlert={() => this.setState({ showAlert: false })}
           />
         ) : (
           <p style={{ textAlign: "center" }}>
-            You do not have any items in your inventory.
+            You have not added any publisher.
           </p>
         )}
 
-        <InventoryForm
+        <PublisherForm
           show={showAddForm}
-          allowIsbnEdit={true}
           publishers={publishers}
           onSubmit={values => {
             this.setState({ showAddForm: false }, () => this.handleAdd(values));
@@ -211,4 +206,4 @@ class Inventory extends React.Component {
   }
 }
 
-export default Inventory;
+export default Publishers;

@@ -50,14 +50,18 @@ create table book (
 	pub_name varchar(50),
 	percentage numeric(3, 2),
 	primary key (isbn),
-	foreign key (pub_name) references publisher (name)
+	foreign key (pub_name) references publisher (name) on
+	update
+		cascade
 );
 
 create table pub_phone_number (
 	name varchar(50),
 	number varchar(20),
 	primary key (name, number),
-	foreign key (name) references publisher
+	foreign key (name) references publisher on
+	update
+		cascade
 );
 
 create table author (

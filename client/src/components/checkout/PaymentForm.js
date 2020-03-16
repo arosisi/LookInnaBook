@@ -9,27 +9,15 @@ import Spinner from "react-bootstrap/Spinner";
 import { Formik } from "formik";
 
 class PaymentForm extends React.Component {
-  getUserPaymentInfo = user => {
-    const {
-      firstName,
-      lastName,
-      address,
-      creditCard,
-      expiryDate,
-      cvv,
-      holderName,
-      billingAddress
-    } = user;
-    return {
-      recipient: `${firstName} ${lastName}`,
-      shippingAddress: address,
-      creditCard,
-      expiryDate,
-      cvv,
-      holderName,
-      billingAddress
-    };
-  };
+  getUserPaymentInfo = user => ({
+    recipient: `${user.firstName} ${user.lastName}`,
+    shippingAddress: user.address,
+    creditCard: user.creditCard,
+    expiryDate: user.expiryDate,
+    cvv: user.cvv,
+    holderName: user.holderName,
+    billingAddress: user.billingAddress
+  });
 
   render() {
     const {

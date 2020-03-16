@@ -2,14 +2,14 @@ import React from "react";
 import Dropdown from "react-bootstrap/Dropdown";
 import { FiMoreVertical } from "react-icons/fi";
 
-import InventoryForm from "./InventoryForm";
+import PublisherForm from "./PublisherForm";
 import TwoActionDialog from "../TwoActionDialog";
 
-class InventoryActions extends React.Component {
+class PublisherActions extends React.Component {
   state = { showEditForm: false, showDeleteConfirmation: false };
 
   render() {
-    const { item, publishers, onRemove, onEdit } = this.props;
+    const { publisher, onRemove, onEdit } = this.props;
     const { showEditForm, showDeleteConfirmation } = this.state;
 
     const MoreIcon = React.forwardRef(({ children, onClick }, ref) => (
@@ -43,14 +43,9 @@ class InventoryActions extends React.Component {
           </Dropdown.Menu>
         </Dropdown>
 
-        <InventoryForm
+        <PublisherForm
           show={showEditForm}
-          item={item}
-          publishers={
-            publishers.includes(item.publisher)
-              ? publishers.sort()
-              : [...publishers, item.publisher].sort()
-          }
+          publisher={publisher}
           onSubmit={values => {
             this.setState({ showEditForm: false }, () => onEdit(values));
           }}
@@ -68,7 +63,7 @@ class InventoryActions extends React.Component {
           }
           onPrimaryAction={() =>
             this.setState({ showDeleteConfirmation: false }, () =>
-              onRemove(item.isbn)
+              onRemove(publisher.name)
             )
           }
         />
@@ -77,4 +72,4 @@ class InventoryActions extends React.Component {
   }
 }
 
-export default InventoryActions;
+export default PublisherActions;

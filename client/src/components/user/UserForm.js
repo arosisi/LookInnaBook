@@ -9,6 +9,8 @@ import Spinner from "react-bootstrap/Spinner";
 import { Formik } from "formik";
 
 class UserForm extends React.Component {
+  state = { showEmailError: false };
+
   render() {
     const {
       context,
@@ -17,9 +19,18 @@ class UserForm extends React.Component {
       submitting,
       showAlert
     } = this.props;
+    const { showEmailError } = this.state;
     return (
       <Formik
-        onSubmit={onSubmit}
+        onSubmit={values => {
+          if (
+            /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/.test(values.email)
+          ) {
+            onSubmit(values);
+          } else {
+            this.setState({ showEmailError: true });
+          }
+        }}
         initialValues={
           context.user
             ? context.user
@@ -89,9 +100,24 @@ class UserForm extends React.Component {
                 <Form.Control
                   type='email'
                   name='email'
+                  isInvalid={showEmailError}
                   value={values.email}
-                  onChange={handleChange}
+                  onChange={event => {
+                    this.setState({ showEmailError: false });
+                    handleChange(event);
+                  }}
                 />
+                {showEmailError && (
+                  <p
+                    style={{
+                      margin: "0 0 0 0.75rem",
+                      fontSize: "0.8rem",
+                      color: "#dc3545"
+                    }}
+                  >
+                    Invalid email format.
+                  </p>
+                )}
               </Col>
             </Form.Group>
 

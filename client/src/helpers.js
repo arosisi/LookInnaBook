@@ -32,21 +32,6 @@ export const getCurrencyString = amount =>
     currency: "CAD"
   });
 
-export const transform = user => ({
-  id: user.u_id,
-  role: user.role,
-  firstName: user.first_name,
-  lastName: user.last_name,
-  address: user.address,
-  email: user.email,
-  password: user.password,
-  creditCard: user.card_number,
-  expiryDate: user.expiry_date,
-  cvv: user.cvv,
-  holderName: user.holder_name,
-  billingAddress: user.billing_address
-});
-
 export const filter = (books, filters) => {
   const {
     keyword,

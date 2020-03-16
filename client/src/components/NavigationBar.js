@@ -83,13 +83,13 @@ class NavigationBar extends React.Component {
               )}
               {context.isOwner() && (
                 <NavDropdown.Item
-                  href='sales-reports'
+                  href='reports'
                   onClick={event => {
                     event.preventDefault();
-                    context.redirect("sales-reports");
+                    context.redirect("reports");
                   }}
                 >
-                  Sales Reports
+                  Reports
                 </NavDropdown.Item>
               )}
               <NavDropdown.Divider />
