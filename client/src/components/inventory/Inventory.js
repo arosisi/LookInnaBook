@@ -1,5 +1,6 @@
 import React from "react";
 import Button from "react-bootstrap/Button";
+import Modal from "react-bootstrap/Modal";
 import Row from "react-bootstrap/Row";
 import Spinner from "react-bootstrap/Spinner";
 
@@ -177,7 +178,6 @@ class Inventory extends React.Component {
 
         {inventory.length ? (
           <InventoryTable
-            processing={processing}
             success={success}
             showAlert={showAlert}
             onRemove={this.handleRemove}
@@ -202,6 +202,10 @@ class Inventory extends React.Component {
           }}
           onCancel={() => this.setState({ showAddForm: false })}
         />
+
+        <Modal show={processing} onHide={() => {}}>
+          <Modal.Body>Processing...</Modal.Body>
+        </Modal>
       </div>
     );
   }

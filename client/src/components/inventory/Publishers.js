@@ -1,5 +1,6 @@
 import React from "react";
 import Button from "react-bootstrap/Button";
+import Modal from "react-bootstrap/Modal";
 import Row from "react-bootstrap/Row";
 import Spinner from "react-bootstrap/Spinner";
 
@@ -174,7 +175,6 @@ class Publishers extends React.Component {
 
         {publishers.length ? (
           <PublisherTable
-            processing={processing}
             success={success}
             showAlert={showAlert}
             onRemove={this.handleRemove}
@@ -197,6 +197,10 @@ class Publishers extends React.Component {
           }}
           onCancel={() => this.setState({ showAddForm: false })}
         />
+
+        <Modal show={processing} onHide={() => {}}>
+          <Modal.Body>Processing...</Modal.Body>
+        </Modal>
       </div>
     );
   }

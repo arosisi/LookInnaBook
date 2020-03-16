@@ -1,6 +1,5 @@
 import React from "react";
 import Alert from "react-bootstrap/Alert";
-import Modal from "react-bootstrap/Modal";
 import Table from "react-bootstrap/Table";
 import Toast from "react-bootstrap/Toast";
 
@@ -42,7 +41,6 @@ class PublisherTable extends React.Component {
 
   render() {
     const {
-      processing,
       success,
       showAlert,
       publishers,
@@ -87,10 +85,6 @@ class PublisherTable extends React.Component {
             ))}
           </tbody>
         </Table>
-
-        <Modal show={processing} onHide={() => {}}>
-          <Modal.Body>Processing...</Modal.Body>
-        </Modal>
 
         {this.renderToast(
           success,
