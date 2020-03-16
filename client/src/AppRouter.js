@@ -10,7 +10,7 @@ import NavigationBar from "./components/NavigationBar";
 import Orders from "./components/orders/Orders";
 import Profile from "./components/user/Profile";
 import Registration from "./components/user/Registration";
-import SalesReports from "./components/reports/SalesReports";
+import Reports from "./components/reports/Reports";
 import withConsumer from "./withConsumer";
 
 class AppRouter extends React.Component {
@@ -28,7 +28,7 @@ class AppRouter extends React.Component {
           <Route path='/login' component={Login} />
           <Route path='/profile' component={Profile} />
           <Route path='/registration' component={Registration} />
-          <Route path='/sales-reports' component={SalesReports} />
+          <Route path='/reports' component={Reports} />
           <Route path='/orders' component={Orders} />
         </Switch>
       </BrowserRouter>
