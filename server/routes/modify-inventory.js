@@ -155,7 +155,6 @@ module.exports = client => {
                 }
             })
         }
-        
         payload.send({ success: true })
     })
     return router

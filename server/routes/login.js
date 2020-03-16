@@ -35,16 +35,17 @@ module.exports = client => {
             profile.address,
             profile.email,
             profile.password,
-            credit_card.card_number,
-            credit_card.expiry_date,
-            credit_card.cvv,
-            credit_card.holder_name,
-            credit_card.billing_address
-        FROM profile, credit_card 
+            credit_card_info.card_number,
+            credit_card_info.expiry_date,
+            credit_card_info.cvv,
+            credit_card_info.holder_name,
+            credit_card_info.billing_address
+        FROM profile, credit_card, credit_card_info 
         WHERE profile.u_id = credit_card.u_id AND
               profile.card_number = credit_card.card_number AND
+              credit_card.card_number = credit_card_info.card_number AND
               email = ${email} AND 
-              password = ${password} 
+              password = ${password}
         LIMIT 1`
         client.query(userQuery, (err, res) => {
             if (err) {

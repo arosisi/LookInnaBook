@@ -33,68 +33,91 @@ module.exports = client => {
             billingAddress
         } = req.body
         
-        const userUpdate = `
-        UPDATE profile
-        SET
-            firstName = ${firstName}
-            lastName = ${lastName}
-            address = ${address}
-            email = ${email}
-            password = ${password}
-        WHERE u_id = ${u_id}`
-        
-        const creditCardQuery = `
-        SELECT *
-        FROM credit_card, profile
-        WHERE credit_card.u_id = ${u_id} AND
-              profile.card_number = credit_card.card_number`
-        
-        const creditCardUpdate = `
-        UPDATE credit_card
-        SET
-            card_number = ${creditCard},
-            cvv = ${cvv},
-            billing_address = ${billingAddress},
-            holder_name = ${holderName},
-            expiry_date = ${expiryDate}
-        WHERE u_id = ${u_id}`
-        
-        const creditCardInsert = `
-        INSERT INTO credit_card (u_id, card_number, expiry_date, cvv, billing_address, holder_name)
-        VALUES (${u_id}, ${creditCard}, ${expiryDate}, ${cvv}, ${billingAddress}, ${holderName})`
-        
+        const attributeUpdate = ''.concat(
+            firstName ? `first_name = ${firstName},` : '',
+            lastName ? `last_name = ${lastName},` : '',
+            address ? `address = ${address},` : '', 
+            email ? `email = ${email},` : '',  
+            password ? `password = ${password},` : ''
+        )
+      
         //Update user profile info
-        client.query(userUpdate, (err, res) => {
+        attributeUpdate && client.query(
+            `UPDATE profile
+            SET
+                ${attributeUpdate.slice(0,-1)}
+            WHERE u_id = ${u_id}`, (err, res) => {
             if (err) {
                 payload.send({ success: false, errMessage: "Failed to update user database"  })
             } else {
+                //If none of these attributes were updated, then skip credit card updating
+                if (!creditCard && !expiryDate && !cvv && !holderName && !billingAddress) {
+                    return
+                }
                 //If updated successfully, query for user's credit card
+                const creditCardQuery = `
+                SELECT credit_card_info.card_number
+                FROM credit_card, profile, credit_card_info
+                WHERE credit_card.u_id = ${u_id} AND
+                      profile.card_number = credit_card.card_number AND
+                      credit_card.card_number = credit_card_info.card_number`
                 client.query(creditCardQuery, error => {
                     if (error) {
                         payload.send({ success: false, errMessage: "Failed to update user database"  })
                     } else {
                         //If found card, then update card
-                        if (response.rows.length > 0) {
+                        const cAttributeUpdate = ''.concat(
+                            creditCard ? 
+                                `
+                                credit_card.card_number = ${creditCard}, 
+                                credit_card_info.card_number = ${creditCard},
+                                profile.card_number = ${creditCard}
+                                ` : '',
+                            cvv ? `credit_card_info.cvv = ${cvv},` : '',
+                            billingAddress ? `credit_card_info.billing_address = ${billingAddress},` : '', 
+                            holderName ? `credit_card_info.holder_name = ${holderName},` : '',  
+                            expiryDate ? `credit_card_info.expiry_date = ${expiryDate},` : ''
+                        )
+                        //Update profile, credit_card and credit_card_info all at once
+                        if (response.rows.length > 0 && cAttributeUpdate) {
+                            const creditCardUpdate = `
+                            UPDATE credit_card, credit_card_info, profile
+                            SET
+                                ${cAttributeUpdate.slice(0,-1)} 
+                            WHERE credit_card.u_id = ${u_id} AND
+                                  profile.card_number = credit_card.card_number AND
+                                  credit_card.card_number = credit_card_info.card_number`
                             client.query(creditCardUpdate, e => {
                                 if (e) {
                                     payload.send({ success: false, errMessage: "Failed to update user database"  })
-                                } else {
-                                    payload.send({ success: true })
                                 }
                             }
                         } else {
-                            //else insert new card into db
-                            client.query(creditCardUpdate, e => {
+                            //Else insert new card into db. All info are assumed to be present
+                            const creditCardInsert = `
+                            INSERT INTO credit_card (u_id, card_number)
+                            VALUES (${u_id}, ${creditCard})`
+                            
+                            const creditCardInfoInsert = `
+                            INSERT INTO credit_card (card_number, expiry_date, cvv, billing_address, holder_name)
+                            VALUES (${creditCard}, ${expiryDate}, ${cvv}, ${billingAddress}, ${holderName})`
+                            
+                            client.query(creditCardInsert, e => {
                                 if (e) {
                                     payload.send({ success: false, errMessage: "Failed to update user database"  })
                                 } else {
-                                    payload.send({ success: true })
+                                    client.query(creditCardInfoInsert, e2 => {
+                                        if (e2) {
+                                            payload.send({ success: false, errMessage: "Failed to update user database"  })
+                                        }
+                                    }
                                 }
                             }
                         }
                     }
                 })
             }
+            payload.send({ success: true })
         })
     })
     return router
