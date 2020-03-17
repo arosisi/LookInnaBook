@@ -29,7 +29,7 @@ class PaymentForm extends React.Component {
     } = this.props;
     return (
       <Formik
-        onSubmit={onSubmit}
+        onSubmit={values => onSubmit({ id: context.user.id, ...values })}
         initialValues={
           context.user
             ? this.getUserPaymentInfo(context.user)

@@ -20,6 +20,7 @@ module.exports = client => {
         }
         
         const {
+            id,
             subTotal, 
             tax, 
             shipping, 
@@ -34,17 +35,19 @@ module.exports = client => {
         const query = {
             text: 
                 `INSERT INTO cart(
+                    u_id,
                     date, 
                     tax, 
                     subtotal, 
                     confirmed_time, 
                     shipped_time, 
-                    received_time
+                    received_time,
                     shipping_cost,
                     shipping_address,
                     recipient
-                ) VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9) RETURNING order_id`,
+                ) VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, $10) RETURNING order_id`,
             values: [
+                id,
                 moment().format('MMMM Do YYYY, h:mm:ss a'),
                 tax,
                 subTotal,

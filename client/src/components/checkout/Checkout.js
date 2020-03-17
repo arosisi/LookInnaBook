@@ -48,7 +48,7 @@ class Checkout extends React.Component {
               submitting: false,
               showAlert: true
             });
-            console.log(response.message);
+            console.log(response.errMessage);
           }
         })
         .catch(error => console.log("Unable to connect to API payment.", error))
