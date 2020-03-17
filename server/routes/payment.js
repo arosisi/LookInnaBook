@@ -5,35 +5,26 @@ const moment = require("moment")
 const config = require("../config");
 
 module.exports = client => {
-    
-    //Check whether request contains an order
-    router.use((req, res) => {
-        const books = req && req.body && req.body.books
-        if (!books) {
-            res.send({ success: false, errMessage: "Couldn't find valid order infomation" })
-        }
-        next()
-    })
-    
-    //Check whether request contains a card
-    router.use((req, res) => {
-        const creditCard = req && req.body && req.body.creditCard
-        if (!creditCard) {
-            res.send({ success: false, errMessage: "Couldn't find payment info" })
-        }
-        next()
-    })
   
     router.post("/", (req, payload) => {
+        //Check whether request contains an order
+        const books = req && req.body && req.body.books
+        if (!books) {
+            payload.send({ success: false, errMessage: "Couldn't find valid order infomation" })
+        }
         
-        const { 
-            books, 
+        //Check whether request contains a card
+        const creditCard = req && req.body && req.body.creditCard
+        if (!creditCard) {
+            payload.send({ success: false, errMessage: "Couldn't find payment info" })
+        }
+        
+        const {
             subTotal, 
             tax, 
             shipping, 
             recipient, 
-            shippingAddress, 
-            creditCard, 
+            shippingAddress,
             expiryDate, 
             cvv, 
             holderName, 

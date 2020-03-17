@@ -4,18 +4,13 @@ const nodemailer = require("nodemailer");
 const config = require("../config");
 
 module.exports = client => {
-    
-    //Check whether request contains a valid email in body
-    router.use((req, res) => {
+    router.post("/", (req, payload) => {
+        
+        //Check whether request contains a valid email in body
         const email = req && req.body && req.body.email
         if (!email) {
-            res.send({ success: false, errMessage: "Couldn't find a valid email" })
+            payload.send({ success: false, errMessage: "Couldn't find a valid email" })
         }
-        next()
-    })
-  
-    router.post("/", (req, payload) => {
-        const email = req.body.email
         
         const query = `
         SELECT password

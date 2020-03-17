@@ -5,17 +5,12 @@ const moment = require("moment")
 const config = require("../config");
 
 module.exports = client => {
-    
-    //Check whether request contains a body
-    router.use((req, res) => {
+    router.post("/", (req, payload) => {
+        //Check whether request contains a body
         const body = req && req.body
         if (!body) {
-            res.send({ success: false, errMessage: "Couldn't find registration information" })
+            payload.send({ success: false, errMessage: "Couldn't find registration information" })
         }
-        next()
-    })
-  
-    router.post("/", (req, payload) => {
         const { 
             firstName, 
             lastName, 
@@ -27,7 +22,7 @@ module.exports = client => {
             cvv, 
             holderName, 
             billingAddress
-        } = req.body
+        } = body
         
         const query = {
             text: 

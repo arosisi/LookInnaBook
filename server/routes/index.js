@@ -3,7 +3,7 @@ const router = require("express").Router();
 const setupApi = client => {
     const attachDb = api => require(api)(client)
     
-    router.use('/books', require('./books')(client));
+    router.use('/books', attachDb('./books'));
     router.use('/inventory', attachDb('./inventory'));
     router.use('/publishers', attachDb('./publishers'));
     router.use('/orders', attachDb('./orders'));

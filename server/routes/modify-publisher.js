@@ -5,20 +5,15 @@ const moment = require("moment")
 const config = require("../config");
 
 module.exports = client => {
-    
-    //Check whether request contains an action
-    router.use((req, res) => {
-        const action = req && req.body && req.body.action
-        if (!action) {
-            res.send({ success: false, errMessage: "Couldn't find a valid action" })
-        }
-        next()
-    })
   
     router.post("/", (req, payload) => {
+        //Check whether request contains an action
+        const action = req && req.body && req.body.action
+        if (!action) {
+            payload.send({ success: false, errMessage: "Couldn't find a valid action" })
+        }
         
         const {
-            action, 
             name, 
             newName, 
             address, 

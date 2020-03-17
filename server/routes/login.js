@@ -1,31 +1,27 @@
 const router = require("express").Router()
 
 module.exports = client => {
-    router.use((req, res) => {
-         const { email, password } = req.body || {}
-         if (!email || !password) {
-             res.send({ success: false, errMessage: "Failed to fetch from database" })
-         }
-         client.query(
+    router.post("/", (req, payload) => {
+        
+        const { email, password } = req.body || {}
+        if (!email || !password) {
+            payload.send({ success: false, errMessage: "Failed to fetch from database" })
+        }
+        client.query(
             `SELECT u_id 
             FROM profile 
             WHERE email = ${email} AND 
                   password = ${password} 
             LIMIT 1`,
-            err => {
+            (err, res) => {
                 if (err) {
-                    res.send({ success: false, errMessage: "Failed to fetch from database" })
+                    payload.send({ success: false, errMessage: "Failed to fetch from database" })
                 } else if (res.rows.length < 1) {
-                    res.send({ success: false, errMessage: "Couldn't find an user with that email and password" })
-                } else {
-                    next()
+                    payload.send({ success: false, errMessage: "Couldn't find an user with that email and password" })
                 }
             }
         )
-    })
         
-    router.post("/", (req, payload) => {
-        const { email, password } = req.body
         const userQuery = 
         `SELECT 
             profile.u_id,

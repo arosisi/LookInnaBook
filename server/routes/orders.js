@@ -1,26 +1,21 @@
 const router = require("express").Router()
 
 module.exports = client => {
-    
-    //Check whether request contains a valid userId in body
-    router.use((req, res) => {
-        const userId = req && req.body && req.body.u_id
-        if (!userId) {
-            res.send({ success: false, errMessage: "Couldn't find an user id" })
-        }
-        client.query(`SELECT u_id FROM profile WHERE u_id = ${userId}`, err => {
-            if (err) {
-                res.send({ success: false, errMessage: "Couldn't find user with given ID" })
-            } else if (res.rows.length < 1) {
-                res.send({ success: false, errMessage: "Couldn't find user with given ID" })
-            } else {
-                next()
-            }
-        })
-    })
   
     router.post("/", (req, payload) => {
-        const userId = req.body.u_id
+        //Check whether request contains a valid userId in body
+        const userId = req && req.body && req.body.u_id
+        if (!userId) {
+            payload.send({ success: false, errMessage: "Couldn't find an user id" })
+        }
+        client.query(`SELECT u_id FROM profile WHERE u_id = ${userId}`, (err, res) => {
+            if (err) {
+                payload.send({ success: false, errMessage: "Couldn't find user with given ID" })
+            } else if (res.rows.length < 1) {
+                payload.send({ success: false, errMessage: "Couldn't find user with given ID" })
+            }
+        })
+        
         const query = `
         SELECT 
               cart.order_id,
