@@ -21,7 +21,7 @@ module.exports = client => {
               cart.order_id,
               cart.date,
               cart_book.isbn,
-              cart_book.quantity
+              cart_book.quantity,
               book.title,
               book.price,
               cart.tax,
@@ -37,6 +37,7 @@ module.exports = client => {
             if (err) {
                 payload.send({ success: false, errMessage: "Failed to fetch from database" })
             } else {
+                // bug below <-- TODO: delete this comment after fixing
                 const orders = []
                 const currentOrder = {}
                 const includedBooks = []
