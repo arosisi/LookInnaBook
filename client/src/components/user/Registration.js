@@ -24,7 +24,7 @@ class Registration extends React.Component {
               submitting: false,
               showAlert: true
             });
-            console.log(response.message);
+            console.log(response.errMessage);
           }
         })
         .catch(error =>

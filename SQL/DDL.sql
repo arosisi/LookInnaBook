@@ -90,7 +90,7 @@ create table genre (
 create table credit_card_info (
 	card_number numeric(16, 0),
 	expiry_date varchar(20),
-	cvv numeric(3, 0),
+	cvv varchar(3),
 	billing_address varchar(255),
 	holder_name varchar(100),
 	primary key (card_number)

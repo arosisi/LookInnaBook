@@ -26,7 +26,10 @@ class UserForm extends React.Component {
           if (
             /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/.test(values.email)
           ) {
-            onSubmit(values);
+            onSubmit({
+              ...values,
+              creditCard: values.creditCard.replace(/\s/g, "")
+            });
           } else {
             this.setState({ showEmailError: true });
           }
