@@ -3,7 +3,9 @@ const router = require("express").Router()
 module.exports = client => {
     router.post("/", (req, payload) => {
         const isbns = req && req.body && req.body.isbns
-        const requestedBooksQuery = Array.isArray(isbns) && isbns.length > 0 ? ` AND book.isbn IN (${isbns})` : ''
+        const requestedBooksQuery = Array.isArray(isbns) && isbns.length > 0 ? ` AND book.isbn IN (${isbns.map(isbn => `'${isbn}'`).join(", ")})` : ''
+        // TODO: delete after fixing
+        console.log(requestedBooksQuery)
         const query = `
         SELECT 
               book.percentage as publisher_percentage,
@@ -28,6 +30,8 @@ module.exports = client => {
             if (err) {
                 payload.send({ success: false, errMessage: "Failed to fetch from database" })
             } else {
+                // TODO: delete after fixing
+                console.log(res.rows.map(row => row.isbn))
                 const books = []
                 let currentBook = null
                 res.rows.forEach(row => {

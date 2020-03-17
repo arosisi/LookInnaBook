@@ -32,12 +32,12 @@ class Cart extends React.Component {
         })
           .then(response => response.json())
           .then(response => {
-            this.setState({
-              fetching: false,
-              // TODO: just books: response.books
-              // when integrated with back-end
-              books: response.books.filter(book => isbns.includes(book.isbn))
-            });
+            if (response.success) {
+              this.setState({ fetching: false, books: response.books });
+            } else {
+              this.setState({ fetching: false });
+              console.log(response.errMessage);
+            }
           })
           .catch(error =>
             console.log("Unable to connect to API books.", error)
