@@ -171,8 +171,8 @@ module.exports = client => {
                     shouldAbort(err)
                     payload.send({ success: true })
                 })
-            )))
-        }
+            })))
+        })
     })
     return router
 }

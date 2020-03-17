@@ -11,6 +11,7 @@ module.exports = client => {
         if (!body) {
             payload.send({ success: false, errMessage: "Couldn't find registration information" })
         }
+        
         const { 
             firstName, 
             lastName, 
@@ -23,6 +24,14 @@ module.exports = client => {
             holderName, 
             billingAddress
         } = body
+        
+        client.query(`SELECT u_id FROM profile WHERE email = '${email}' LIMIT 1`, (err, res) => {
+            if (err) {
+                payload.send({ success: false, errMessage: "Couldn't validate registration information" })
+            } else if (res.rows.length > 0) {
+                payload.send({ success: false, errMessage: "Email has already been registered" })
+            }
+        })
         
         const shouldAbort = err => {
             if (err) {
@@ -70,7 +79,7 @@ module.exports = client => {
                             card_number
                         ) VALUES($1, $2)`,
                     values: [
-                        userId
+                        userId,
                         parseInt(creditCard)
                     ]
                 }
@@ -103,7 +112,7 @@ module.exports = client => {
                         })
                     })
                 })
-            }
+            })
         })
     })
     return router

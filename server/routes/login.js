@@ -43,7 +43,6 @@ module.exports = client => {
               email = '${email}' AND 
               password = '${password}'
         LIMIT 1`
-        console.log(userQuery)
         client.query(userQuery, (err, res) => {
             if (err) {
                 payload.send({ success: false, errMessage: "Failed to fetch from database" });
