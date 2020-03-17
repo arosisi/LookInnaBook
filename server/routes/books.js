@@ -29,7 +29,7 @@ module.exports = client => {
                 payload.send({ success: false, errMessage: "Failed to fetch from database" })
             } else {
                 const books = []
-                const currentBook = {}
+                let currentBook = null
                 res.rows.forEach(row => {
                     if (!currentBook) {
                         const { author, genre, ...other } = row

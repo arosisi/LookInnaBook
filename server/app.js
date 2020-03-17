@@ -4,6 +4,7 @@ const express = require("express");
 const logger = require("morgan");
 const path = require("path");
 const { Client } = require("pg");
+const cors = require("cors");
 
 const config = require("./config");
 
@@ -20,6 +21,9 @@ const client = new Client({
 app.set("views", path.join(__dirname, "views"));
 app.set("view engine", "jade");
 
+app.use(cors({
+  origin: 'http://localhost:3000'
+}));
 app.use(logger("dev"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));

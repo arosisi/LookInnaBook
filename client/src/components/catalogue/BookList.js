@@ -13,9 +13,9 @@ class BookList extends React.Component {
 
   componentDidMount() {
     const { books } = this.props;
-    const state = {};
-    books.forEach(book => (state[book.isbn] = 0));
-    this.setState({ initializing: false, ...state });
+    const state = { initializing: false };
+    books.forEach(book => { state[book.isbn] = 0 });
+    this.setState(state);
   }
 
   getActivePageBooks = () => {
