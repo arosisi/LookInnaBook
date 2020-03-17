@@ -52,52 +52,62 @@ export const filter = (books, filters) => {
       includesIgnoreCase(book.title, keyword) ||
       matchAuthors(book.authors, keyword) ||
       book.isbn.includes(keyword);
-    const byPriceLessThan10 = priceLessThan10 ? book.price < 10 : true;
+    const byPrice = priceLessThan10 || priceFrom10To20 || priceMoreThan20;
+    const byPriceLessThan10 = priceLessThan10 ? book.price < 10 : false;
     const byPriceFrom10To20 = priceFrom10To20
       ? book.price >= 10 && book.price <= 20
-      : true;
-    const byPriceMoreThan20 = priceMoreThan20 ? book.price > 20 : true;
+      : false;
+    const byPriceMoreThan20 = priceMoreThan20 ? book.price > 20 : false;
+    const byGenre = genreFiction || genreNonfiction;
     const byGenreFiction = genreFiction
       ? book.genres.some(genre => genres.fiction.includes(genre))
-      : true;
+      : false;
     const byGenreNonfiction = genreNonfiction
       ? book.genres.some(genre => genres.nonfiction.includes(genre))
-      : true;
-    const byShueisha = Shueisha ? book.publisher === "Shueisha" : true;
+      : false;
+    const byPublisher =
+      Shueisha ||
+      SpringerNature ||
+      HoughtonMifflinHarcourt ||
+      PenguinRandomHouse ||
+      GrupoSantillana ||
+      Others;
+    const byShueisha = Shueisha ? book.publisher === "Shueisha" : false;
     const bySpringerNature = SpringerNature
-      ? book.publisher === "SpringerNature"
-      : true;
+      ? book.publisher === "Springer Nature"
+      : false;
     const byHoughtonMifflinHarcourt = HoughtonMifflinHarcourt
-      ? book.publisher === "HoughtonMifflinHarcourt"
-      : true;
+      ? book.publisher === "Houghton Mifflin Harcourt"
+      : false;
     const byPenguinRandomHouse = PenguinRandomHouse
-      ? book.publisher === "PenguinRandomHouse"
-      : true;
+      ? book.publisher === "Penguin Random House"
+      : false;
     const byGrupoSantillana = GrupoSantillana
-      ? book.publisher === "GrupoSantillana"
-      : true;
+      ? book.publisher === "Grupo Santillana"
+      : false;
     const byOthers = Others
       ? ![
           "Shueisha",
-          "SpringerNature",
-          "HoughtonMifflinHarcourt",
-          "PenguinRandomHouse",
-          "GrupoSantillana"
+          "Springer Nature",
+          "Houghton Mifflin Harcourt",
+          "Penguin Random House",
+          "Grupo Santillana"
         ].includes(book.publisher)
-      : true;
+      : false;
     return (
       byKeyword &&
-      byPriceLessThan10 &&
-      byPriceFrom10To20 &&
-      byPriceMoreThan20 &&
-      byGenreFiction &&
-      byGenreNonfiction &&
-      byShueisha &&
-      bySpringerNature &&
-      byHoughtonMifflinHarcourt &&
-      byPenguinRandomHouse &&
-      byGrupoSantillana &&
-      byOthers
+      (!byPrice ||
+        byPriceLessThan10 ||
+        byPriceFrom10To20 ||
+        byPriceMoreThan20) &&
+      (!byGenre || byGenreFiction || byGenreNonfiction) &&
+      (!byPublisher ||
+        byShueisha ||
+        bySpringerNature ||
+        byHoughtonMifflinHarcourt ||
+        byPenguinRandomHouse ||
+        byGrupoSantillana ||
+        byOthers)
     );
   });
 };
