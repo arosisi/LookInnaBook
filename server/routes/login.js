@@ -10,8 +10,8 @@ module.exports = client => {
         client.query(
             `SELECT u_id 
             FROM profile 
-            WHERE email = ${email} AND 
-                  password = ${password} 
+            WHERE email = '${email}' AND 
+                  password = '${password}' 
             LIMIT 1`,
             (err, res) => {
                 if (err) {
@@ -40,9 +40,10 @@ module.exports = client => {
         WHERE profile.u_id = credit_card.u_id AND
               profile.card_number = credit_card.card_number AND
               credit_card.card_number = credit_card_info.card_number AND
-              email = ${email} AND 
-              password = ${password}
+              email = '${email}' AND 
+              password = '${password}'
         LIMIT 1`
+        console.log(userQuery)
         client.query(userQuery, (err, res) => {
             if (err) {
                 payload.send({ success: false, errMessage: "Failed to fetch from database" });

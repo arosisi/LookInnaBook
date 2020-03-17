@@ -25,7 +25,7 @@ module.exports = client => {
         let query = ''
         
         if (action === 'remove') {
-            query = `UPDATE publisher SET available = false WHERE name = ${name}`
+            query = `UPDATE publisher SET available = false WHERE name = '${name}'`
             client.query(query, (err, res) => {
                 if (err) {
                     payload.send({ success: false, errMessage: "Failed to update publisher info" })
@@ -56,16 +56,16 @@ module.exports = client => {
             })
         } else {
             const attributeUpdate = ''.concat(
-                    newName ? `name = ${newName},` : '',
-                    email ? `email = ${email},` : '',
-                    bankAccount ? `bank_account = ${bankAccount},` : '',
-                    address ? `address = ${address},` : ''
+                    newName ? `name = '${newName}',` : '',
+                    email ? `email = '${email}',` : '',
+                    bankAccount ? `bank_account = '${bankAccount}',` : '',
+                    address ? `address = '${address}',` : ''
                 )
             if (attributeUpdate) {
                 query = query.concat(
                     'UPDATE credit_card SET ',
                     attributeUpdate.slice(0, -1),
-                    ` WHERE name = ${name}`
+                    ` WHERE name = '${name}'`
                 )
                 client.query(query, (err, res) => {
                     if (err) {
@@ -98,7 +98,7 @@ module.exports = client => {
                 `UPDATE pub_phone_number 
                 SET 
                     number = ${numbers}
-                WHERE name = ${newName || name}`,
+                WHERE name = '${newName || name}'`,
                 err => {
                     if (err) {
                         payload.send({ success: false, errMessage: "Failed to update publisher info" })

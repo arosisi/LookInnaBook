@@ -15,7 +15,7 @@ module.exports = client => {
         const query = `
         SELECT password
         FROM profile
-        WHERE email = ${email}`
+        WHERE email = '${email}'`
         
         client.query(query, (err, res) => {
             if (err || res.rows.length < 1) {

@@ -33,7 +33,7 @@ module.exports = client => {
         let query = ''
         
         if (action === 'remove') {
-            query = `UPDATE book SET available = false WHERE isbn = ${isbn}`
+            query = `UPDATE book SET available = false WHERE isbn = '${isbn}'`
             client.query(query, (err, res) => {
                 if (err) {
                     payload.send({ success: false, errMessage: "Failed to update book info" })
@@ -56,7 +56,7 @@ module.exports = client => {
                         pub_name,
                         percentage,
                         available
-                    ) VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, true)`,
+                    ) VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13)`,
                 values: [
                     isbn, 
                     title, 
@@ -69,7 +69,8 @@ module.exports = client => {
                     quantity, 
                     threshold,
                     publisher,
-                    percentage
+                    percentage,
+                    true
                 ]
             }
             client.query(query, (err, res) => {
@@ -79,25 +80,25 @@ module.exports = client => {
             })
         } else {
             const attributeUpdate = ''.concat(
-                    title ? `title = ${title},` : '',
+                    title ? `title = '${title}',` : '',
                     year ? `year = ${year},` : '',
-                    description ? `description = ${description},` : '', 
+                    description ? `description = '${description}',` : '', 
                     pageCount ? `page_count = ${pageCount},` : '',  
-                    coverUrl ? `cover_url = ${coverUrl},` : '', 
+                    coverUrl ? `cover_url = '${coverUrl}',` : '', 
                     cost ? `cost = ${cost},` : '', 
                     price ? `price = ${price},` : '', 
                     quantity ? `quantity = ${quantity},` : '', 
                     threshold ? `threshold = ${threshold},` : '',
                     quantity ? `quantity = ${quantity},` : '', 
                     threshold ? `threshold = ${threshold},` : '',
-                    publisher ? `pub_name = ${publisher},` : '', 
+                    publisher ? `pub_name = '${publisher}',` : '', 
                     percentage ? `percentage = ${percentage},` : ''
                 )
             if (attributeUpdate) {
                 query = query.concat(
                     'UPDATE book SET ',
                     attributeUpdate.slice(0, -1), //Remove the ending colon in the query string
-                    ` WHERE isbn = ${isbn}`
+                    ` WHERE isbn = '${isbn}'`
                 )
                 client.query(query, (err, res) => {
                     if (err) {
@@ -110,7 +111,7 @@ module.exports = client => {
         //Update the book's genres
         if (genres) {
             //First remove all the genres associated with the book
-            const deleteQuery = `DELETE from genre WHERE isbn = ${isbn}`
+            const deleteQuery = `DELETE from genre WHERE isbn = '${isbn}'`
             client.query(deleteQuery, (err, res) => {
                 if (err) {
                     payload.send({ success: false, errMessage: "Failed to update book info" })
@@ -118,9 +119,9 @@ module.exports = client => {
                     //Add list of genres
                     let updateQuery = 'INSERT INTO genre (isbn, genre) VALUES '
                     for (const genre of genres) {
-                        updateQuery += `(${isbn}, ${genre})`
+                        updateQuery += `(${isbn}, ${genre}),`
                     }
-                    client.query(updateQuery, e => {
+                    client.query(updateQuery.slice(0,-1), e => {
                         if (e) {
                             payload.send({ success: false, errMessage: "Failed to update book info" })
                         }
@@ -132,7 +133,7 @@ module.exports = client => {
         //Update the book's authors
         if (authors) {
             //First remove all the authors associated with the book
-            const deleteQuery = `DELETE from author WHERE isbn = ${isbn}`
+            const deleteQuery = `DELETE from author WHERE isbn = '${isbn}'`
             client.query(deleteQuery, (err, res) => {
                 if (err) {
                     payload.send({ success: false, errMessage: "Failed to update book info" })
@@ -140,9 +141,9 @@ module.exports = client => {
                     //Add list of authors
                     let updateQuery = 'INSERT INTO author (isbn, author) VALUES '
                     for (const author of authors) {
-                        updateQuery += `(${isbn}, ${genre})`
+                        updateQuery += `(${isbn}, ${genre}),`
                     }
-                    client.query(updateQuery, e => {
+                    client.query(updateQuery.slice(0,-1), e => {
                         if (e) {
                             payload.send({ success: false, errMessage: "Failed to update book info" })
                         }

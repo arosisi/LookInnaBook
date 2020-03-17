@@ -34,20 +34,22 @@ module.exports = client => {
                     password,
                     card_number,
                     role
-                ) VALUES($1, $2, $3, $4, $5, $6, "user") RETURNING u_id`,
+                ) VALUES($1, $2, $3, $4, $5, $6, $7) RETURNING u_id`,
             values: [
                 firstName, 
                 lastName, 
                 address, 
                 email, 
                 password, 
-                creditCard
+                parseInt(creditCard),
+                "user"
             ]
         }
         
         //Add new user with default role "user"
         client.query(query, (err, res) => {
             if (err) {
+                console.log(err)
                 payload.send({ success: false, errMessage: "Failed to register user" })
             } else {
                 const { u_id: userId } = res.rows[0]

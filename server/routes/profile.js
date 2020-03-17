@@ -31,11 +31,11 @@ module.exports = client => {
         } = req.body
         
         const attributeUpdate = ''.concat(
-            firstName ? `first_name = ${firstName},` : '',
-            lastName ? `last_name = ${lastName},` : '',
-            address ? `address = ${address},` : '', 
-            email ? `email = ${email},` : '',  
-            password ? `password = ${password},` : ''
+            firstName ? `first_name = '${firstName}',` : '',
+            lastName ? `last_name = '${lastName}',` : '',
+            address ? `address = '${address}',` : '', 
+            email ? `email = '${email}',` : '',  
+            password ? `password = '${password}',` : ''
         )
       
         //Update user profile info
@@ -71,9 +71,9 @@ module.exports = client => {
                                 profile.card_number = ${creditCard}
                                 ` : '',
                             cvv ? `credit_card_info.cvv = ${cvv},` : '',
-                            billingAddress ? `credit_card_info.billing_address = ${billingAddress},` : '', 
-                            holderName ? `credit_card_info.holder_name = ${holderName},` : '',  
-                            expiryDate ? `credit_card_info.expiry_date = ${expiryDate},` : ''
+                            billingAddress ? `credit_card_info.billing_address = '${billingAddress}',` : '', 
+                            holderName ? `credit_card_info.holder_name = '${holderName}',` : '',  
+                            expiryDate ? `credit_card_info.expiry_date = '${expiryDate}',` : ''
                         )
                         //Update profile, credit_card and credit_card_info all at once
                         if (response.rows.length > 0 && cAttributeUpdate) {
@@ -91,13 +91,30 @@ module.exports = client => {
                             })
                         } else {
                             //Else insert new card into db. All info are assumed to be present
-                            const creditCardInsert = `
-                            INSERT INTO credit_card (u_id, card_number)
-                            VALUES (${u_id}, ${creditCard})`
+                            const creditCardInsert = 
+                            {
+                                text: 
+                                    `INSERT INTO credit_card(u_id, card_number)
+                                            VALUES ($1, $2)`,
+                                values: [
+                                    u_id,
+                                    creditCard
+                                ]
+                            }
                             
-                            const creditCardInfoInsert = `
-                            INSERT INTO credit_card (card_number, expiry_date, cvv, billing_address, holder_name)
-                            VALUES (${creditCard}, ${expiryDate}, ${cvv}, ${billingAddress}, ${holderName})`
+                            const creditCardInfoInsert = 
+                            {
+                                text: 
+                                    `INSERT INTO credit_card_info(card_number, expiry_date, cvv, billing_address, holder_name)
+                                    VALUES ($1, $2, $3, $4, $5)`,
+                                values: [
+                                    creditCard,
+                                    expiryDate,
+                                    cvv,
+                                    billingAddress,
+                                    holderName
+                                ]
+                            }
                             
                             client.query(creditCardInsert, e => {
                                 if (e) {
