@@ -38,7 +38,7 @@ class BookActions extends React.Component {
             onClick={() => {
               if (alreadyAddedCount + parseInt(value) <= book.quantity) {
                 context.addToCart(book, parseInt(value));
-                this.setState({ [book.isbn]: 0 });
+                onChange(0);
               } else {
                 this.setState({ showAddToCartError: true });
               }
