@@ -28,10 +28,12 @@ class Orders extends React.Component {
         })
           .then(response => response.json())
           .then(response => {
-            this.setState({
-              fetching: false,
-              orders: response.orders
-            });
+            if (response.success) {
+              this.setState({ fetching: false, orders: response.orders });
+            } else {
+              this.setState({ fetching: false });
+              console.log(response.errMessage);
+            }
           })
           .catch(error =>
             console.log("Unable to connect to API orders.", error)

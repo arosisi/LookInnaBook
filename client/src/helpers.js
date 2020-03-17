@@ -1,5 +1,9 @@
 import { genres } from "./filters";
 
+export const formatCreditCard = creditCard =>
+  // prettier-ignore
+  `${creditCard.slice(0, 4)} ${creditCard.slice(4, 8)} ${creditCard.slice(8, 12)} ${creditCard.slice(12)}`;
+
 export const getAmountsToPay = cart => {
   const subTotal = cart.reduce(
     (sum, item) => sum + item.addedToCart * item.book.price,

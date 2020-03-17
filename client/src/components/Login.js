@@ -11,6 +11,7 @@ import { Formik } from "formik";
 
 import ResetPassword from "./ResetPassword";
 import withConsumer from "../withConsumer";
+import { formatCreditCard } from "../helpers";
 
 class Login extends React.Component {
   state = {
@@ -31,15 +32,15 @@ class Login extends React.Component {
         .then(response => response.json())
         .then(response => {
           if (response.success) {
-            this.setState({ submitting: false }, () =>
-              context.logIn(this.transform(response.user))
-            );
+            this.setState({ submitting: false }, () => {
+              context.logIn(this.transform(response.user));
+            });
           } else {
             this.setState({
               submitting: false,
               showAlert: true
             });
-            console.log(response.message);
+            console.log(response.errMessage);
           }
         })
         .catch(error => console.log("Unable to connect to API login.", error))
@@ -54,7 +55,7 @@ class Login extends React.Component {
     address: user.address,
     email: user.email,
     password: user.password,
-    creditCard: user.card_number,
+    creditCard: formatCreditCard(user.card_number),
     expiryDate: user.expiry_date,
     cvv: user.cvv,
     holderName: user.holder_name,

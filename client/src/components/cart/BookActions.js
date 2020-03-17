@@ -27,7 +27,7 @@ class BookActions extends React.Component {
             onClick={() => {
               if (value <= book.quantity) {
                 context.updateCart(book, parseInt(value));
-                this.setState({ [book.isbn]: 0 });
+                onChange(0);
               } else {
                 alert("Not enough in stock.");
               }

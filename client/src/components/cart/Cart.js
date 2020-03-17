@@ -33,7 +33,13 @@ class Cart extends React.Component {
           .then(response => response.json())
           .then(response => {
             if (response.success) {
-              this.setState({ fetching: false, books: response.books });
+              this.setState({
+                fetching: false,
+                books: response.books.map(book => ({
+                  ...book,
+                  quantity: parseInt(book.quantity)
+                }))
+              });
             } else {
               this.setState({ fetching: false });
               console.log(response.errMessage);

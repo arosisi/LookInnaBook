@@ -135,7 +135,7 @@ class NavigationBar extends React.Component {
 
           <Button
             variant='link'
-            onClick={() => console.log(JSON.stringify(context.cart))}
+            onClick={() => console.log(JSON.stringify(context.user))}
             // onClick={() => this.test()}
           >
             Test
