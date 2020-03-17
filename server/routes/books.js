@@ -34,11 +34,13 @@ module.exports = client => {
                 console.log(res.rows.map(row => row.isbn))
                 const books = []
                 let currentBook = null
-                res.rows.forEach(row => {
+                res.rows.forEach((row, i) => {
                     if (!currentBook) {
                         const { author, genre, ...other } = row
                         currentBook = { ...other, authors: [author], genres: [genre] }
-                    } else if (currentBook.isbn !== row.isbn) {
+                    } else if (i === res.rows.length - 1) {
+                        books.push(currentBook)
+                    } else if (currentBook.isbn !== row.isbn ) {
                         books.push(currentBook)
                         const { author, genre, ...other } = row
                         currentBook = { ...other, authors: [author], genres: [genre] }

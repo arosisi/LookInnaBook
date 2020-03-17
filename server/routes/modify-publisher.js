@@ -22,91 +22,114 @@ module.exports = client => {
             bankAccount 
         } = req.body
         
-        let query = ''
-        
-        if (action === 'remove') {
-            query = `UPDATE publisher SET available = false WHERE name = '${name}'`
-            client.query(query, (err, res) => {
-                if (err) {
-                    payload.send({ success: false, errMessage: "Failed to update publisher info" })
-                }
-            })
-        } else if (action === 'add' ) {
-            query = {
-                text: 
-                    `INSERT INTO publisher(
-                        name, 
-                        email, 
-                        bank_account, 
-                        address, 
-                        available
-                    ) VALUES($1, $2, $3, $4, $5)`,
-                values: [
-                    newName,
-                    email,
-                    bankAccount,
-                    address,
-                    true
-                ]
-            }
-            client.query(query, (err, res) => {
-                if (err) {
-                    payload.send({ success: false, errMessage: "Failed to update publisher info" })
-                }
-            })
-        } else {
-            const attributeUpdate = ''.concat(
-                    newName ? `name = '${newName}',` : '',
-                    email ? `email = '${email}',` : '',
-                    bankAccount ? `bank_account = '${bankAccount}',` : '',
-                    address ? `address = '${address}',` : ''
-                )
-            if (attributeUpdate) {
-                query = query.concat(
-                    'UPDATE credit_card SET ',
-                    attributeUpdate.slice(0, -1),
-                    ` WHERE name = '${name}'`
-                )
-                client.query(query, (err, res) => {
+        const shouldAbort = err => {
+            if (err) {
+                console.error('Error in transaction', err.stack)
+                client.query('ROLLBACK', err => {
                     if (err) {
-                        payload.send({ success: false, errMessage: "Failed to update publisher info" })
+                        payload.send({ success: false, errMessage: "Something went very wrong" })
                     }
                 })
+                payload.send({ success: false, errMessage: "Failed to update publisher info" })
             }
         }
-        if (action === "add" && numbers) {
-            client.query(
-                {
+        
+        let query = ''
+        
+        const updatePublisher = nextCall => {
+            if (action === 'remove') {
+                query = `UPDATE publisher SET available = false WHERE name = '${name}'`
+                client.query(query, err => {
+                    shouldAbort(err)
+                    nextCall()
+                })
+            } else if (action === 'add' ) {
+                query = {
                     text: 
-                        `INSERT INTO pub_phone_number(
+                        `INSERT INTO publisher(
                             name, 
-                            number
-                        ) VALUES($1, $2)`,
+                            email, 
+                            bank_account, 
+                            address, 
+                            available
+                        ) VALUES($1, $2, $3, $4, $5)`,
                     values: [
                         newName,
-                        numbers
+                        email,
+                        bankAccount,
+                        address,
+                        true
                     ]
                 }
-                , err => {
-                    if (err) {
-                        payload.send({ success: false, errMessage: "Failed to update publisher info" })
-                    }
+                client.query(query, err => {
+                    shouldAbort(err)
+                    nextCall()
+                })
+            } else {
+                const attributeUpdate = ''.concat(
+                        newName ? `name = '${newName}',` : '',
+                        email ? `email = '${email}',` : '',
+                        bankAccount ? `bank_account = '${bankAccount}',` : '',
+                        address ? `address = '${address}',` : ''
+                    )
+                if (attributeUpdate) {
+                    query = query.concat(
+                        'UPDATE credit_card SET ',
+                        attributeUpdate.slice(0, -1),
+                        ` WHERE name = '${name}'`
+                    )
+                    client.query(query, err => {
+                        shouldAbort(err)
+                        nextCall()
+                    })
                 }
-            )
-        } else if (action === "edit" && numbers) {
-            client.query(
-                `UPDATE pub_phone_number 
-                SET 
-                    number = ${numbers}
-                WHERE name = '${newName || name}'`,
-                err => {
-                    if (err) {
-                        payload.send({ success: false, errMessage: "Failed to update publisher info" })
-                    }
-                }
-            )
+            }
         }
-        payload.send({ success: true })
+        
+        //Update publisher phone number
+        const updatePubPhone = nextCall => {
+            if (action === "add" && numbers) {
+                client.query(
+                    {
+                        text: 
+                            `INSERT INTO pub_phone_number(
+                                name, 
+                                number
+                            ) VALUES($1, $2)`,
+                        values: [
+                            newName,
+                            numbers
+                        ]
+                    }
+                    , err => {
+                        shouldAbort(err)
+                        nextCall()
+                    }
+                )
+            } else if (action === "edit" && numbers) {
+                client.query(
+                    `UPDATE pub_phone_number 
+                    SET 
+                        number = ${numbers}
+                    WHERE name = '${newName || name}'`,
+                    err => {
+                        shouldAbort(err)
+                        nextCall()
+                    }
+                )
+            }
+        }
+        
+        //The actual transaction
+        client.query('BEGIN', err => {
+            shouldAbort(err)
+            updatePublisher(updatePubPhone(() => {
+                client.query('COMMIT', err => {
+                    shouldAbort(err)
+                    payload.send({ success: true })
+                })
+            ))
+        }
     })
     return router
 }

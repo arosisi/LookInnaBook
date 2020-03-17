@@ -70,7 +70,7 @@ module.exports = client => {
                                 credit_card_info.card_number = ${creditCard},
                                 profile.card_number = ${creditCard}
                                 ` : '',
-                            cvv ? `credit_card_info.cvv = ${cvv},` : '',
+                            cvv ? `credit_card_info.cvv = '${cvv}',` : '',
                             billingAddress ? `credit_card_info.billing_address = '${billingAddress}',` : '', 
                             holderName ? `credit_card_info.holder_name = '${holderName}',` : '',  
                             expiryDate ? `credit_card_info.expiry_date = '${expiryDate}',` : ''
