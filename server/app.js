@@ -37,7 +37,7 @@ client.query("select now()", (err, res) => {
   }
 });
 
-app.use("/", indexRouter);
+app.use("/", indexRouter(client));
 app.use("/users", usersRouter(client));
 
 // catch 404 and forward to error handler

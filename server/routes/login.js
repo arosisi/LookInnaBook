@@ -51,7 +51,7 @@ module.exports = client => {
             if (err) {
                 payload.send({ success: false, errMessage: "Failed to fetch from database" });
             } else {
-                payload.send({ success: true, user: res.rows[0]
+                payload.send({ success: true, user: res.rows[0] })
             }
         })
     })

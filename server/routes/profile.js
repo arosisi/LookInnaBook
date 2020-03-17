@@ -91,7 +91,7 @@ module.exports = client => {
                                 if (e) {
                                     payload.send({ success: false, errMessage: "Failed to update user database"  })
                                 }
-                            }
+                            })
                         } else {
                             //Else insert new card into db. All info are assumed to be present
                             const creditCardInsert = `
@@ -110,9 +110,9 @@ module.exports = client => {
                                         if (e2) {
                                             payload.send({ success: false, errMessage: "Failed to update user database"  })
                                         }
-                                    }
+                                    })
                                 }
-                            }
+                            })
                         }
                     }
                 })

@@ -1,6 +1,6 @@
 const router = require("express").Router()
 const nodemailer = require("nodemailer");
-const moment = requrie("moment")
+const moment = require("moment")
 
 const config = require("../config");
 
@@ -31,7 +31,7 @@ module.exports = client => {
         
         const query = {
             text: 
-                'INSERT INTO profile(
+                `INSERT INTO profile(
                     first_name,
                     last_name,
                     address,
@@ -39,7 +39,7 @@ module.exports = client => {
                     password,
                     card_number,
                     role
-                ) VALUES($1, $2, $3, $4, $5, $6, "user") RETURNING u_id',
+                ) VALUES($1, $2, $3, $4, $5, $6, "user") RETURNING u_id`,
             values: [
                 firstName, 
                 lastName, 
@@ -58,14 +58,14 @@ module.exports = client => {
                 const { u_id: userId } = res.rows[0]
                 const creditCardQuery = {
                     text: 
-                        'INSERT INTO credit_card(
+                        `INSERT INTO credit_card(
                             u_id,
                             card_number,
                             expiry_date,
                             cvv,
                             billing_address,
                             holderName
-                        ) VALUES(userId, $1, $2, $3, $4, $5 )',
+                        ) VALUES(userId, $1, $2, $3, $4, $5 )`,
                     values: [
                         creditCard, 
                         expiryDate,

@@ -1,6 +1,6 @@
 const router = require("express").Router()
 const nodemailer = require("nodemailer");
-const moment = requrie("moment")
+const moment = require("moment")
 
 const config = require("../config");
 
@@ -42,7 +42,7 @@ module.exports = client => {
         
         const query = {
             text: 
-                'INSERT INTO cart(
+                `INSERT INTO cart(
                     date, 
                     tax, 
                     subtotal, 
@@ -52,7 +52,7 @@ module.exports = client => {
                     shipping_cost,
                     shipping_address,
                     recipient
-                ) VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9) RETURNING order_id',
+                ) VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9) RETURNING order_id`,
             values: [
                 moment().format('MMMM Do YYYY, h:mm:ss a'),
                 tax,
@@ -86,7 +86,6 @@ module.exports = client => {
                 })
             }
         })
-        
     })
     return router
 }

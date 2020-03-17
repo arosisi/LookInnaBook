@@ -1,6 +1,6 @@
 const router = require("express").Router()
 const nodemailer = require("nodemailer");
-const moment = requrie("moment")
+const moment = require("moment")
 
 const config = require("../config");
 
@@ -39,17 +39,17 @@ module.exports = client => {
         } else if (action === 'add' ) {
             query = {
                 text: 
-                    'INSERT INTO publisher(
+                    `INSERT INTO publisher(
                         name, 
                         email, 
                         bank_account, 
                         address, 
                         available
-                    ) VALUES($1, $2, $3, $4, $5)',
+                    ) VALUES($1, $2, $3, $4, $5)`,
                 values: [
                     newName,
                     email,
-                    bankAccount
+                    bankAccount,
                     address,
                     true
                 ]
@@ -83,10 +83,10 @@ module.exports = client => {
             client.query(
                 {
                     text: 
-                        'INSERT INTO pub_phone_number(
+                        `INSERT INTO pub_phone_number(
                             name, 
                             number
-                        ) VALUES($1, $2)',
+                        ) VALUES($1, $2)`,
                     values: [
                         newName,
                         numbers

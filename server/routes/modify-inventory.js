@@ -1,6 +1,6 @@
 const router = require("express").Router()
 const nodemailer = require("nodemailer");
-const moment = requrie("moment")
+const moment = require("moment")
 
 const config = require("../config");
 
@@ -47,7 +47,7 @@ module.exports = client => {
         } else if (action === 'add' ) {
             query = {
                 text: 
-                    'INSERT INTO book(
+                    `INSERT INTO book(
                         isbn, 
                         title,
                         year,
@@ -61,7 +61,7 @@ module.exports = client => {
                         pub_name,
                         percentage,
                         available
-                    ) VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, true)',
+                    ) VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, true)`,
                 values: [
                     isbn, 
                     title, 
@@ -129,7 +129,7 @@ module.exports = client => {
                         if (e) {
                             payload.send({ success: false, errMessage: "Failed to update book info" })
                         }
-                    }
+                    })
                 }
             })
         }
@@ -151,7 +151,7 @@ module.exports = client => {
                         if (e) {
                             payload.send({ success: false, errMessage: "Failed to update book info" })
                         }
-                    }
+                    })
                 }
             })
         }
