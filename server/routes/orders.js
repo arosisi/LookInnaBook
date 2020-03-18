@@ -39,15 +39,13 @@ module.exports = client => {
             } else {
                 // bug below <-- TODO: delete this comment after fixing
                 const orders = []
-                let currentOrder = {}
+                let currentOrder = null
                 let includedBooks = []
                 res.rows.forEach((row, i) => {
                     if (!currentOrder) {
                         const { isbn, quantity, title, price, ...other } = row
                         includedBooks.push(isbn)
                         currentOrder = { ...other, books: [{ isbn, quantity, title, price }] }
-                    } else if (i === res.rows.length - 1) {
-                        orders.push(currentOrder)
                     } else if (currentOrder.order_id !== row.order_id) {
                         orders.push(currentOrder)
                         const { isbn, quantity, title, price, ...other } = row
@@ -64,6 +62,9 @@ module.exports = client => {
                             });
                         }
                     }
+                    if (i === res.rows.length - 1) {
+                        orders.push(currentOrder)
+                    } 
                 })
                 payload.send({ success: true, orders })
             }

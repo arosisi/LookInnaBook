@@ -36,8 +36,6 @@ module.exports = client => {
                     if (!currentBook) {
                         const { author, genre, ...other } = row
                         currentBook = { ...other, authors: [author], genres: [genre] }
-                    } else if (i === res.rows.length - 1) {
-                        books.push(currentBook)
                     } else if (currentBook.isbn !== row.isbn ) {
                         books.push(currentBook)
                         const { author, genre, ...other } = row
@@ -49,6 +47,9 @@ module.exports = client => {
                         if (currentBook.genres.indexOf(row.genre) < 0) {
                             currentBook.genres.push(row.genre)
                         }
+                    }
+                    if (i === res.rows.length - 1) {
+                        books.push(currentBook)
                     }
                 })
                 payload.send({ success: true, books })

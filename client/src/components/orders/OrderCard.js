@@ -68,7 +68,7 @@ class OrderCard extends React.Component {
       (sum, item) => sum + item.quantity * item.price,
       0
     );
-    const total = subTotal + order.tax + order.shipping_cost;
+    const total = subTotal + parseInt(order.tax) + parseInt(order.shipping_cost);
     return (
       <Jumbotron style={{ padding: "2.5rem", marginBottom: 15 }}>
         <Row style={{ justifyContent: "space-between" }}>
