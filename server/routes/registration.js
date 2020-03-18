@@ -39,9 +39,10 @@ module.exports = client => {
                 client.query('ROLLBACK', err => {
                     if (err) {
                         payload.send({ success: false, errMessage: "Something went very wrong" })
+                    } else {
+                        payload.send({ success: false, errMessage: "Failed to register user" })
                     }
                 })
-                payload.send({ success: false, errMessage: "Failed to register user" })
             }
         }
         
@@ -72,45 +73,63 @@ module.exports = client => {
             client.query(query, (err, res) => {
                 shouldAbort(err)
                 const { u_id: userId } = res.rows[0]
-                const creditCardQuery = {
+                const creditCardInfoQuery = {
                     text: 
-                        `INSERT INTO credit_card(
-                            u_id,
-                            card_number
-                        ) VALUES($1, $2)`,
+                        `INSERT INTO credit_card_info(
+                            card_number,
+                            expiry_date,
+                            cvv,
+                            billing_address,
+                            holder_name
+                        ) VALUES($1, $2, $3, $4, $5)`,
                     values: [
-                        userId,
-                        parseInt(creditCard)
+                        parseInt(creditCard), 
+                        expiryDate,
+                        cvv,
+                        billingAddress,
+                        holderName
                     ]
                 }
-                //Insert user credit card
-                client.query(creditCardQuery, err => {
-                    shouldAbort(err)
-                    const creditCardInfoQuery = {
+                
+                const creditCardQuery = {
                         text: 
-                            `INSERT INTO credit_card_info(
-                                card_number,
-                                expiry_date,
-                                cvv,
-                                billing_address,
-                                holderName
-                            ) VALUES($1, $2, $3, $4, $5)`,
+                            `INSERT INTO credit_card(
+                                u_id,
+                                card_number
+                            ) VALUES($1, $2)`,
                         values: [
-                            parseInt(creditCard), 
-                            expiryDate,
-                            cvv,
-                            billingAddress,
-                            holderName
+                            userId,
+                            parseInt(creditCard)
                         ]
                     }
-                    //Insert user credit card info
-                    client.query(creditCardInfoQuery, err => {
-                        shouldAbort(err)
-                        client.query('COMMIT', err => {
+                client.query(`SELECT card_number 
+                              FROM credit_card_info 
+                              WHERE card_number = ${parseInt(creditCard)}`, (err, res) => {
+                    shouldAbort(err)
+                    //Card already exist. No need to insert
+                    if (res.rows.length > 0) {
+                        //Insert user credit card
+                        client.query(creditCardQuery, err => {
                             shouldAbort(err)
-                            payload.send({ success: true, user: { u_id: userId } })
+                            client.query('COMMIT', err => {
+                                shouldAbort(err)
+                                payload.send({ success: true, user: { u_id: userId } })
+                            })
                         })
-                    })
+                    } else {
+                        //Insert user credit card info
+                        client.query(creditCardInfoQuery, err => {
+                            shouldAbort(err)
+                            
+                            client.query(creditCardQuery, err => {
+                                shouldAbort(err)
+                                client.query('COMMIT', err => {
+                                    shouldAbort(err)
+                                    payload.send({ success: true, user: { u_id: userId } })
+                                })
+                            })
+                        })
+                    }
                 })
             })
         })

@@ -9,11 +9,12 @@ class Profile extends React.Component {
 
   handleSubmit = values => {
     const { context } = this.props;
+    const userId = context && context.user && context.user.id
     this.setState({ submitting: true }, () =>
       fetch("http://localhost:9000/profile", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(values)
+        body: JSON.stringify({ ...values, u_id: userId })
       })
         .then(response => response.json())
         .then(response => {
