@@ -47,7 +47,7 @@ class ResetPassword extends React.Component {
 
         {success ? (
           <Alert variant='success' dismissible onClose={onSuccess}>
-            {`A new password has been sent to your email address.`}
+            {`Your password has been sent to your email address.`}
           </Alert>
         ) : (
           <Formik
