@@ -36,9 +36,10 @@ module.exports = client => {
                 client.query('ROLLBACK', err => {
                     if (err) {
                         payload.send({ success: false, errMessage: "Something went very wrong" })
+                    } else {
+                        payload.send({ success: false, errMessage: "Failed to update book info" })
                     }
                 })
-                payload.send({ success: false, errMessage: "Failed to update book info" })
             }
         }
         
@@ -166,7 +167,7 @@ module.exports = client => {
         //The actual transaction
         client.query('BEGIN', err => {
             shouldAbort(err)
-            updateBookInfo(updateGenre(updateAuthor(() => {
+            updateBookInfo(() => updateGenre(() => updateAuthor(() => {
                 client.query('COMMIT', err => {
                     shouldAbort(err)
                     payload.send({ success: true })
