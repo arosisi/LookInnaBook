@@ -54,11 +54,11 @@ module.exports = client => {
       
         //Update user profile info
         const updateProfile = nextCall => {
-            attributeUpdate && client.query(
+            client.query(
                 `UPDATE profile
                 SET
                     ${attributeUpdate.slice(0,-1)}
-                WHERE u_id = ${u_id}`, (err, res) => {
+                WHERE u_id = ${u_id}`, err => {
                 shouldAbort(err)
                 nextCall()
             })

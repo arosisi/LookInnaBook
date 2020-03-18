@@ -32,6 +32,19 @@ module.exports = client => {
             billingAddress
         } = req.body
         
+        const shouldAbort = err => {
+            if (err) {
+                console.error('Error in transaction', err.stack)
+                client.query('ROLLBACK', err => {
+                    if (err) {
+                        payload.send({ success: false, errMessage: "Something went very wrong" })
+                    } else {
+                        payload.send({ success: false, errMessage: "Failed to process payment" })
+                    }
+                })
+            }
+        }
+        
         const query = {
             text: 
                 `INSERT INTO cart(
@@ -59,26 +72,69 @@ module.exports = client => {
                 recipient
             ]
         }
-        
-        client.query(query, (err, res) => {
-            if (err) {
-                payload.send({ success: false, errMessage: "Failed to process payment" })
-            } else {
+
+        client.query('BEGIN', err => {
+            shouldAbort(err)
+            //Creating an order
+            client.query(query, (err, res) => {
+                shouldAbort(err)
                 const { order_id } = res.rows[0]
                 let orderItemsQuery = 'INSERT INTO cart_book(isbn, order_id, quantity) VALUES '
-                for (const book of books) {
-                    orderItemsQuery += `(${book.isbn}, ${order_id}, ${book.quantity}),`
-                }
-                //Slice off last , in query
-                orderItemsQuery = orderItemsQuery.slice(0, -1)
+                orderItemsQuery += books.map(book => `(${book.isbn}, ${order_id}, ${book.quantity})`).join(', ')
                 client.query(orderItemsQuery, e => {
-                    if (e) {
-                        payload.send({ success: false, errMessage: "Failed to process order" })
-                    } else {
-                        payload.send({ success: true, order: { order_id } })
-                    }
+                    shouldAbort(err)
+                    client.query(`SELECT card_number FROM credit_card_info WHERE card_number = ${creditCard}`, (err, res) => {
+                        shouldAbort(err)
+                        if (res.rows.length > 0) {
+                            client.query('COMMIT', err => {
+                                shouldAbort(err)
+                                payload.send({ success: true, order: { order_id } })
+                            })
+                        } else {
+                            const creditCardInfoQuery = {
+                                text: 
+                                    `INSERT INTO credit_card_info(
+                                        card_number,
+                                        expiry_date,
+                                        cvv,
+                                        billing_address,
+                                        holder_name
+                                    ) VALUES($1, $2, $3, $4, $5)`,
+                                values: [
+                                    parseInt(creditCard), 
+                                    expiryDate,
+                                    cvv,
+                                    billingAddress,
+                                    holderName
+                                ]
+                            }
+                            
+                            const creditCardQuery = {
+                                text: 
+                                    `INSERT INTO credit_card(
+                                        u_id,
+                                        card_number
+                                    ) VALUES($1, $2)`,
+                                values: [
+                                    id,
+                                    parseInt(creditCard)
+                                ]
+                            }
+                            //Insert new creditcard and associate it with current user
+                            client.query(creditCardInfoQuery, err => {
+                                shouldAbort(err)
+                                client.query(creditCardQuery, err => {
+                                    shouldAbort(err)
+                                    client.query('COMMIT', err => {
+                                        shouldAbort(err)
+                                        payload.send({ success: true, order: { order_id } })
+                                    })
+                                })
+                            })
+                        }
+                    })
                 })
-            }
+            })
         })
     })
     return router
