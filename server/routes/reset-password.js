@@ -38,14 +38,14 @@ module.exports = client => {
                 const message = {
                     from: "Look Inna Book <comp3005project.lookinnabook@gmail.com>",
                     to: email,
-                    subject: `${_.capitalize("Forgot Password")} Look Inna Book Password`,
+                    subject: "Look Inna Book Password",
                     html: `<p>Hello,</p><p>Your password is ${password}.</p>`
                 }
 
                 transporter.sendMail(message, (err, info) => {
                     if (err) {
                       console.log("Error occurred. " + err.message);
-                      res.send({
+                      payload.send({
                         success: false,
                         message: "Unable to send verification email."
                       });

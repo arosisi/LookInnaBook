@@ -33,14 +33,16 @@ class BookActions extends React.Component {
                     cursor: "pointer",
                     color: "white"
                   }
-                : null
+                : { userSelect: "none" }
             }
             onClick={() => {
-              if (alreadyAddedCount + parseInt(value) <= book.quantity) {
-                context.addToCart(book, parseInt(value));
-                onChange(0);
-              } else {
-                this.setState({ showAddToCartError: true });
+              if (value > 0) {
+                if (alreadyAddedCount + parseInt(value) <= book.quantity) {
+                  context.addToCart(book, parseInt(value));
+                  onChange(0);
+                } else {
+                  this.setState({ showAddToCartError: true });
+                }
               }
             }}
           >

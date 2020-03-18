@@ -22,14 +22,16 @@ class BookActions extends React.Component {
                     cursor: "pointer",
                     color: "white"
                   }
-                : null
+                : { userSelect: "none" }
             }
             onClick={() => {
-              if (value <= book.quantity) {
-                context.updateCart(book, parseInt(value));
-                onChange(0);
-              } else {
-                alert("Not enough in stock.");
+              if (value > 0) {
+                if (value <= book.quantity) {
+                  context.updateCart(book, parseInt(value));
+                  onChange(0);
+                } else {
+                  alert("Not enough in stock.");
+                }
               }
             }}
           >
