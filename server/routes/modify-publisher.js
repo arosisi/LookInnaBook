@@ -11,6 +11,7 @@ module.exports = client => {
         const action = req && req.body && req.body.action
         if (!action) {
             payload.send({ success: false, errMessage: "Couldn't find a valid action" })
+            return
         }
         
         const {
@@ -33,6 +34,7 @@ module.exports = client => {
                     }
                 })
             }
+            return !!err
         }
         
         let query = ''
@@ -41,7 +43,7 @@ module.exports = client => {
             if (action === 'remove') {
                 query = `UPDATE publisher SET available = false WHERE name = '${name}'`
                 client.query(query, err => {
-                    shouldAbort(err)
+                    if (shouldAbort(err)) return
                     nextCall()
                 })
             } else if (action === 'add' ) {
@@ -63,7 +65,7 @@ module.exports = client => {
                     ]
                 }
                 client.query(query, err => {
-                    shouldAbort(err)
+                    if (shouldAbort(err)) return
                     nextCall()
                 })
             } else {
@@ -80,7 +82,7 @@ module.exports = client => {
                         ` WHERE name = '${name}'`
                     )
                     client.query(query, err => {
-                        shouldAbort(err)
+                        if (shouldAbort(err)) return
                         nextCall()
                     })
                 }
@@ -103,7 +105,7 @@ module.exports = client => {
                         ]
                     }
                     , err => {
-                        shouldAbort(err)
+                        if (shouldAbort(err)) return
                         nextCall()
                     }
                 )
@@ -114,7 +116,7 @@ module.exports = client => {
                         number = ${numbers}
                     WHERE name = '${newName || name}'`,
                     err => {
-                        shouldAbort(err)
+                        if (shouldAbort(err)) return
                         nextCall()
                     }
                 )
@@ -123,10 +125,10 @@ module.exports = client => {
         
         //The actual transaction
         client.query('BEGIN', err => {
-            shouldAbort(err)
+            if (shouldAbort(err)) return
             updatePublisher(() => updatePubPhone(() => {
                 client.query('COMMIT', err => {
-                    shouldAbort(err)
+                    if (shouldAbort(err)) return
                     payload.send({ success: true })
                 })
             }))

@@ -11,6 +11,7 @@ module.exports = client => {
         const action = req && req.body && req.body.action
         if (!action) {
             payload.send({ success: false, errMessage: "Couldn't find a valid action" })
+            return
         }
         
         const {
@@ -41,6 +42,7 @@ module.exports = client => {
                     }
                 })
             }
+            return !!err
         }
         
         let query = ''
@@ -49,7 +51,7 @@ module.exports = client => {
             if (action === 'remove') {
                 query = `UPDATE book SET available = false WHERE isbn = '${isbn}'`
                 client.query(query, err => {
-                    shouldAbort(err)
+                    if (shouldAbort(err)) return
                     nextCall()
                 })
             } else if (action === 'add' ) {
@@ -87,7 +89,7 @@ module.exports = client => {
                     ]
                 }
                 client.query(query, err => {
-                    shouldAbort(err)
+                    if (shouldAbort(err)) return
                     nextCall()
                 })
             } else {
@@ -113,7 +115,7 @@ module.exports = client => {
                         ` WHERE isbn = '${isbn}'`
                     )
                     client.query(query, err => {
-                        shouldAbort(err)
+                        if (shouldAbort(err)) return
                         nextCall()
                     })
                 }
@@ -126,14 +128,14 @@ module.exports = client => {
                 //First remove all the genres associated with the book
                 const deleteQuery = `DELETE from genre WHERE isbn = '${isbn}'`
                 client.query(deleteQuery, err => {
-                    shouldAbort(err)
+                    if (shouldAbort(err)) return
                     //Add list of genres
                     let updateQuery = 'INSERT INTO genre (isbn, genre) VALUES '
                     for (const genre of genres) {
                         updateQuery += `(${isbn}, ${genre}),`
                     }
                     client.query(updateQuery.slice(0,-1), err => {
-                        shouldAbort(err)
+                        if (shouldAbort(err)) return
                         nextCall()
                     })
                 })
@@ -148,14 +150,14 @@ module.exports = client => {
                 //First remove all the authors associated with the book
                 const deleteQuery = `DELETE from author WHERE isbn = '${isbn}'`
                 client.query(deleteQuery, err => {
-                    shouldAbort(err)
+                    if (shouldAbort(err)) return
                     //Add list of authors
                     let updateQuery = 'INSERT INTO author (isbn, author) VALUES '
                     for (const author of authors) {
                         updateQuery += `(${isbn}, ${genre}),`
                     }
                     client.query(updateQuery.slice(0,-1), err => {
-                        shouldAbort(err)
+                        if (shouldAbort(err)) return
                         nextCall()
                     })
                 })
@@ -166,10 +168,10 @@ module.exports = client => {
         
         //The actual transaction
         client.query('BEGIN', err => {
-            shouldAbort(err)
+            if (shouldAbort(err)) return
             updateBookInfo(() => updateGenre(() => updateAuthor(() => {
                 client.query('COMMIT', err => {
-                    shouldAbort(err)
+                    if (shouldAbort(err)) return
                     payload.send({ success: true })
                 })
             })))

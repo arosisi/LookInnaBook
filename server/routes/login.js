@@ -6,6 +6,7 @@ module.exports = client => {
         const { email, password } = req.body || {}
         if (!email || !password) {
             payload.send({ success: false, errMessage: "Failed to fetch from database" })
+            return
         }
         client.query(
             `SELECT u_id 

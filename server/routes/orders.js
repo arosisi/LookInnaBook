@@ -7,12 +7,15 @@ module.exports = client => {
         const userId = req && req.body && req.body.u_id
         if (!userId) {
             payload.send({ success: false, errMessage: "Couldn't find an user id" })
+            return
         }
         client.query(`SELECT u_id FROM profile WHERE u_id = ${userId}`, (err, res) => {
             if (err) {
                 payload.send({ success: false, errMessage: "Couldn't find user with given ID" })
+                return
             } else if (res.rows.length < 1) {
                 payload.send({ success: false, errMessage: "Couldn't find user with given ID" })
+                return
             }
         })
         

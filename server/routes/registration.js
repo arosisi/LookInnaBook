@@ -10,6 +10,7 @@ module.exports = client => {
         const body = req && req.body
         if (!body) {
             payload.send({ success: false, errMessage: "Couldn't find registration information" })
+            return
         }
         
         const { 
@@ -44,10 +45,11 @@ module.exports = client => {
                     }
                 })
             }
+            return !!err
         }
         
         client.query('BEGIN', err => {
-            shouldAbort(err)
+            if (shouldAbort(err)) return
             const query = {
                 text: 
                     `INSERT INTO profile(
@@ -71,7 +73,7 @@ module.exports = client => {
             }
             //Add new user with default role "user"
             client.query(query, (err, res) => {
-                shouldAbort(err)
+                if (shouldAbort(err)) return
                 const { u_id: userId } = res.rows[0]
                 const creditCardInfoQuery = {
                     text: 
@@ -105,26 +107,25 @@ module.exports = client => {
                 client.query(`SELECT card_number 
                               FROM credit_card_info 
                               WHERE card_number = ${parseInt(creditCard)}`, (err, res) => {
-                    shouldAbort(err)
+                    if (shouldAbort(err)) return
                     //Card already exist. No need to insert
                     if (res.rows.length > 0) {
                         //Insert user credit card
                         client.query(creditCardQuery, err => {
-                            shouldAbort(err)
+                            if (shouldAbort(err)) return
                             client.query('COMMIT', err => {
-                                shouldAbort(err)
+                                if (shouldAbort(err)) return
                                 payload.send({ success: true, user: { u_id: userId } })
                             })
                         })
                     } else {
                         //Insert user credit card info
                         client.query(creditCardInfoQuery, err => {
-                            shouldAbort(err)
-                            
+                            if (shouldAbort(err)) return
                             client.query(creditCardQuery, err => {
-                                shouldAbort(err)
+                                if (shouldAbort(err)) return
                                 client.query('COMMIT', err => {
-                                    shouldAbort(err)
+                                    if (shouldAbort(err)) return
                                     payload.send({ success: true, user: { u_id: userId } })
                                 })
                             })

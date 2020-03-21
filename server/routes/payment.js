@@ -11,12 +11,14 @@ module.exports = client => {
         const books = req && req.body && req.body.books
         if (!books) {
             payload.send({ success: false, errMessage: "Couldn't find valid order infomation" })
+            return
         }
         
         //Check whether request contains a card
         const creditCard = req && req.body && req.body.creditCard
         if (!creditCard) {
             payload.send({ success: false, errMessage: "Couldn't find payment info" })
+            return
         }
         
         const {
@@ -43,6 +45,7 @@ module.exports = client => {
                     }
                 })
             }
+            return !!err
         }
         
         const query = {
@@ -74,20 +77,20 @@ module.exports = client => {
         }
 
         client.query('BEGIN', err => {
-            shouldAbort(err)
+            if (shouldAbort(err)) return
             //Creating an order
             client.query(query, (err, res) => {
-                shouldAbort(err)
+                if (shouldAbort(err)) return
                 const { order_id } = res.rows[0]
                 let orderItemsQuery = 'INSERT INTO cart_book(isbn, order_id, quantity) VALUES '
                 orderItemsQuery += books.map(book => `(${book.isbn}, ${order_id}, ${book.quantity})`).join(', ')
-                client.query(orderItemsQuery, e => {
-                    shouldAbort(err)
+                client.query(orderItemsQuery, err => {
+                    if (shouldAbort(err)) return
                     client.query(`SELECT card_number FROM credit_card_info WHERE card_number = ${creditCard}`, (err, res) => {
-                        shouldAbort(err)
-                        if (res.rows.length > 0) {
+                        if (shouldAbort(err)) return
+                        if (res && res.rows.length > 0) {
                             client.query('COMMIT', err => {
-                                shouldAbort(err)
+                                if (shouldAbort(err)) return
                                 payload.send({ success: true, order: { order_id } })
                             })
                         } else {
@@ -122,11 +125,11 @@ module.exports = client => {
                             }
                             //Insert new creditcard and associate it with current user
                             client.query(creditCardInfoQuery, err => {
-                                shouldAbort(err)
+                                if (shouldAbort(err)) return
                                 client.query(creditCardQuery, err => {
-                                    shouldAbort(err)
+                                    if (shouldAbort(err)) return
                                     client.query('COMMIT', err => {
-                                        shouldAbort(err)
+                                        if (shouldAbort(err)) return
                                         payload.send({ success: true, order: { order_id } })
                                     })
                                 })

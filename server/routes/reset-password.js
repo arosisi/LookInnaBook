@@ -10,6 +10,7 @@ module.exports = client => {
         const email = req && req.body && req.body.email
         if (!email) {
             payload.send({ success: false, errMessage: "Couldn't find a valid email" })
+            return
         }
         
         const query = `

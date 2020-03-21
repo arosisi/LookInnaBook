@@ -7,12 +7,15 @@ module.exports = client => {
         const userId = req && req.body && req.body.u_id
         if (!userId) {
             payload.send({ success: false, errMessage: "Couldn't find an user id" })
+            return
         } else {
             client.query(`SELECT u_id FROM profile WHERE u_id = ${userId}`, (err, res) => {
                 if (err) {
                     payload.send({ success: false, errMessage: "Couldn't find user with given ID" })
+                    return
                 } else if (res.rows.length < 1) {
                     payload.send({ success: false, errMessage: "Couldn't find user with given ID" })
+                    return
                 }
             })
         }
@@ -50,6 +53,7 @@ module.exports = client => {
                     }
                 })
             }
+            return !!err
         }
       
         //Update user profile info
@@ -59,7 +63,7 @@ module.exports = client => {
                 SET
                     ${attributeUpdate.slice(0,-1)}
                 WHERE u_id = ${u_id}`, err => {
-                shouldAbort(err)
+                if (shouldAbort(err)) return
                 nextCall()
             })
         }
@@ -77,31 +81,45 @@ module.exports = client => {
                   profile.card_number = credit_card.card_number AND
                   credit_card.card_number = credit_card_info.card_number`
             client.query(creditCardQuery, (err, response) => {
-                shouldAbort(err)
+                if (shouldAbort(err)) return
                 //If found card, then update card
                 const cAttributeUpdate = ''.concat(
-                    creditCard ? 
-                        `
-                        credit_card.card_number = ${creditCard}, 
-                        credit_card_info.card_number = ${creditCard},
-                        profile.card_number = ${creditCard}
-                        ` : '',
-                    cvv ? `credit_card_info.cvv = '${cvv}',` : '',
-                    billingAddress ? `credit_card_info.billing_address = '${billingAddress}',` : '', 
-                    holderName ? `credit_card_info.holder_name = '${holderName}',` : '',  
-                    expiryDate ? `credit_card_info.expiry_date = '${expiryDate}',` : ''
+                    creditCard ? `card_number = ${creditCard},` : '',
+                    cvv ? `cvv = '${cvv}',` : '',
+                    billingAddress ? `billing_address = '${billingAddress}',` : '', 
+                    holderName ? `holder_name = '${holderName}',` : '',  
+                    expiryDate ? `expiry_date = '${expiryDate}',` : ''
                 )
                 //Update profile, credit_card and credit_card_info all at once if card exists
-                if (response.rows.length > 0 && cAttributeUpdate) {
+                if (response && response.rows.length > 0) {
                     const creditCardUpdate = `
-                    UPDATE credit_card, credit_card_info, profile
+                    UPDATE credit_card_info
                     SET
-                        ${cAttributeUpdate.slice(0,-1)} 
+                        ${cAttributeUpdate.slice(0,-1)}
+                    FROM credit_card
                     WHERE credit_card.u_id = ${u_id} AND
-                          profile.card_number = credit_card.card_number AND
                           credit_card.card_number = credit_card_info.card_number`
-                    client.query(creditCardUpdate, e => {
-                        shouldAbort(err)
+                    client.query(creditCardUpdate, err => {
+                        if (shouldAbort(err)) return
+                        const cardUpdate = 
+                           `UPDATE credit_card
+                            SET
+                                card_number = ${creditCard}
+                            FROM profile
+                            WHERE profile.card_number = credit_card.card_number AND 
+                                  profile.u_id = ${u_id} AND
+                                  profile.u_id = credit_card.u_id`
+                        client.query(cardUpdate, err => {
+                            if (shouldAbort(err)) return
+                            const userUpdate =
+                                `UPDATE profile
+                                SET
+                                    card_number = ${creditCard}
+                                WHERE u_id = ${u_id}`
+                            client.query(userUpdate, err => {
+                                if (shouldAbort(err)) return
+                            })
+                        })
                         nextCall()
                     })
                 } else {
@@ -132,9 +150,9 @@ module.exports = client => {
                     }
                     
                     client.query(creditCardInfoInsert, err => {
-                        shouldAbort(err)
+                        if (shouldAbort(err)) return
                         client.query(creditCardInsert, err => {
-                            shouldAbort(err)
+                            if (shouldAbort(err)) return
                             nextCall()
                         })
                     })
@@ -144,10 +162,10 @@ module.exports = client => {
         
         //The actual transaction
         client.query('BEGIN', err => {
-            shouldAbort(err)
+            if (shouldAbort(err)) return
             updateProfile(() => updateCard(() => {
                 client.query('COMMIT', err => {
-                    shouldAbort(err)
+                    if (shouldAbort(err)) return
                     payload.send({ success: true })
                 })
             }))
