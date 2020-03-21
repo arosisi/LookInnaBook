@@ -86,7 +86,7 @@ module.exports = client => {
                 orderItemsQuery += books.map(book => `(${book.isbn}, ${order_id}, ${book.quantity})`).join(', ')
                 client.query(orderItemsQuery, err => {
                     if (shouldAbort(err)) return
-                    client.query(`SELECT card_number FROM credit_card_info WHERE card_number = ${creditCard}`, (err, res) => {
+                    client.query(`SELECT card_number FROM credit_card_info WHERE card_number = ${creditCard.replace(/\s/g, '')}`, (err, res) => {
                         if (shouldAbort(err)) return
                         if (res && res.rows.length > 0) {
                             client.query('COMMIT', err => {
@@ -104,7 +104,7 @@ module.exports = client => {
                                         holder_name
                                     ) VALUES($1, $2, $3, $4, $5)`,
                                 values: [
-                                    parseInt(creditCard), 
+                                    parseInt(creditCard.replace(/\s/g, '')), 
                                     expiryDate,
                                     cvv,
                                     billingAddress,
@@ -120,7 +120,7 @@ module.exports = client => {
                                     ) VALUES($1, $2)`,
                                 values: [
                                     id,
-                                    parseInt(creditCard)
+                                    parseInt(creditCard.replace(/\s/g, ''))
                                 ]
                             }
                             //Insert new creditcard and associate it with current user
