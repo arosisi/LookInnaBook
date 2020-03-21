@@ -69,11 +69,7 @@ module.exports = client => {
         }
         
         const updateCard = nextCall => {
-            //If none of these attributes were updated, then skip credit card updating
-            if (!creditCard && !expiryDate && !cvv && !holderName && !billingAddress) {
-                return
-            }
-            //If updated successfully, query for user's credit card
+            //Query for user's credit card
             const creditCardQuery = `
             SELECT credit_card_info.card_number
             FROM credit_card, profile, credit_card_info
@@ -91,11 +87,15 @@ module.exports = client => {
                     expiryDate ? `expiry_date = '${expiryDate}',` : ''
                 )
                 //Update profile, credit_card and credit_card_info all at once if card exists
-                if (response && response.rows.length > 0) {
+                if (response && response.rows.length > 0 && creditCard) {
                     const creditCardUpdate = `
                     UPDATE credit_card_info
                     SET
-                        ${cAttributeUpdate.slice(0,-1)}
+                        card_number = ${creditCard},
+                        cvv = '${cvv}',
+                        billing_address = '${billingAddress}',
+                        holder_name = '${holderName}',
+                        expiry_date = '${expiryDate}'
                     FROM credit_card
                     WHERE credit_card.u_id = ${u_id} AND
                           credit_card.card_number = credit_card_info.card_number`
