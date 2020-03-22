@@ -22,9 +22,10 @@ create table cart (
 	shipping_cost numeric(8, 2),
 	shipping_address varchar(255),
 	recipient varchar(100),
-    card_number numeric(16, 0),
+	card_number numeric(16, 0),
 	primary key (order_id),
-	foreign key (u_id) references profile
+	foreign key (u_id) references profile,
+	foreign key (card_number) references credit_card_info
 );
 
 create table publisher (
