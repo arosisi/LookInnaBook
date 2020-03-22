@@ -80,7 +80,7 @@ module.exports = client => {
                             VALUES ($1, $2)`,
                 values: [
                     u_id,
-                    creditCard.replace(/\s/g, '')
+                    creditCard
                 ]
             }
             
@@ -105,7 +105,7 @@ module.exports = client => {
                     const userUpdate =
                         `UPDATE profile
                         SET
-                            card_number = ${creditCard.replace(/\s/g, '')}
+                            card_number = ${creditCard}
                         WHERE u_id = ${u_id}`
                     client.query(userUpdate, err => {
                         if (shouldAbort(err)) return

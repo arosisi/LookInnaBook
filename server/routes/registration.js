@@ -67,7 +67,7 @@ module.exports = client => {
                     address, 
                     email, 
                     password, 
-                    parseInt(creditCard.replace(/\s/g, '')),
+                    parseInt(creditCard),
                     "user"
                 ]
             }
@@ -85,7 +85,7 @@ module.exports = client => {
                             holder_name
                         ) VALUES($1, $2, $3, $4, $5)`,
                     values: [
-                        parseInt(creditCard.replace(/\s/g, '')), 
+                        parseInt(creditCard), 
                         expiryDate,
                         cvv,
                         billingAddress,
@@ -101,7 +101,7 @@ module.exports = client => {
                             ) VALUES($1, $2)`,
                         values: [
                             userId,
-                            parseInt(creditCard.replace(/\s/g, ''))
+                            parseInt(creditCard)
                         ]
                     }
                 client.query(`SELECT card_number 
