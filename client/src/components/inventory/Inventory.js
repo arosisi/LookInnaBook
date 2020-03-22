@@ -25,13 +25,18 @@ class Inventory extends React.Component {
       fetch("http://localhost:9000/inventory", { signal: controller.signal })
         .then(response => response.json())
         .then(response => {
-          this.setState({
-            fetching: false,
-            inventory: this.transform(
-              response.books.filter(item => item.available)
-            ),
-            publishers: response.publishers
-          });
+          if (response.success) {
+            this.setState({
+              fetching: false,
+              inventory: this.transform(
+                response.books.filter(item => item.available)
+              ),
+              publishers: response.publishers
+            });
+          } else {
+            this.setState({ fetching: false });
+            console.log(response.errMessage);
+          }
         })
         .catch(error =>
           console.log("Unable to connect to API inventory.", error)
