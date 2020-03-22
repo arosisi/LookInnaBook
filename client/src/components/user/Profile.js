@@ -7,22 +7,13 @@ import withConsumer from "../../withConsumer";
 class Profile extends React.Component {
   state = { submitting: false, showAlert: false, alertMessage: "" };
 
-  cleanValuesForSubmission = values => {
+  cleanValues = values => {
     const { context } = this.props;
     if (context.user.creditCard === values.creditCard) {
       const { creditCard, ...other } = values;
       return { ...other };
     }
     return { ...values, creditCard: values.creditCard.replace(/\s/g, "") };
-  };
-
-  cleanValuesForLogin = values => {
-    const { context } = this.props;
-    if (context.user.creditCard === values.creditCard) {
-      const { expiryDate, cvv, holderName, billingAddress } = context.user;
-      return { ...values, expiryDate, cvv, holderName, billingAddress };
-    }
-    return values;
   };
 
   handleSubmit = values => {
@@ -44,14 +35,12 @@ class Profile extends React.Component {
         fetch("http://localhost:9000/profile", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(this.cleanValuesForSubmission(values))
+          body: JSON.stringify(this.cleanValues(values))
         })
           .then(response => response.json())
           .then(response => {
             if (response.success) {
-              this.setState({ submitting: false }, () =>
-                context.logIn(this.cleanValuesForLogin(values))
-              );
+              this.setState({ submitting: false }, () => context.logIn(values));
             } else {
               this.setState({
                 submitting: false,
