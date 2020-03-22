@@ -22,7 +22,7 @@ module.exports = client => {
         }
         
         const {
-            id,
+            id: u_id,
             subTotal, 
             tax, 
             shipping, 
@@ -49,10 +49,61 @@ module.exports = client => {
         }
         
         const updateCard = nextCall => {
-            client.query(`SELECT card_number FROM credit_card_info WHERE card_number = ${creditCard.replace(/\s/g, '')}`, (err, res) => {
+            client.query(`SELECT card_number FROM credit_card_info WHERE card_number = ${parseInt(creditCard.replace(/\s/g, ''))}`, (err, res) => {
                 if (shouldAbort(err)) return
                 if (res && res.rows.length > 0) {
-                    nextCall()
+                    //Check if card_details also match
+                    const creditCardQuery = `
+                        SELECT card_number
+                        FROM credit_card_info
+                        WHERE card_number = ${parseInt(creditCard.replace(/\s/g, ''))} AND
+                              cvv = '${cvv}' AND
+                              billing_address = '${billingAddress}' AND
+                              holder_name = '${holderName}' AND
+                              expiry_date = '${expiryDate}'`
+                              
+                    client.query(creditCardQuery, (err, response) => {
+                        if (shouldAbort(err)) return
+                        //If details + number match => give user that card
+                        if (response && response.rows.length > 0) {
+                            //Check if card is already associated with the user
+                            client.query(`SELECT card_number 
+                                          FROM credit_card 
+                                          WHERE card_number = ${parseInt(creditCard.replace(/\s/g, ''))} AND 
+                                                u_id = ${u_id}`, (err, res) => {
+                                if (shouldAbort(err)) return
+                                //Card already associated => update user main card
+                                if (res && res.rows.length > 0) {
+                                    nextCall()
+                                } else {
+                                    //If not associate card with user
+                                    const creditCardInsert = 
+                                    {
+                                        text: 
+                                            `INSERT INTO credit_card(u_id, card_number)
+                                                    VALUES ($1, $2)`,
+                                        values: [
+                                            u_id,
+                                            parseInt(creditCard.replace(/\s/g, ''))
+                                        ]
+                                    }
+                                    client.query(creditCardInsert, err => {
+                                        if (shouldAbort(err)) return
+                                        nextCall()
+                                    })
+                                }
+                            })
+                        } else {
+                            //Details dont match = error
+                            client.query('ROLLBACK', err => {
+                                if (err) {
+                                    payload.send({ success: false, errMessage: "Something went very wrong" })
+                                } else {
+                                    payload.send({ success: false, errMessage: "Invalid credit card", errCode: 2 })
+                                }
+                            })
+                        }
+                    })
                 } else {
                     const creditCardInfoQuery = {
                         text: 
@@ -79,7 +130,7 @@ module.exports = client => {
                                 card_number
                             ) VALUES($1, $2)`,
                         values: [
-                            id,
+                            u_id,
                             parseInt(creditCard.replace(/\s/g, ''))
                         ]
                     }
@@ -113,7 +164,7 @@ module.exports = client => {
                         card_number
                     ) VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11) RETURNING order_id`,
                 values: [
-                    id,
+                    u_id,
                     moment().format('MMMM Do YYYY, h:mm:ss a'),
                     tax,
                     subTotal,

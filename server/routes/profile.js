@@ -80,7 +80,7 @@ module.exports = client => {
             const cardQuery = `
                 SELECT card_number
                 FROM credit_card_info
-                WHERE card_number = ${creditCard}`
+                WHERE card_number = ${parseInt(creditCard)}`
             //Find an existing card with the same card_number
             client.query(cardQuery, (err, response) => {
                 if (shouldAbort(err)) return
@@ -90,7 +90,7 @@ module.exports = client => {
                     const creditCardQuery = `
                         SELECT card_number
                         FROM credit_card_info
-                        WHERE card_number = ${creditCard} AND
+                        WHERE card_number = ${parseInt(creditCard)} AND
                               cvv = '${cvv}' AND
                               billing_address = '${billingAddress}' AND
                               holder_name = '${holderName}' AND
@@ -103,7 +103,7 @@ module.exports = client => {
                             //Check if card is already associated with the user
                             client.query(`SELECT card_number 
                                           FROM credit_card 
-                                          WHERE card_number = ${creditCard} AND 
+                                          WHERE card_number = ${parseInt(creditCard)} AND 
                                                 u_id = ${u_id}`, (err, res) => {
                                 if (shouldAbort(err)) return
                                 //Card already associated => update user main card
@@ -111,7 +111,7 @@ module.exports = client => {
                                     const userUpdate =
                                     `UPDATE profile
                                     SET
-                                        card_number = ${creditCard}
+                                        card_number = ${parseInt(creditCard)}
                                     WHERE u_id = ${u_id}`
                                     client.query(userUpdate, err => {
                                         if (shouldAbort(err)) return
@@ -126,7 +126,7 @@ module.exports = client => {
                                                     VALUES ($1, $2)`,
                                         values: [
                                             u_id,
-                                            creditCard
+                                            parseInt(creditCard)
                                         ]
                                     }
                                     client.query(creditCardInsert, err => {
@@ -134,7 +134,7 @@ module.exports = client => {
                                         const userUpdate =
                                         `UPDATE profile
                                         SET
-                                            card_number = ${creditCard}
+                                            card_number = ${parseInt(creditCard)}
                                         WHERE u_id = ${u_id}`
                                         client.query(userUpdate, err => {
                                             if (shouldAbort(err)) return
@@ -163,7 +163,7 @@ module.exports = client => {
                                     VALUES ($1, $2)`,
                         values: [
                             u_id,
-                            creditCard
+                            parseInt(creditCard)
                         ]
                     }
                     
@@ -173,7 +173,7 @@ module.exports = client => {
                             `INSERT INTO credit_card_info(card_number, expiry_date, cvv, billing_address, holder_name)
                             VALUES ($1, $2, $3, $4, $5)`,
                         values: [
-                            creditCard,
+                            parseInt(creditCard),
                             expiryDate,
                             cvv,
                             billingAddress,
@@ -188,7 +188,7 @@ module.exports = client => {
                             const userUpdate =
                                 `UPDATE profile
                                 SET
-                                    card_number = ${creditCard}
+                                    card_number = ${parseInt(creditCard)}
                                 WHERE u_id = ${u_id}`
                             client.query(userUpdate, err => {
                                 if (shouldAbort(err)) return

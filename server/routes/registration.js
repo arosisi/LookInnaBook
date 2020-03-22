@@ -85,7 +85,7 @@ module.exports = client => {
                                 const creditCardQuery = `
                                     SELECT card_number
                                     FROM credit_card_info
-                                    WHERE card_number = ${creditCard} AND
+                                    WHERE card_number = ${parseInt(creditCard)} AND
                                           cvv = '${cvv}' AND
                                           billing_address = '${billingAddress}' AND
                                           holder_name = '${holderName}' AND
