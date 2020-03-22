@@ -69,7 +69,6 @@ module.exports = client => {
         }
         
         const updateCard = nextCall => {
-            console.log(creditCard)
             if (!creditCard) {
                 nextCall()
                 return
