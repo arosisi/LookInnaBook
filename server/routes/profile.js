@@ -73,53 +73,90 @@ module.exports = client => {
                 nextCall()
                 return
             }
-            const creditCardQuery = `
-            SELECT credit_card_info.card_number
-            FROM credit_card, profile, credit_card_info
-            WHERE credit_card.u_id = ${u_id} AND
-                  profile.card_number = credit_card.card_number AND
-                  credit_card.card_number = credit_card_info.card_number AND
-                  credit_card_info.card_number = ${creditCard}`
-            client.query(creditCardQuery, (err, response) => {
+            const cardQuery = `
+                SELECT card_number
+                FROM credit_card_info
+                WHERE card_number = ${creditCard}`
+            //Find an existing card with the same card_number
+            client.query(cardQuery, (err, response) => {
                 if (shouldAbort(err)) return
-                //If found card, then update card
-                //Update profile, credit_card and credit_card_info all at once if card exists
-                if (response && response.rows.length > 0 && creditCard) {
-                    const creditCardUpdate = `
-                    UPDATE credit_card_info
-                    SET
-                        cvv = '${cvv}',
-                        billing_address = '${billingAddress}',
-                        holder_name = '${holderName}',
-                        expiry_date = '${expiryDate}'
-                    FROM credit_card
-                    WHERE credit_card.u_id = ${u_id} AND
-                          credit_card.card_number = credit_card_info.card_number`
-                    client.query(creditCardUpdate, err => {
+                //If theres an existing card with the same card_number
+                if (response && response.rows.length > 0) {
+                    //Check if card_details also match
+                    const creditCardQuery = `
+                        SELECT card_number
+                        FROM credit_card_info
+                        WHERE card_number = ${creditCard} AND
+                              cvv = '${cvv}' AND
+                              billing_address = '${billingAddress}' AND
+                              holder_name = '${holderName}' AND
+                              expiry_date = '${expiryDate}'`
+                              
+                    client.query(creditCardQuery, (err, response) => {
                         if (shouldAbort(err)) return
-                        const cardUpdate = 
-                           `UPDATE credit_card
-                            SET
-                                card_number = ${creditCard}
-                            FROM profile
-                            WHERE profile.card_number = credit_card.card_number AND 
-                                  profile.u_id = ${u_id} AND
-                                  profile.u_id = credit_card.u_id`
-                        client.query(cardUpdate, err => {
-                            if (shouldAbort(err)) return
-                            const userUpdate =
-                                `UPDATE profile
-                                SET
-                                    card_number = ${creditCard}
-                                WHERE u_id = ${u_id}`
-                            client.query(userUpdate, err => {
+                        //If details + number match => give user that card
+                        if (response && response.rows.length > 0) {
+                            //Update so we dont insert any new tuples in credit_card
+                            //This query will update if main credit card isnt the new card. Does nothing otherwise
+                            
+                            
+                            //Check if card is already associated with the user
+                            client.query(`SELECT card_number 
+                                          FROM credit_card 
+                                          WHERE card_number = ${creditCard} AND 
+                                                u_id = ${u_id}`, (err, res) => {
                                 if (shouldAbort(err)) return
-                                nextCall()
+                                //Card already associated => update user main card
+                                if (res && res.rows.length > 0) {
+                                    const userUpdate =
+                                    `UPDATE profile
+                                    SET
+                                        card_number = ${creditCard}
+                                    WHERE u_id = ${u_id}`
+                                    client.query(userUpdate, err => {
+                                        if (shouldAbort(err)) return
+                                        nextCall()
+                                    })
+                                } else {
+                                    //If not associate card with user
+                                    const creditCardInsert = 
+                                    {
+                                        text: 
+                                            `INSERT INTO credit_card(u_id, card_number)
+                                                    VALUES ($1, $2)`,
+                                        values: [
+                                            u_id,
+                                            creditCard
+                                        ]
+                                    }
+                                    client.query(creditCardInsert, err => {
+                                        if (shouldAbort(err)) return
+                                        const userUpdate =
+                                        `UPDATE profile
+                                        SET
+                                            card_number = ${creditCard}
+                                        WHERE u_id = ${u_id}`
+                                        client.query(userUpdate, err => {
+                                            if (shouldAbort(err)) return
+                                            nextCall()
+                                        })
+                                    })
+                                }
                             })
-                        })
+                        } else {
+                            //Details dont match = error
+                            client.query('ROLLBACK', err => {
+                                if (err) {
+                                    payload.send({ success: false, errMessage: "Something went very wrong" })
+                                } else {
+                                    payload.send({ success: false, errMessage: "Invalid credit card" })
+                                }
+                            })
+                            return
+                        }
                     })
                 } else {
-                    //If card is present insert new card into db. All info are assumed to be present
+                    //The new card doesnt exist in database => Insert it + associate with user
                     const creditCardInsert = 
                     {
                         text: 
