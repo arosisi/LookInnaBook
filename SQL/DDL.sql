@@ -10,24 +10,6 @@ create table profile (
 	primary key (u_id)
 );
 
-create table cart (
-	order_id serial,
-	u_id int,
-	date varchar(50),
-	tax numeric(8, 2),
-	subtotal numeric(8, 2),
-	confirmed_time varchar(50),
-	received_time varchar(50),
-	shipped_time varchar(50),
-	shipping_cost numeric(8, 2),
-	shipping_address varchar(255),
-	recipient varchar(100),
-	card_number numeric(16, 0),
-	primary key (order_id),
-	foreign key (u_id) references profile,
-    foreign key (card_number) references credit_card_info
-);
-
 create table publisher (
 	name varchar(50),
 	email varchar(50),
@@ -73,15 +55,6 @@ create table author (
 	foreign key (isbn) references book
 );
 
-create table cart_book (
-	isbn varchar(13),
-	order_id int,
-	quantity numeric(4, 0),
-	primary key (isbn, order_id),
-	foreign key (isbn) references book,
-	foreign key (order_id) references cart
-);
-
 create table genre (
 	isbn varchar(13),
 	genre varchar(50),
@@ -96,6 +69,33 @@ create table credit_card_info (
 	billing_address varchar(255),
 	holder_name varchar(100),
 	primary key (card_number)
+);
+
+create table cart (
+	order_id serial,
+	u_id int,
+	date varchar(50),
+	tax numeric(8, 2),
+	subtotal numeric(8, 2),
+	confirmed_time varchar(50),
+	received_time varchar(50),
+	shipped_time varchar(50),
+	shipping_cost numeric(8, 2),
+	shipping_address varchar(255),
+	recipient varchar(100),
+	card_number numeric(16, 0),
+	primary key (order_id),
+	foreign key (u_id) references profile,
+	foreign key (card_number) references credit_card_info
+);
+
+create table cart_book (
+	isbn varchar(13),
+	order_id int,
+	quantity numeric(4, 0),
+	primary key (isbn, order_id),
+	foreign key (isbn) references book,
+	foreign key (order_id) references cart
 );
 
 create table credit_card (

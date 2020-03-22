@@ -1,10 +1,10 @@
 delete from credit_card;
-delete from credit_card_info;
 delete from cart_book;
 delete from genre;
 delete from author;
 delete from pub_phone_number;
 delete from cart;
+delete from credit_card_info;
 delete from profile;
 delete from book;
 delete from publisher;

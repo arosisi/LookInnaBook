@@ -17,7 +17,8 @@ class UserForm extends React.Component {
       onSubmit,
       onCloseAlert,
       submitting,
-      showAlert
+      showAlert,
+      alertMessage
     } = this.props;
     const { showEmailError } = this.state;
     return (
@@ -26,10 +27,7 @@ class UserForm extends React.Component {
           if (
             /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/.test(values.email)
           ) {
-            onSubmit({
-              ...values,
-              creditCard: values.creditCard.replace(/\s/g, "")
-            });
+            onSubmit(values);
           } else {
             this.setState({ showEmailError: true });
           }
@@ -204,7 +202,7 @@ class UserForm extends React.Component {
               ) : showAlert ? (
                 <Col>
                   <Alert variant='danger' dismissible onClose={onCloseAlert}>
-                    Email has already been used.
+                    {alertMessage}
                   </Alert>
                 </Col>
               ) : (
