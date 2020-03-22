@@ -48,9 +48,9 @@ module.exports = client => {
       
         //Update user profile info
         const updateProfile = nextCall => {
-            client.query(`SELECT u_id FROM profile WHERE email = '${email}'`, (err, res) => {
+            client.query(`SELECT u_id FROM profile WHERE email = '${email} AND u_id != ${u_id}'`, (err, res) => {
                 if (shouldAbort(err)) return
-                //If email already registered => fail
+                //If email already registered by another user => fail
                 if (res && res.rows.length > 0) {
                     client.query('ROLLBACK', err => {
                         if (err) {
