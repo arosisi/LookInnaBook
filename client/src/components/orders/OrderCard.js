@@ -7,7 +7,7 @@ import * as moment from "moment";
 import { GoArrowRight } from "react-icons/go";
 
 import OneActionDialog from "../OneActionDialog";
-import { getCurrencyString } from "../../helpers";
+import { getCurrencyString, formatCreditCardRecord } from "../../helpers";
 import { db_time_format, time_format } from "../../constants";
 
 class OrderCard extends React.Component {
@@ -68,7 +68,8 @@ class OrderCard extends React.Component {
       (sum, item) => sum + item.quantity * item.price,
       0
     );
-    const total = subTotal + parseInt(order.tax) + parseInt(order.shipping_cost);
+    const total =
+      subTotal + parseInt(order.tax) + parseInt(order.shipping_cost);
     return (
       <Jumbotron style={{ padding: "2.5rem", marginBottom: 15 }}>
         <Row style={{ justifyContent: "space-between" }}>
@@ -126,6 +127,13 @@ class OrderCard extends React.Component {
         <Row>
           <Col xs={7}>Total</Col>
           <Col xs={5}>{getCurrencyString(total)}</Col>
+        </Row>
+
+        <hr />
+
+        <Row>
+          <Col xs={7}>Credit Card</Col>
+          <Col xs={5}>{formatCreditCardRecord(order.card_number)}</Col>
         </Row>
 
         <OneActionDialog

@@ -65,9 +65,11 @@ class Orders extends React.Component {
           <div>
             <h3 style={{ marginBottom: 15 }}>Current Order(s)</h3>
             {currentOrders.length ? (
-              currentOrders.map(order => (
-                <OrderCard key={order.order_id} order={order} now={now} />
-              ))
+              currentOrders
+                .sort(({ order_id: id1 }, { order_id: id2 }) => id2 - id1)
+                .map(order => (
+                  <OrderCard key={order.order_id} order={order} now={now} />
+                ))
             ) : (
               <p>You do not have any current orders.</p>
             )}
@@ -76,9 +78,11 @@ class Orders extends React.Component {
 
             <h3 style={{ marginBottom: 15 }}>Past Order(s)</h3>
             {pastOrders.length ? (
-              pastOrders.map(order => (
-                <OrderCard key={order.order_id} order={order} now={now} />
-              ))
+              pastOrders
+                .sort(({ order_id: id1 }, { order_id: id2 }) => id2 - id1)
+                .map(order => (
+                  <OrderCard key={order.order_id} order={order} now={now} />
+                ))
             ) : (
               <p>You do not have any past orders.</p>
             )}
