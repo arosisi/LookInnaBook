@@ -96,13 +96,11 @@ module.exports = client => {
                 const attributeUpdate = ''.concat(
                         title ? `title = '${title}',` : '',
                         year ? `year = ${year},` : '',
-                        description ? `description = '${description}',` : '', 
+                        description ? `description = '${description.replace(/'/g, "''")}',` : '', 
                         pageCount ? `page_count = ${pageCount},` : '',  
                         coverUrl ? `cover_url = '${coverUrl}',` : '', 
                         cost ? `cost = ${cost},` : '', 
                         price ? `price = ${price},` : '', 
-                        quantity ? `quantity = ${quantity},` : '', 
-                        threshold ? `threshold = ${threshold},` : '',
                         quantity ? `quantity = ${quantity},` : '', 
                         threshold ? `threshold = ${threshold},` : '',
                         publisher ? `pub_name = '${publisher}',` : '', 
@@ -112,7 +110,7 @@ module.exports = client => {
                     query = query.concat(
                         'UPDATE book SET ',
                         attributeUpdate.slice(0, -1), //Remove the ending colon in the query string
-                        ` WHERE isbn = '${isbn}'`
+                        `WHERE isbn = '${isbn}'`
                     )
                     client.query(query, err => {
                         if (shouldAbort(err)) return
@@ -132,7 +130,7 @@ module.exports = client => {
                     //Add list of genres
                     let updateQuery = 'INSERT INTO genre (isbn, genre) VALUES '
                     for (const genre of genres) {
-                        updateQuery += `(${isbn}, ${genre}),`
+                        updateQuery += `(${isbn}, '${genre}'),`
                     }
                     client.query(updateQuery.slice(0,-1), err => {
                         if (shouldAbort(err)) return
@@ -154,7 +152,7 @@ module.exports = client => {
                     //Add list of authors
                     let updateQuery = 'INSERT INTO author (isbn, author) VALUES '
                     for (const author of authors) {
-                        updateQuery += `(${isbn}, ${genre}),`
+                        updateQuery += `(${isbn}, '${author}'),`
                     }
                     client.query(updateQuery.slice(0,-1), err => {
                         if (shouldAbort(err)) return
