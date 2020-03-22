@@ -47,7 +47,7 @@ module.exports = client => {
                 if (shouldAbort(err)) return
                 if (res && res.rows.length > 0) {
                     //If email already registered => fail
-                    payload.send({ success: false, errMessage: "Email has already been registered" })
+                    payload.send({ success: false, errMessage: "Email has already been registered", errCode: 1 })
                     return
                 } else {
                     const query = {
@@ -117,7 +117,7 @@ module.exports = client => {
                                             if (err) {
                                                 payload.send({ success: false, errMessage: "Something went very wrong" })
                                             } else {
-                                                payload.send({ success: false, errMessage: "Invalid credit card" })
+                                                payload.send({ success: false, errMessage: "Invalid credit card", errCode: 2 })
                                             }
                                         })
                                     }
