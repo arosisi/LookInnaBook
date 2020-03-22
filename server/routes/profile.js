@@ -59,7 +59,6 @@ module.exports = client => {
                             payload.send({ success: false, errMessage: "Email has already been used", errCode: 1 })
                         }
                     })
-                    return
                 } else {
                     client.query(
                         `UPDATE profile
@@ -153,7 +152,6 @@ module.exports = client => {
                                     payload.send({ success: false, errMessage: "Invalid credit card", errCode: 2 })
                                 }
                             })
-                            return
                         }
                     })
                 } else {

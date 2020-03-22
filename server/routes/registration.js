@@ -120,7 +120,6 @@ module.exports = client => {
                                                 payload.send({ success: false, errMessage: "Invalid credit card" })
                                             }
                                         })
-                                        return
                                     }
                                 })
                             } else {
