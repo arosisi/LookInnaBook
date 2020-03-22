@@ -28,7 +28,7 @@ class Inventory extends React.Component {
           this.setState({
             fetching: false,
             inventory: this.transform(
-              response.inventory.filter(item => item.available)
+              response.books.filter(item => item.available)
             ),
             publishers: response.publishers
           });
