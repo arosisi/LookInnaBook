@@ -52,10 +52,7 @@ module.exports = client => {
             client.query(`SELECT card_number FROM credit_card_info WHERE card_number = ${creditCard.replace(/\s/g, '')}`, (err, res) => {
                 if (shouldAbort(err)) return
                 if (res && res.rows.length > 0) {
-                    client.query('COMMIT', err => {
-                        if (shouldAbort(err)) return
-                        nextCall()
-                    })
+                    nextCall()
                 } else {
                     const creditCardInfoQuery = {
                         text: 

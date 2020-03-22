@@ -78,7 +78,7 @@ module.exports = client => {
                         //Check if card with given card_number already exists
                         client.query(`SELECT card_number 
                                       FROM credit_card_info 
-                                      WHERE card_number = ${parseInt(creditCard.replace(/\s/g, ''))}`, (err, res) => {
+                                      WHERE card_number = ${parseInt(creditCard)}`, (err, res) => {
                             if (shouldAbort(err)) return
                             //Card already exist, check if all info matches
                             if (res && res.rows.length > 0) {
