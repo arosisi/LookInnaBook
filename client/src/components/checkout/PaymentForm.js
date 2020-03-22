@@ -140,7 +140,7 @@ class PaymentForm extends React.Component {
               ) : showAlert ? (
                 <Col>
                   <Alert variant='danger' dismissible onClose={onCloseAlert}>
-                    Unable to process payment.
+                    Invalid credit card.
                   </Alert>
                 </Col>
               ) : (
