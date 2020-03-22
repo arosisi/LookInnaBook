@@ -73,47 +73,95 @@ module.exports = client => {
                 nextCall()
                 return
             }
-            //If card is present insert new card into db. All info are assumed to be present
-            const creditCardInsert = 
-            {
-                text: 
-                    `INSERT INTO credit_card(u_id, card_number)
-                            VALUES ($1, $2)`,
-                values: [
-                    u_id,
-                    creditCard
-                ]
-            }
-            
-            const creditCardInfoInsert = 
-            {
-                text: 
-                    `INSERT INTO credit_card_info(card_number, expiry_date, cvv, billing_address, holder_name)
-                    VALUES ($1, $2, $3, $4, $5)`,
-                values: [
-                    creditCard,
-                    expiryDate,
-                    cvv,
-                    billingAddress,
-                    holderName
-                ]
-            }
-            
-            client.query(creditCardInfoInsert, err => {
+            const creditCardQuery = `
+            SELECT credit_card_info.card_number
+            FROM credit_card, profile, credit_card_info
+            WHERE credit_card.u_id = ${u_id} AND
+                  profile.card_number = credit_card.card_number AND
+                  credit_card.card_number = credit_card_info.card_number AND
+                  credit_card_info.card_number = ${creditCard}`
+            client.query(creditCardQuery, (err, response) => {
                 if (shouldAbort(err)) return
-                client.query(creditCardInsert, err => {
-                    if (shouldAbort(err)) return
-                    const userUpdate =
-                        `UPDATE profile
-                        SET
-                            card_number = ${creditCard}
-                        WHERE u_id = ${u_id}`
-                    client.query(userUpdate, err => {
+                //If found card, then update card
+                //Update profile, credit_card and credit_card_info all at once if card exists
+                if (response && response.rows.length > 0 && creditCard) {
+                    const creditCardUpdate = `
+                    UPDATE credit_card_info
+                    SET
+                        cvv = '${cvv}',
+                        billing_address = '${billingAddress}',
+                        holder_name = '${holderName}',
+                        expiry_date = '${expiryDate}'
+                    FROM credit_card
+                    WHERE credit_card.u_id = ${u_id} AND
+                          credit_card.card_number = credit_card_info.card_number`
+                    client.query(creditCardUpdate, err => {
                         if (shouldAbort(err)) return
-                        nextCall()
+                        const cardUpdate = 
+                           `UPDATE credit_card
+                            SET
+                                card_number = ${creditCard}
+                            FROM profile
+                            WHERE profile.card_number = credit_card.card_number AND 
+                                  profile.u_id = ${u_id} AND
+                                  profile.u_id = credit_card.u_id`
+                        client.query(cardUpdate, err => {
+                            if (shouldAbort(err)) return
+                            const userUpdate =
+                                `UPDATE profile
+                                SET
+                                    card_number = ${creditCard}
+                                WHERE u_id = ${u_id}`
+                            client.query(userUpdate, err => {
+                                if (shouldAbort(err)) return
+                                nextCall()
+                            })
+                        })
                     })
-                })
-            })
+                } else {
+                    //If card is present insert new card into db. All info are assumed to be present
+                    const creditCardInsert = 
+                    {
+                        text: 
+                            `INSERT INTO credit_card(u_id, card_number)
+                                    VALUES ($1, $2)`,
+                        values: [
+                            u_id,
+                            creditCard
+                        ]
+                    }
+                    
+                    const creditCardInfoInsert = 
+                    {
+                        text: 
+                            `INSERT INTO credit_card_info(card_number, expiry_date, cvv, billing_address, holder_name)
+                            VALUES ($1, $2, $3, $4, $5)`,
+                        values: [
+                            creditCard,
+                            expiryDate,
+                            cvv,
+                            billingAddress,
+                            holderName
+                        ]
+                    }
+                    
+                    client.query(creditCardInfoInsert, err => {
+                        if (shouldAbort(err)) return
+                        client.query(creditCardInsert, err => {
+                            if (shouldAbort(err)) return
+                            const userUpdate =
+                                `UPDATE profile
+                                SET
+                                    card_number = ${creditCard}
+                                WHERE u_id = ${u_id}`
+                            client.query(userUpdate, err => {
+                                if (shouldAbort(err)) return
+                                nextCall()
+                            })
+                        })
+                    })
+                }
+            }
         }
         
         //The actual transaction
