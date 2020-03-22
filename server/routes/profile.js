@@ -161,7 +161,7 @@ module.exports = client => {
                         })
                     })
                 }
-            }
+            })
         }
         
         //The actual transaction
