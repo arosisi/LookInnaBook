@@ -68,7 +68,7 @@ class Inventory extends React.Component {
               processing: false,
               showAlert: true
             });
-            console.log(response.message);
+            console.log(response.errMessage);
           }
         })
         .catch(error =>
@@ -97,7 +97,7 @@ class Inventory extends React.Component {
               processing: false,
               showAlert: true
             });
-            console.log(response.message);
+            console.log(response.errMessage);
           }
         })
         .catch(error =>
@@ -127,7 +127,7 @@ class Inventory extends React.Component {
               processing: false,
               showAlert: true
             });
-            console.log(response.message);
+            console.log(response.errMessage);
           }
         })
         .catch(error =>

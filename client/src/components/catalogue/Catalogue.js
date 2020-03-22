@@ -32,14 +32,18 @@ class Catalogue extends React.Component {
         .then(response => {
           this.setState({
             fetching: false,
-            books: response.books.map(book => ({
-              ...book,
-              quantity: parseInt(book.quantity)
-            })),
-            filtered: response.books.map(book => ({
-              ...book,
-              quantity: parseInt(book.quantity)
-            }))
+            books: response.books
+              .filter(book => book.available)
+              .map(book => ({
+                ...book,
+                quantity: parseInt(book.quantity)
+              })),
+            filtered: response.books
+              .filter(book => book.available)
+              .map(book => ({
+                ...book,
+                quantity: parseInt(book.quantity)
+              }))
           });
         })
         .catch(error => console.log("Unable to connect to API books.", error));
