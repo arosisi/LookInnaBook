@@ -31,7 +31,8 @@ module.exports = client => {
               cart.shipping_cost,
               cart.confirmed_time,
               cart.shipped_time,
-              cart.received_time
+              cart.received_time,
+              cart.card_number
         FROM cart, cart_book, book
         WHERE cart.u_id = ${userId} AND
               cart.order_id = cart_book.order_id AND

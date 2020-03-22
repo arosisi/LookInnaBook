@@ -60,8 +60,9 @@ module.exports = client => {
                     received_time,
                     shipping_cost,
                     shipping_address,
-                    recipient
-                ) VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, $10) RETURNING order_id`,
+                    recipient,
+                    card_number
+                ) VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11) RETURNING order_id`,
             values: [
                 id,
                 moment().format('MMMM Do YYYY, h:mm:ss a'),
@@ -72,7 +73,8 @@ module.exports = client => {
                 moment().add(18, 'h').format('MMMM Do YYYY, h:mm:ss a'),
                 shipping,
                 shippingAddress,
-                recipient
+                recipient,
+                creditCard
             ]
         }
 

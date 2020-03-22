@@ -22,6 +22,7 @@ create table cart (
 	shipping_cost numeric(8, 2),
 	shipping_address varchar(255),
 	recipient varchar(100),
+    card_number numeric(16, 0),
 	primary key (order_id),
 	foreign key (u_id) references profile
 );
