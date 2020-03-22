@@ -9,7 +9,7 @@ import Row from "react-bootstrap/Row";
 import Spinner from "react-bootstrap/Spinner";
 import { Formik } from "formik";
 
-import ResetPassword from "./ResetPassword";
+import ForgotPassword from "./ForgotPassword";
 import withConsumer from "../withConsumer";
 import { formatCreditCard } from "../helpers";
 
@@ -18,7 +18,7 @@ class Login extends React.Component {
     showEmailError: false,
     submitting: false,
     showAlert: false,
-    showResetPassword: false
+    showForgotPassword: false
   };
 
   handleSubmit = values => {
@@ -68,7 +68,7 @@ class Login extends React.Component {
       showEmailError,
       submitting,
       showAlert,
-      showResetPassword
+      showForgotPassword
     } = this.state;
     return (
       <Container style={{ width: 500 }}>
@@ -159,7 +159,9 @@ class Login extends React.Component {
                       variant='link'
                       style={{ marginRight: 10 }}
                       disabled={!values.email}
-                      onClick={() => this.setState({ showResetPassword: true })}
+                      onClick={() =>
+                        this.setState({ showForgotPassword: true })
+                      }
                     >
                       Forgot your password?
                     </Button>
@@ -183,15 +185,15 @@ class Login extends React.Component {
               </Form.Group>
 
               <Modal
-                show={showResetPassword}
-                onHide={() => this.setState({ showResetPassword: false })}
+                show={showForgotPassword}
+                onHide={() => this.setState({ showForgotPassword: false })}
               >
                 <Modal.Body>
-                  <ResetPassword
+                  <ForgotPassword
                     email={values.email}
-                    onClose={() => this.setState({ showResetPassword: false })}
+                    onClose={() => this.setState({ showForgotPassword: false })}
                     onSuccess={() =>
-                      this.setState({ showResetPassword: false })
+                      this.setState({ showForgotPassword: false })
                     }
                   />
                 </Modal.Body>

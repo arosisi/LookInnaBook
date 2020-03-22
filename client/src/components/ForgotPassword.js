@@ -8,7 +8,7 @@ import Row from "react-bootstrap/Row";
 import Spinner from "react-bootstrap/Spinner";
 import { Formik } from "formik";
 
-class ResetPassword extends React.Component {
+class ForgotPassword extends React.Component {
   state = { submitting: false, success: false, showAlert: false };
 
   handleSubmit = values => {
@@ -27,7 +27,7 @@ class ResetPassword extends React.Component {
               submitting: false,
               showAlert: true
             });
-            console.log(response.message);
+            console.log(response.errMessage);
           }
         })
         .catch(error =>
@@ -42,7 +42,7 @@ class ResetPassword extends React.Component {
     return (
       <Container>
         <h3 style={{ margin: "10px 0 30px 0", textAlign: "center" }}>
-          Reset Password
+          Forgot Password
         </h3>
 
         {success ? (
@@ -117,4 +117,4 @@ class ResetPassword extends React.Component {
   }
 }
 
-export default ResetPassword;
+export default ForgotPassword;
