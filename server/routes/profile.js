@@ -69,8 +69,10 @@ module.exports = client => {
         }
         
         const updateCard = nextCall => {
+            console.log(creditCard)
             if (!creditCard) {
                 nextCall()
+                return
             }
             //If card is present insert new card into db. All info are assumed to be present
             const creditCardInsert = 
