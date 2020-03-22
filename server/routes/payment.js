@@ -126,7 +126,7 @@ module.exports = client => {
                     shipping,
                     shippingAddress,
                     recipient,
-                    creditCard
+                    parseInt(creditCard.replace(/\s/g, ''))
                 ]
             }
             //Creating an order
