@@ -72,7 +72,7 @@ module.exports = client => {
         
         getBookData(() => 
             getPublisherData(() => {
-                payload.send({ success: true, books }) 
+                payload.json({ success: true, books, publishers }) 
             })
         )
     })
