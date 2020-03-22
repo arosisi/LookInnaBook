@@ -67,7 +67,7 @@ module.exports = client => {
                     address, 
                     email, 
                     password, 
-                    parseInt(creditCard),
+                    parseInt(creditCard.replace(/\s/g, '')),
                     "user"
                 ]
             }
@@ -85,7 +85,7 @@ module.exports = client => {
                             holder_name
                         ) VALUES($1, $2, $3, $4, $5)`,
                     values: [
-                        parseInt(creditCard), 
+                        parseInt(creditCard.replace(/\s/g, '')), 
                         expiryDate,
                         cvv,
                         billingAddress,
@@ -101,12 +101,12 @@ module.exports = client => {
                             ) VALUES($1, $2)`,
                         values: [
                             userId,
-                            parseInt(creditCard)
+                            parseInt(creditCard.replace(/\s/g, ''))
                         ]
                     }
                 client.query(`SELECT card_number 
                               FROM credit_card_info 
-                              WHERE card_number = ${parseInt(creditCard)}`, (err, res) => {
+                              WHERE card_number = ${parseInt(creditCard.replace(/\s/g, ''))}`, (err, res) => {
                     if (shouldAbort(err)) return
                     //Card already exist. No need to insert
                     if (res.rows.length > 0) {
