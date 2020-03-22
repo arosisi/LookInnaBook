@@ -77,7 +77,7 @@ module.exports = client => {
                     )
                 if (attributeUpdate) {
                     query = query.concat(
-                        'UPDATE credit_card SET ',
+                        'UPDATE publisher SET ',
                         attributeUpdate.slice(0, -1),
                         ` WHERE name = '${name}'`
                     )
