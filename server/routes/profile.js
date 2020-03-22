@@ -8,16 +8,6 @@ module.exports = client => {
         if (!userId) {
             payload.send({ success: false, errMessage: "Couldn't find an user id" })
             return
-        } else {
-            client.query(`SELECT u_id FROM profile WHERE u_id = ${userId}`, (err, res) => {
-                if (err) {
-                    payload.send({ success: false, errMessage: "Couldn't find user with given ID" })
-                    return
-                } else if (res.rows.length < 1) {
-                    payload.send({ success: false, errMessage: "Couldn't find user with given ID" })
-                    return
-                }
-            })
         }
         
         const { 
@@ -58,13 +48,28 @@ module.exports = client => {
       
         //Update user profile info
         const updateProfile = nextCall => {
-            client.query(
-                `UPDATE profile
-                SET
-                    ${attributeUpdate.slice(0,-1)}
-                WHERE u_id = ${u_id}`, err => {
+            client.query(`SELECT u_id FROM profile WHERE email = ${email}`, err => {
                 if (shouldAbort(err)) return
-                nextCall()
+                //If email already registered => fail
+                if (res && res.rows.length > 0) {
+                    client.query('ROLLBACK', err => {
+                        if (err) {
+                            payload.send({ success: false, errMessage: "Something went very wrong" })
+                        } else {
+                            payload.send({ success: false, errMessage: "Email has already been used", errCode: 1 })
+                        }
+                    })
+                    return
+                } else {
+                    client.query(
+                        `UPDATE profile
+                        SET
+                            ${attributeUpdate.slice(0,-1)}
+                        WHERE u_id = ${u_id}`, err => {
+                        if (shouldAbort(err)) return
+                        nextCall()
+                    })
+                }
             })
         }
         
@@ -96,10 +101,6 @@ module.exports = client => {
                         if (shouldAbort(err)) return
                         //If details + number match => give user that card
                         if (response && response.rows.length > 0) {
-                            //Update so we dont insert any new tuples in credit_card
-                            //This query will update if main credit card isnt the new card. Does nothing otherwise
-                            
-                            
                             //Check if card is already associated with the user
                             client.query(`SELECT card_number 
                                           FROM credit_card 
@@ -149,7 +150,7 @@ module.exports = client => {
                                 if (err) {
                                     payload.send({ success: false, errMessage: "Something went very wrong" })
                                 } else {
-                                    payload.send({ success: false, errMessage: "Invalid credit card" })
+                                    payload.send({ success: false, errMessage: "Invalid credit card", errCode: 2 })
                                 }
                             })
                             return
