@@ -4,7 +4,7 @@ module.exports = client => {
     
     router.post("/", (req, payload) => {
         //Check whether request contains a valid userId in body
-        const userId = req && req.body && req.body.u_id
+        const userId = req && req.body && req.body.id
         if (!userId) {
             payload.send({ success: false, errMessage: "Couldn't find an user id" })
             return
@@ -21,7 +21,7 @@ module.exports = client => {
         }
         
         const { 
-            u_id, 
+            id: u_id, 
             firstName, 
             lastName, 
             address, 
@@ -49,7 +49,7 @@ module.exports = client => {
                     if (err) {
                         payload.send({ success: false, errMessage: "Something went very wrong" })
                     } else {
-                        payload.send({ success: false, errMessage: "Failed to update publisher info" })
+                        payload.send({ success: false, errMessage: "Failed to update user info" })
                     }
                 })
             }
