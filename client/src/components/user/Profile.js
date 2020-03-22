@@ -21,10 +21,10 @@ class Profile extends React.Component {
     this.setState({ submitting: true }, () => {
       if (
         context.user.creditCard === values.creditCard &&
-        (context.user.expiryDate === values.expiryDate ||
-          context.user.cvv === values.cvv ||
-          context.user.holderName === values.holderName ||
-          context.user.billingAddress === values.billingAddress)
+        (context.user.expiryDate !== values.expiryDate ||
+          context.user.cvv !== values.cvv ||
+          context.user.holderName !== values.holderName ||
+          context.user.billingAddress !== values.billingAddress)
       ) {
         this.setState({
           submitting: false,
