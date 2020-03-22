@@ -24,12 +24,17 @@ class Publishers extends React.Component {
       fetch("http://localhost:9000/publishers", { signal: controller.signal })
         .then(response => response.json())
         .then(response => {
-          this.setState({
-            fetching: false,
-            publishers: this.transform(
-              response.publishers.filter(publisher => publisher.available)
-            )
-          });
+          if (response.success) {
+            this.setState({
+              fetching: false,
+              publishers: this.transform(
+                response.publishers.filter(publisher => publisher.available)
+              )
+            });
+          } else {
+            this.setState({ fetching: false });
+            console.log(response.errMessage);
+          }
         })
         .catch(error =>
           console.log("Unable to connect to API publishers.", error)
