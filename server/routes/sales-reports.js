@@ -48,8 +48,8 @@ module.exports = client => {
                     for (const item in bookList) {
                         expenditures += bookList[item].quantity * bookList[item].cost
                     }
-                    report[sales] = sales
-                    report[expenditures] = expenditures
+                    report['sales'] = sales
+                    report['expenditures'] = expenditures
                     nextCall()
                 })
             })
