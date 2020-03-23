@@ -17,7 +17,7 @@ module.exports = client => {
               cart_book.isbn,
               cart_book.quantity,
               book.title,
-              book.price,
+              cart_book.price,
               cart.tax,
               cart.shipping_cost,
               cart.confirmed_time,

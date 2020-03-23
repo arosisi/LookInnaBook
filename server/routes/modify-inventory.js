@@ -152,7 +152,7 @@ module.exports = client => {
                     //Add list of authors
                     let updateQuery = 'INSERT INTO author (isbn, author) VALUES '
                     for (const author of authors) {
-                        updateQuery += `(${isbn}, '${author}'),`
+                        updateQuery += `(${isbn}, '${author.replace(/'/g, "''")}'),`
                     }
                     client.query(updateQuery.slice(0,-1), err => {
                         if (shouldAbort(err)) return

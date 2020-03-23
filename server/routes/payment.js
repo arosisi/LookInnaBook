@@ -34,6 +34,8 @@ module.exports = client => {
             billingAddress
         } = req.body
         
+        const purchasedBooksInStock = {}
+        
         const shouldAbort = err => {
             if (err) {
                 console.error('Error in transaction', err.stack)
@@ -46,6 +48,59 @@ module.exports = client => {
                 })
             }
             return !!err
+        }
+        
+        const validateOrder = nextCall => {
+            const bookISBN = books.map(item => `'${item.isbn}'`).join(', ')
+            client.query(`SELECT isbn FROM book WHERE available = false AND isbn IN (${bookISBN})`,
+                (err, res) => {
+                    if (shouldAbort(err)) return
+                    //A book in the order was removed
+                    if (res && res.rows.length > 0) {
+                        client.query('ROLLBACK', err => {
+                            if (err) {
+                                payload.send({ success: false, errMessage: "Something went very wrong" })
+                            } else {
+                                payload.send({ success: false, errMessage: "A book in the order was removed from the store", errCode: 2 })
+                            }
+                        })
+                    } else {
+                        //All books available => check if there are enough books in store
+                        const purchasedBooks = {}
+                        books.forEach(item => purchasedBooks[item.isbn] = item.quantity)
+                        client.query(`SELECT isbn, quantity FROM book WHERE available = true AND isbn IN (${bookISBN})`,
+                            (err, res) => {
+                            if (shouldAbort(err)) return
+                            //Check if any books are out of stock
+                            if (res && res.rows.length > 0) {
+                                for (const book of res.rows) {
+                                    if (book.quantity < purchasedBooks[book.isbn]) {
+                                        client.query('ROLLBACK', err => {
+                                            if (err) {
+                                                payload.send({ success: false, errMessage: "Something went very wrong" })
+                                            } else {
+                                                payload.send({ success: false, errMessage: `The book with isbn ${book.isbn} is out of stock` , errCode: 1 })
+                                            }
+                                        })
+                                        return
+                                    }
+                                    purchasedBooksInStock[book.isbn] = book.quantity
+                                }
+                                nextCall()
+                            } else {
+                                //Error querying books
+                                client.query('ROLLBACK', err => {
+                                    if (err) {
+                                        payload.send({ success: false, errMessage: "Something went very wrong" })
+                                    } else {
+                                        payload.send({ success: false, errMessage: "Failed to process payment" })
+                                    }
+                                })
+                            }
+                        })
+                    }
+                }
+            )
         }
         
         const updateCard = nextCall => {
@@ -178,20 +233,34 @@ module.exports = client => {
                 ]
             }
             //Creating an order
-            updateCard(() => client.query(query, (err, res) => {
+            validateOrder(() => updateCard(() => client.query(query, (err, res) => {
                     if (shouldAbort(err)) return
                     const { order_id } = res.rows[0]
-                    let orderItemsQuery = 'INSERT INTO cart_book(isbn, order_id, quantity) VALUES '
-                    orderItemsQuery += books.map(book => `(${book.isbn}, ${order_id}, ${book.quantity})`).join(', ')
+                    let orderItemsQuery = 'INSERT INTO cart_book(isbn, order_id, quantity, price) VALUES '
+                    orderItemsQuery += books.map(book => `(${book.isbn}, ${order_id}, ${book.quantity}, ${book.price})`).join(', ')
                     client.query(orderItemsQuery, err => {
                         if (shouldAbort(err)) return
-                        client.query('COMMIT', err => {
+                        //Reduce quantity of book in stock by amount purchased
+                        const newBookQuantity = books.map(book => 
+                            `(${book.isbn}, ${purchasedBooksInStock[book.isbn] - book.quantity})`).join(', ')
+                        const bookUpdateQuery = 
+                        `UPDATE book
+                        SET
+                            quantity = book2.quantity
+                        FROM (VALUES
+                            ${newBookQuantity}
+                        ) as book2(isbn, quantity)
+                        WHERE book.isbn = book2.isbn`
+                        client.query(bookUpdateQuery, err => {
                             if (shouldAbort(err)) return
-                            payload.send({ success: true, order: { order_id } })
+                            client.query('COMMIT', err => {
+                                if (shouldAbort(err)) return
+                                payload.send({ success: true, order: { order_id } })
+                            })
                         })
                     })
                 })
-            )
+            ))
         })
     })
     return router
