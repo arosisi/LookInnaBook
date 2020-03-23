@@ -52,7 +52,7 @@ module.exports = client => {
         
         const validateOrder = nextCall => {
             const bookISBN = books.map(item => `'${item.isbn}'`).join(', ')
-            client.query(`SELECT isbn FROM book WHERE available = false AND isbn IN (${bookISBN})`,
+            client.query(`SELECT isbn, title FROM book WHERE available = false AND isbn IN (${bookISBN})`,
                 (err, res) => {
                     if (shouldAbort(err)) return
                     //A book in the order was removed
@@ -68,7 +68,7 @@ module.exports = client => {
                         //All books available => check if there are enough books in store
                         const purchasedBooks = {}
                         books.forEach(item => purchasedBooks[item.isbn] = item.quantity)
-                        client.query(`SELECT isbn, quantity FROM book WHERE available = true AND isbn IN (${bookISBN})`,
+                        client.query(`SELECT isbn, quantity, title FROM book WHERE available = true AND isbn IN (${bookISBN})`,
                             (err, res) => {
                             if (shouldAbort(err)) return
                             //Check if any books are out of stock
