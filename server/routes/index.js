@@ -7,7 +7,7 @@ const setupApi = client => {
     router.use('/inventory', attachDb('./inventory'));
     router.use('/publishers', attachDb('./publishers'));
     router.use('/orders', attachDb('./orders'));
-    //router.use('/sales-reports', attachDb('./sales-reports'));
+    router.use('/sales-reports', attachDb('./sales-reports'));
     router.use('/registration', attachDb('./registration'));
     router.use('/profile', attachDb('./profile'));
     router.use('/login', attachDb('./login'));

@@ -237,7 +237,7 @@ module.exports = client => {
                     if (shouldAbort(err)) return
                     const { order_id } = res.rows[0]
                     let orderItemsQuery = 'INSERT INTO cart_book(isbn, order_id, quantity, price) VALUES '
-                    orderItemsQuery += books.map(book => `(${book.isbn}, ${order_id}, ${book.quantity}, ${book.price})`).join(', ')
+                    orderItemsQuery += books.map(book => `('${book.isbn}', ${order_id}, ${book.quantity}, ${book.price})`).join(', ')
                     client.query(orderItemsQuery, err => {
                         if (shouldAbort(err)) return
                         //Reduce quantity of book in stock by amount purchased
