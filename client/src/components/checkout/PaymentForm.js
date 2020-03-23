@@ -25,7 +25,8 @@ class PaymentForm extends React.Component {
       onSubmit,
       onCloseAlert,
       submitting,
-      showAlert
+      showAlert,
+      alertMessage
     } = this.props;
     return (
       <Formik
@@ -140,7 +141,7 @@ class PaymentForm extends React.Component {
               ) : showAlert ? (
                 <Col>
                   <Alert variant='danger' dismissible onClose={onCloseAlert}>
-                    Invalid credit card.
+                    {alertMessage}
                   </Alert>
                 </Col>
               ) : (

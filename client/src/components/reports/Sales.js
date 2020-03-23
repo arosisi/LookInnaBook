@@ -29,15 +29,22 @@ class Sales extends React.Component {
       })
         .then(response => response.json())
         .then(response => {
-          this.setState({
-            fetching: false,
-            data: Object.entries(response)
-              .map(([name, sales]) => ({
-                name,
-                sales
-              }))
-              .sort(({ sales: sales1 }, { sales: sales2 }) => sales2 - sales1)
-          });
+          if (response.success) {
+            this.setState({
+              fetching: false,
+              data: Object.entries(response)
+                .map(([name, sales]) => ({
+                  name,
+                  sales
+                }))
+                .sort(({ sales: sales1 }, { sales: sales2 }) => sales2 - sales1)
+            });
+          } else {
+            this.setState({
+              processing: false
+            });
+            console.log(response.errMessage);
+          }
         })
         .catch(error =>
           console.log("Unable to connect to API sales-reports.", error)

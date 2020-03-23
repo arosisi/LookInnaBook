@@ -61,7 +61,7 @@ module.exports = client => {
                             if (err) {
                                 payload.send({ success: false, errMessage: "Something went very wrong" })
                             } else {
-                                payload.send({ success: false, errMessage: "A book in the order was removed from the store", errCode: 2 })
+                                payload.send({ success: false, errMessage: `The book with isbn ${res.rows[0].isbn} was removed from the store`, errCode: 3, title: res.rows[0].title })
                             }
                         })
                     } else {
@@ -79,7 +79,7 @@ module.exports = client => {
                                             if (err) {
                                                 payload.send({ success: false, errMessage: "Something went very wrong" })
                                             } else {
-                                                payload.send({ success: false, errMessage: `The book with isbn ${book.isbn} is out of stock` , errCode: 1 })
+                                                payload.send({ success: false, errMessage: `The book with isbn ${book.isbn} is out of stock` , errCode: 2, title: book.title })
                                             }
                                         })
                                         return
@@ -154,7 +154,7 @@ module.exports = client => {
                                 if (err) {
                                     payload.send({ success: false, errMessage: "Something went very wrong" })
                                 } else {
-                                    payload.send({ success: false, errMessage: "Invalid credit card", errCode: 2 })
+                                    payload.send({ success: false, errMessage: "Invalid credit card", errCode: 1 })
                                 }
                             })
                         }

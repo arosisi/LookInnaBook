@@ -28,13 +28,20 @@ class Balance extends React.Component {
       })
         .then(response => response.json())
         .then(response => {
-          this.setState({
-            fetching: false,
-            data: [
-              { name: "Expenditures", value: response.expenditures },
-              { name: "Sales", value: response.sales }
-            ]
-          });
+          if (response.success) {
+            this.setState({
+              fetching: false,
+              data: [
+                { name: "Expenditures", value: response.expenditures },
+                { name: "Sales", value: response.sales }
+              ]
+            });
+          } else {
+            this.setState({
+              processing: false
+            });
+            console.log(response.errMessage);
+          }
         })
         .catch(error =>
           console.log("Unable to connect to API sales-reports.", error)

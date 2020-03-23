@@ -14,7 +14,8 @@ class Checkout extends React.Component {
     submitting: false,
     success: false,
     orderId: null,
-    showAlert: false
+    showAlert: false,
+    alertMessage: ""
   };
 
   handleSubmit = values => {
@@ -47,7 +48,15 @@ class Checkout extends React.Component {
           } else {
             this.setState({
               submitting: false,
-              showAlert: true
+              showAlert: true,
+              alertMessage:
+                response.errCode === 1
+                  ? "Invalid credit card."
+                  : response.errCode === 2
+                  ? `"${response.title}" is out of stock.`
+                  : response.errCode === 3
+                  ? `"${response.title}" was removed from the store.`
+                  : "Unable to process transaction."
             });
             console.log(response.errMessage);
           }
@@ -58,7 +67,13 @@ class Checkout extends React.Component {
 
   render() {
     const { context } = this.props;
-    const { submitting, success, orderId, showAlert } = this.state;
+    const {
+      submitting,
+      success,
+      orderId,
+      showAlert,
+      alertMessage
+    } = this.state;
     return (
       <div style={{ margin: 20 }}>
         <Row style={{ marginTop: 20 }}>
@@ -80,6 +95,7 @@ class Checkout extends React.Component {
                     onCloseAlert={() => this.setState({ showAlert: false })}
                     submitting={submitting}
                     showAlert={showAlert}
+                    alertMessage={alertMessage}
                   />
                 </Container>
               </Col>
