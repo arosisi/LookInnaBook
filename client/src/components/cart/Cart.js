@@ -44,8 +44,8 @@ class Cart extends React.Component {
                     }))
                 },
                 () =>
-                  context.removeUnavailableBooksFromCart(
-                    response.books.filter(book => !book.available)
+                  context.refreshCart(
+                    response.books.filter(book => book.available)
                   )
               );
             } else {
