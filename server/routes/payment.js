@@ -242,7 +242,7 @@ module.exports = client => {
                         if (shouldAbort(err)) return
                         //Reduce quantity of book in stock by amount purchased
                         const newBookQuantity = books.map(book => 
-                            `(${book.isbn}, ${purchasedBooksInStock[book.isbn] - book.quantity})`).join(', ')
+                            `('${book.isbn}', ${purchasedBooksInStock[book.isbn] - book.quantity})`).join(', ')
                         const bookUpdateQuery = 
                         `UPDATE book
                         SET
