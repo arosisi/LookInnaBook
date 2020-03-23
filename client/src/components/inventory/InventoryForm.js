@@ -378,7 +378,7 @@ class InventoryForm extends React.Component {
                         name='quantity'
                         value={values.quantity}
                         onChange={event => {
-                          if (event.target.value > 0 || !event.target.value) {
+                          if (event.target.value >= 0 || !event.target.value) {
                             handleChange(event);
                           }
                         }}
@@ -396,7 +396,7 @@ class InventoryForm extends React.Component {
                         name='threshold'
                         value={values.threshold}
                         onChange={event => {
-                          if (event.target.value > 0 || !event.target.value) {
+                          if (event.target.value >= 0 || !event.target.value) {
                             handleChange(event);
                           }
                         }}
