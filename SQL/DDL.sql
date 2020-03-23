@@ -93,6 +93,7 @@ create table cart_book (
 	isbn varchar(13),
 	order_id int,
 	quantity numeric(4, 0),
+	price numeric(8, 2),
 	primary key (isbn, order_id),
 	foreign key (isbn) references book,
 	foreign key (order_id) references cart
