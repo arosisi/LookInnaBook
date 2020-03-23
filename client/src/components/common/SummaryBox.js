@@ -20,7 +20,7 @@ class SummaryBox extends React.Component {
   };
 
   render() {
-    const { context, checkingOut } = this.props;
+    const { context, cartError, checkingOut } = this.props;
     const { showRequireLogin } = this.state;
     const { cart } = context;
     const { subTotal, tax, shipping, total } = getAmountsToPay(cart);
@@ -67,6 +67,7 @@ class SummaryBox extends React.Component {
             <Button
               variant='outline-info'
               style={{ marginTop: 30 }}
+              disabled={cartError}
               onClick={this.handleCheckOut}
             >
               Check Out
