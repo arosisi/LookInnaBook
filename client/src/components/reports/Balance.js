@@ -32,8 +32,8 @@ class Balance extends React.Component {
             this.setState({
               fetching: false,
               data: [
-                { name: "Expenditures", value: response.expenditures },
-                { name: "Sales", value: response.sales }
+                { name: "Expenditures", value: response.report.expenditures },
+                { name: "Sales", value: response.report.sales }
               ]
             });
           } else {
