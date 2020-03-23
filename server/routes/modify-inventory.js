@@ -28,7 +28,7 @@ module.exports = client => {
             quantity, 
             threshold, 
             publisher, 
-            percentage
+            publisherPercentage: percentage
         } = req.body
         
         const shouldAbort = err => {

@@ -32,7 +32,7 @@ class Sales extends React.Component {
           if (response.success) {
             this.setState({
               fetching: false,
-              data: Object.entries(response)
+              data: Object.entries(response.report)
                 .map(([name, sales]) => ({
                   name,
                   sales
@@ -65,7 +65,7 @@ class Sales extends React.Component {
       <div
         style={{
           width: "90%",
-          height: data.length * 30,
+          height: data.length * 50,
           margin: "40px 0 40px 10px"
         }}
       >
