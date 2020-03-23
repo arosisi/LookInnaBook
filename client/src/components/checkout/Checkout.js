@@ -22,7 +22,8 @@ class Checkout extends React.Component {
     const { cart } = context;
     const books = cart.map(item => ({
       isbn: item.book.isbn,
-      quantity: item.addedToCart
+      quantity: item.addedToCart,
+      price: item.book.price
     }));
     const { subTotal, tax, shipping } = getAmountsToPay(cart);
     const summary = { books, subTotal, tax, shipping };

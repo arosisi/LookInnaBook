@@ -200,7 +200,7 @@ class Inventory extends React.Component {
 
         <InventoryForm
           show={showAddForm}
-          allowIsbnEdit={true}
+          addingItem={true}
           publishers={publishers}
           onSubmit={values => {
             this.setState({ showAddForm: false }, () => this.handleAdd(values));

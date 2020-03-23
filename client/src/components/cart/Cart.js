@@ -44,8 +44,8 @@ class Cart extends React.Component {
                     }))
                 },
                 () =>
-                  context.removeUnavailableBooksFromCart(
-                    response.books.filter(book => !book.available)
+                  context.refreshCart(
+                    response.books.filter(book => book.available)
                   )
               );
             } else {
@@ -66,6 +66,22 @@ class Cart extends React.Component {
     this.state.controller.abort();
   }
 
+  getCartError = () => {
+    const { context } = this.props;
+    const { books } = this.state;
+    const addedToCart = {};
+    context.cart.forEach(item => {
+      addedToCart[item.book.isbn] = item.addedToCart;
+    });
+    let cartError = false;
+    books.forEach(book => {
+      if (book.quantity < addedToCart[book.isbn]) {
+        cartError = true;
+      }
+    });
+    return cartError;
+  };
+
   getBooksAfterRemove = () => {
     const { context } = this.props;
     const { books } = this.state;
@@ -79,6 +95,7 @@ class Cart extends React.Component {
   render() {
     const { context } = this.props;
     const { empty, fetching } = this.state;
+    const cartError = this.getCartError();
     const booksAfterRemove = this.getBooksAfterRemove();
     return (
       <div style={{ margin: 20 }}>
@@ -93,7 +110,7 @@ class Cart extends React.Component {
             <>
               {/* Summary box */}
               <Col xs='3'>
-                <SummaryBox context={context} />
+                <SummaryBox context={context} cartError={cartError} />
               </Col>
 
               {/* Book div */}

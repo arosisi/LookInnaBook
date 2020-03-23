@@ -44,11 +44,18 @@ class AppProvider extends React.Component {
         })
       });
     },
-    removeUnavailableBooksFromCart: books => {
+    refreshCart: books => {
       const { cart } = this.state;
       const isbns = books.map(book => book.isbn);
+      const price = {};
+      books.forEach(book => (price[book.isbn] = book.price));
       this.setState({
-        cart: cart.filter(item => !isbns.includes(item.book.isbn))
+        cart: cart
+          .filter(item => isbns.includes(item.book.isbn))
+          .map(item => {
+            const { book, addedToCart } = item;
+            return { book: { ...book, price: price[book.isbn] }, addedToCart };
+          })
       });
     },
     clearCart: () => this.setState({ cart: [] })

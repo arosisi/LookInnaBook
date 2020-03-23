@@ -50,7 +50,7 @@ class InventoryForm extends React.Component {
   render() {
     const {
       show,
-      allowIsbnEdit,
+      addingItem,
       item,
       publishers,
       onSubmit,
@@ -115,7 +115,7 @@ class InventoryForm extends React.Component {
                       <Form.Control
                         type='text'
                         name='isbn'
-                        disabled={!allowIsbnEdit}
+                        disabled={!addingItem}
                         isInvalid={showIsbnError}
                         value={values.isbn}
                         onChange={event => {
@@ -289,6 +289,7 @@ class InventoryForm extends React.Component {
                         <Form.Control
                           type='text'
                           name='cost'
+                          disabled={!addingItem}
                           value={values.cost}
                           onChange={handleChange}
                         />
@@ -323,6 +324,7 @@ class InventoryForm extends React.Component {
                       <Form.Control
                         as='select'
                         name='publisher'
+                        disabled={!addingItem}
                         value={values.publisher}
                         onChange={handleChange}
                       >
@@ -342,6 +344,7 @@ class InventoryForm extends React.Component {
                         <Form.Control
                           type='number'
                           name='publisherPercentage'
+                          disabled={!addingItem}
                           value={values.publisherPercentage}
                           onChange={event => {
                             if (
