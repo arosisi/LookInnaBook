@@ -220,7 +220,7 @@ module.exports = client => {
                     ) VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11) RETURNING order_id`,
                 values: [
                     u_id,
-                    moment().format('MMMM Do YYYY, h:mm:ss a'),
+                    moment().format('MMMM DD YYYY'),
                     tax,
                     subTotal,
                     moment().add(5, 'm').format('MMMM Do YYYY, h:mm:ss a'),
