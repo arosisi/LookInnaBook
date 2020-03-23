@@ -40,7 +40,7 @@ module.exports = client => {
                     res.rows.forEach(book => {
                         //Calculate how many books there were initially
                         if (bookList[book.isbn]) {
-                            bookList[book.isbn] += book.quantity
+                            bookList[book.isbn].quantity += book.quantity
                         }
                         sales += book.price * book.quantity
                     })
