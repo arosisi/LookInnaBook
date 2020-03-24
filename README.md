@@ -16,3 +16,4 @@ But before doing that, make sure you have completed the following:
 You will need to configure your gmail account to allow emails to be sent programmically from your gmail address.
 5. Run the DDL statements in /SQL/DDL.sql to create tables in your database.
 6. Run the DML statements in /SQL/DML.sql to add data to the tables.
+7. Run the statemens in /SQL/Triggers.sql to create triggers.
