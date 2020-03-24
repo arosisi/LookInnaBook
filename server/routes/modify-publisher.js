@@ -93,11 +93,12 @@ module.exports = client => {
         const updatePubPhone = nextCall => {
             if (numbers) {
                 if (action === "add") {
+                    const values = numbers.map(num => `( '${name}', ${num} )`).join(', ')
                     client.query(
                         `INSERT INTO pub_phone_number(
                             name, 
                             number
-                        ) VALUES(${numbers.map(num => ({ name: name, number: num }))})`
+                        ) VALUES ${values}`
                         , err => {
                             if (shouldAbort(err)) return
                             nextCall()
@@ -109,11 +110,12 @@ module.exports = client => {
                         WHERE name = '${newName || name}'`,
                         err => {
                             if (shouldAbort(err)) return
+                            const values = numbers.map(num => `( '${newName || name}', ${num} )`).join(', ')
                             client.query(
                                 `INSERT INTO pub_phone_number(
                                     name, 
                                     number
-                                ) VALUES(${numbers.map(num => ({ name: newName || name, number: num }))})`
+                                ) VALUES ${values}`
                                 , err => {
                                     if (shouldAbort(err)) return
                                     nextCall()
