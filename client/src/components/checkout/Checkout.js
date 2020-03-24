@@ -53,7 +53,7 @@ class Checkout extends React.Component {
                 response.errCode === 1
                   ? "Invalid credit card."
                   : response.errCode === 2
-                  ? `"${response.title}" is out of stock.`
+                  ? `"${response.title}" is too low in stock.`
                   : response.errCode === 3
                   ? `"${response.title}" was removed from the store.`
                   : "Unable to process transaction."

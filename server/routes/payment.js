@@ -71,7 +71,7 @@ module.exports = client => {
                         client.query(`SELECT isbn, quantity, title FROM book WHERE available = true AND isbn IN (${bookISBN})`,
                             (err, res) => {
                             if (shouldAbort(err)) return
-                            //Check if any books are out of stock
+                            //Check if any books are too low in stock
                             if (res && res.rows.length > 0) {
                                 for (const book of res.rows) {
                                     if (book.quantity < purchasedBooks[book.isbn]) {
@@ -79,7 +79,7 @@ module.exports = client => {
                                             if (err) {
                                                 payload.send({ success: false, errMessage: "Something went very wrong" })
                                             } else {
-                                                payload.send({ success: false, errMessage: `The book with isbn ${book.isbn} is out of stock` , errCode: 2, title: book.title })
+                                                payload.send({ success: false, errMessage: `The book with isbn ${book.isbn} is too low in stock` , errCode: 2, title: book.title })
                                             }
                                         })
                                         return
