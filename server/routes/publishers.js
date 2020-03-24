@@ -11,7 +11,8 @@ module.exports = client => {
               publisher.address,
               publisher.name
         FROM publisher, pub_phone_number
-        WHERE publisher.name = pub_phone_number.name`
+        WHERE publisher.name = pub_phone_number.name AND
+              publisher.available = true`
         client.query(query, (err, res) => {
             if (err) {
                 payload.send({ success: false, errMessage: "Failed to fetch from database"  })

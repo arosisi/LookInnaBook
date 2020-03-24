@@ -91,35 +91,48 @@ module.exports = client => {
         
         //Update publisher phone number
         const updatePubPhone = nextCall => {
-            if (action === "add" && numbers) {
-                client.query(
-                    {
-                        text: 
-                            `INSERT INTO pub_phone_number(
-                                name, 
-                                number
-                            ) VALUES($1, $2)`,
-                        values: [
-                            newName,
-                            numbers
-                        ]
-                    }
-                    , err => {
-                        if (shouldAbort(err)) return
-                        nextCall()
-                    }
-                )
-            } else if (action === "edit" && numbers) {
-                client.query(
-                    `UPDATE pub_phone_number 
-                    SET 
-                        number = ${numbers}
-                    WHERE name = '${newName || name}'`,
-                    err => {
-                        if (shouldAbort(err)) return
-                        nextCall()
-                    }
-                )
+            if (numbers) {
+                if (action === "add") {
+                    client.query(
+                        {
+                            text: 
+                                `INSERT INTO pub_phone_number(
+                                    name, 
+                                    number
+                                ) VALUES($1, $2)`,
+                            values: [
+                                newName,
+                                numbers
+                            ]
+                        }
+                        , err => {
+                            if (shouldAbort(err)) return
+                            nextCall()
+                        }
+                    )
+                } else if (action === "edit") {
+                    client.query(
+                        `UPDATE pub_phone_number 
+                        SET 
+                            number = ${numbers}
+                        WHERE name = '${newName || name}'`,
+                        err => {
+                            if (shouldAbort(err)) return
+                            nextCall()
+                        }
+                    )
+                } else {
+                    client.query(
+                        `DELETE FROM pub_phone_number
+                        WHERE name = '${name}'`,
+                        err => {
+                            if (shouldAbort(err)) return
+                            nextCall()
+                        }
+                    )
+                }
+            } else {
+                nextCall()
             }
         }
         
