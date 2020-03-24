@@ -57,7 +57,7 @@ module.exports = client => {
                             available
                         ) VALUES($1, $2, $3, $4, $5)`,
                     values: [
-                        newName,
+                        name,
                         email,
                         bankAccount,
                         address,
@@ -70,7 +70,7 @@ module.exports = client => {
                 })
             } else {
                 const attributeUpdate = ''.concat(
-                        newName ? `name = '${newName}',` : '',
+                        newName ? `name = '${newName || name}',` : '',
                         email ? `email = '${email}',` : '',
                         bankAccount ? `bank_account = '${bankAccount}',` : '',
                         address ? `address = '${address}',` : ''
@@ -94,17 +94,10 @@ module.exports = client => {
             if (numbers) {
                 if (action === "add") {
                     client.query(
-                        {
-                            text: 
-                                `INSERT INTO pub_phone_number(
-                                    name, 
-                                    number
-                                ) VALUES($1, $2)`,
-                            values: [
-                                newName,
-                                numbers
-                            ]
-                        }
+                        `INSERT INTO pub_phone_number(
+                            name, 
+                            number
+                        ) VALUES(${numbers.map(num => ({ name: name, number: num }))})`
                         , err => {
                             if (shouldAbort(err)) return
                             nextCall()
@@ -112,13 +105,20 @@ module.exports = client => {
                     )
                 } else if (action === "edit") {
                     client.query(
-                        `UPDATE pub_phone_number 
-                        SET 
-                            number = '${numbers}'
+                        `DELETE FROM pub_phone_number
                         WHERE name = '${newName || name}'`,
                         err => {
                             if (shouldAbort(err)) return
-                            nextCall()
+                            client.query(
+                                `INSERT INTO pub_phone_number(
+                                    name, 
+                                    number
+                                ) VALUES(${numbers.map(num => ({ name: newName || name, number: num }))})`
+                                , err => {
+                                    if (shouldAbort(err)) return
+                                    nextCall()
+                                }
+                            )
                         }
                     )
                 } else {
