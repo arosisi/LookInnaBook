@@ -32,6 +32,8 @@ class Inventory extends React.Component {
                 response.books.filter(item => item.available)
               ),
               publishers: response.publishers
+                .filter(publisher => publisher.available)
+                .map(publisher => publisher.name)
             });
           } else {
             this.setState({ fetching: false });

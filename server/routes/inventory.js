@@ -28,7 +28,7 @@ module.exports = client => {
         const getBookData = nextCall => {
             client.query(bookQuery, (err, res) => {
                 if (err) {
-                    payload.send({ success: false, errMessage: "Failed to fetch from database"  })
+                    payload.send({ success: false, errMessage: "Failed to fetch book data from database"  })
                 } else {
                     let currentBook = null
                     res.rows.forEach((row, i) => {
@@ -58,13 +58,13 @@ module.exports = client => {
         
         const getPublisherData = nextCall => {
             const publisherQuery = `
-            SELECT name
+            SELECT name, available
             FROM publisher`
             client.query(publisherQuery, (err, res) => {
                 if (err) {
-                    payload.send({ success: false })
+                    payload.send({ success: false, errMessage: "Failed to fetch publisher data from database" })
                 } else {
-                    res.rows.forEach(row => publishers.push(row.name))
+                    res.rows.forEach(row => publishers.push(row))
                     nextCall()
                 }
             })
