@@ -114,7 +114,7 @@ module.exports = client => {
                     client.query(
                         `UPDATE pub_phone_number 
                         SET 
-                            number = ${numbers}
+                            number = '${numbers}'
                         WHERE name = '${newName || name}'`,
                         err => {
                             if (shouldAbort(err)) return
