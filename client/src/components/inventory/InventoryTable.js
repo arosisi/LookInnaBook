@@ -129,7 +129,7 @@ class InventoryTable extends React.Component {
                 <td>{getCurrencyString(item.cost)}</td>
                 <td>{getCurrencyString(item.price)}</td>
                 <td>{item.publisher}</td>
-                <td>{`${Math.ceil(item.publisherPercentage * 100)}%`}</td>
+                <td>{`${(item.publisherPercentage * 100).toFixed(0)}%`}</td>
                 <td>{item.quantity}</td>
                 <td>{item.threshold}</td>
               </tr>

@@ -25,7 +25,7 @@ class InventoryForm extends React.Component {
     cost: getCurrencyString(item.cost).substring(1),
     price: getCurrencyString(item.price).substring(1),
     publisher: item.publisher,
-    publisherPercentage: Math.ceil(item.publisherPercentage * 100),
+    publisherPercentage: (item.publisherPercentage * 100).toFixed(0),
     quantity: item.quantity,
     threshold: item.threshold
   });
