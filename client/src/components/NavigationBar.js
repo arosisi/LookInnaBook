@@ -8,24 +8,7 @@ import Row from "react-bootstrap/Row";
 
 import withConsumer from "../withConsumer";
 
-// import books from "../collections/books";
-// import inventory from "../collections/inventory";
-// import publishers from "../collections/publishers";
-// import author from "../tables/author";
-// import book from "../tables/book";
-// import genre from "../tables/genre";
-// import pub_phone_number from "../tables/pub_phone_number";
-// import publisher from "../tables/publisher";
-import filters from "../filters"; // eslint-disable-line
-
 class NavigationBar extends React.Component {
-  // injectEscape = string => string.replace(/'/g, "\\'");
-
-  // test = () => {
-  //   let data = [];
-  //   console.log(JSON.stringify(data));
-  // };
-
   getCartCount = () => {
     const { context } = this.props;
     return context.cart.reduce((count, item) => count + item.addedToCart, 0);
@@ -131,14 +114,6 @@ class NavigationBar extends React.Component {
 
           <Button variant='link' onClick={() => context.redirect("catalogue")}>
             Catalogue
-          </Button>
-
-          <Button
-            variant='link'
-            onClick={() => console.log(JSON.stringify(context.user))}
-            // onClick={() => this.test()}
-          >
-            Test
           </Button>
         </Nav>
       </Navbar>
