@@ -93,7 +93,7 @@ module.exports = client => {
         const updatePubPhone = nextCall => {
             if (numbers) {
                 if (action === "add") {
-                    const values = numbers.map(num => `( '${name}', ${num} )`).join(', ')
+                    const values = numbers.map(num => `( '${name}', '${num}' )`).join(', ')
                     client.query(
                         `INSERT INTO pub_phone_number(
                             name, 
@@ -110,7 +110,7 @@ module.exports = client => {
                         WHERE name = '${newName || name}'`,
                         err => {
                             if (shouldAbort(err)) return
-                            const values = numbers.map(num => `( '${newName || name}', ${num} )`).join(', ')
+                            const values = numbers.map(num => `( '${newName || name}', '${num}' )`).join(', ')
                             client.query(
                                 `INSERT INTO pub_phone_number(
                                     name, 

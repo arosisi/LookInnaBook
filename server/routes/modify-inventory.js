@@ -84,7 +84,7 @@ module.exports = client => {
                         quantity, 
                         threshold,
                         publisher,
-                        percentage,
+                        parseFloat(percentage),
                         true
                     ]
                 }
@@ -104,7 +104,7 @@ module.exports = client => {
                         quantity ? `quantity = ${quantity},` : '', 
                         threshold ? `threshold = ${threshold},` : '',
                         publisher ? `pub_name = '${publisher}',` : '', 
-                        percentage ? `percentage = ${percentage},` : ''
+                        percentage ? `percentage = ${parseFloat(percentage)},` : ''
                     )
                 if (attributeUpdate) {
                     query = query.concat(
